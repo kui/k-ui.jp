@@ -38,9 +38,9 @@ has_ruby_version() {
 }
 
 install_rbenv() {
-    git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
+    git clone https://github.com/sstephenson/rbenv.git "$RBENV_DIR"
     git clone https://github.com/sstephenson/ruby-build.git \
-         ~/.rbenv/plugins/ruby-build
+        "$RBENV_DIR/plugins/ruby-build"
 
     if has apt-get; then
         sudo apt-get install autoconf bison build-essential libssl-dev \
