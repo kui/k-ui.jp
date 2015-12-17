@@ -1,2 +1,5 @@
-_site/
-.sass-cache/
+/.sass-cache
+/src/.jekyll-metadata
+/public
+/.bundle
+/.rbenv
