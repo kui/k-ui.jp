@@ -7,10 +7,10 @@ description: ねこほしい
 
 source: src
 destination: public
-plugins_dir: plugins
 
 date_format: "%Y年 %m月 %d日"
 url: "http://k-ui.jp"
+permalink: /blog/:year/:month/:day/:title/
 
 kramdown:
   input: GFM
