@@ -1,23 +1,17 @@
 ---
-layout: default
+layout: page
 ---
-
-<div class="home">
-
-  <h1 class="page-heading">Posts</h1>
-
-  <ul class="post-list">
-    {% for post in site.posts %}
-      <li>
-        <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
-
-        <h2>
-          <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-        </h2>
-      </li>
-    {% endfor %}
+<div id="recent_posts">
+  <h2>最近のブログ投稿</h2>
+  <ul>
+  {% for post in site.posts limit:5 %}
+    <li>
+      <article>
+        <a rel="full-article" href="{{ post.url }}">{{ post.title }}</a>
+        （<time datetime="{{post.date}}" pubdate>{{ post.date | date: "%-Y/%-m/%-d" }}</time>）
+      </article>
+    </li>
+  {% endfor %}
   </ul>
-
-  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
-
+  <p><a href="blog">&laquo; 過去の記事</a></p>
 </div>
