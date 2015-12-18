@@ -15,7 +15,7 @@ build: bundle-install
 serve: bundle-install
 	$(JEKYLL) serve
 
-clean:
+clean: bundle-install
 	$(JEKYLL) clean
 
 ###

@@ -18,14 +18,14 @@ main() {
 
     if has apt-get; then
         run sudo apt-get install autoconf bison build-essential libssl-dev \
-            libyaml-dev libreadline6 libreadline6-dev zlib1g zlib1g-dev
+            libyaml-dev libreadline6 libreadline6-dev zlib1g zlib1g-dev graphviz
     elif has yum; then
         run sudo yum install gcc-c++ glibc-headers openssl-devel readline \
-            libyaml-devel readline-devel zlib zlib-devel
+            libyaml-devel readline-devel zlib zlib-devel graphviz
     elif has brew; then
-        run brew install openssl libyaml pkg-config autoconf
+        run brew install openssl libyaml pkg-config autoconf graphviz
     elif has port; then
-        run port install openssl libyaml
+        run port install openssl libyaml graphviz
     else
         abort "Not supported package manager"
     fi

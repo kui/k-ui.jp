@@ -8,9 +8,14 @@ description: ねこほしい
 source: src
 destination: public
 
-date_format: "%Y年 %m月 %d日"
 url: "http://k-ui.jp"
-permalink: /blog/:year/:month/:day/:title/
+permalink: "/blog/:year/:month/:day/:title/"
+timezone: "Japan"
 
-kramdown:
-  input: GFM
+markdown: redcarpet
+redcarpet:
+  extensions:
+    - with_toc_data
+    - tables
+    - fenced_code_blocks
+    - autolink
