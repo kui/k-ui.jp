@@ -3,10 +3,10 @@ set -eu
 # set -x
 
 BASE_DIR="$(cd "$(dirname "$(dirname "$0")")"; pwd)"
-RBENV_DIR="$BASE_DIR/.rbenv"
 RUBY_VERSION_FILE="$BASE_DIR/.ruby-version"
 
-export PATH="$RBENV_DIR/bin:$PATH"
+export RBENV_ROOT="$BASE_DIR/.rbenv"
+export PATH="$RBENV_ROOT/bin:$PATH"
 
 cd "$BASE_DIR"
 
@@ -21,8 +21,8 @@ main() {
         rbenv install
     fi
 
-    if ! has bundle; then
-        gem install bundle
+    if ! has_gem bundler; then
+        gem install bundler
         rbenv rehash
     fi
 
@@ -30,7 +30,11 @@ main() {
 }
 
 has() {
-    type "$1" >>/dev/null
+    type "$1" &>/dev/null
+}
+
+has_gem() {
+    ruby -r "$1" -e '' &>/dev/null
 }
 
 has_ruby_version() {
