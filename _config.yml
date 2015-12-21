@@ -9,7 +9,7 @@ source: src
 destination: public
 
 url: "http://k-ui.jp"
-baseurl: "/"
+baseurl: ""
 permalink: "/blog/:year/:month/:day/:title/"
 timezone: "Japan"
 

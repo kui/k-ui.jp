@@ -7,7 +7,7 @@ layout: page
   {% for post in site.posts limit:5 %}
     <li>
       <article>
-        <a rel="full-article" href="{{ post.url }}">{{ post.title }}</a>
+        <a rel="full-article" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
         （<time datetime="{{post.date}}" pubdate>{{ post.date | date: "%-Y/%-m/%-d" }}</time>）
       </article>
     </li>
