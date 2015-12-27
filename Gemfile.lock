@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    browserify_rb (0.2.0)
     colorator (0.1)
     ffi (1.9.10)
     jekyll (3.0.1)
@@ -12,8 +13,11 @@ GEM
       mercenary (~> 0.3.3)
       rouge (~> 1.7)
       safe_yaml (~> 1.0)
-    jekyll-sass-converter (1.3.0)
-      sass (~> 3.2)
+    jekyll-browserify (0.1.0)
+      browserify_rb (~> 0.2.0)
+    jekyll-graphviz (0.1.0)
+    jekyll-sass-converter (1.4.0)
+      sass (~> 3.4)
     jekyll-watch (1.3.0)
       listen (~> 3.0)
     kramdown (1.9.0)
@@ -25,7 +29,7 @@ GEM
     rb-fsevent (0.9.6)
     rb-inotify (0.9.5)
       ffi (>= 0.5.0)
-    redcarpet (3.3.3)
+    redcarpet (3.3.4)
     rouge (1.10.1)
     safe_yaml (1.0.4)
     sass (3.4.20)
@@ -35,6 +39,8 @@ PLATFORMS
 
 DEPENDENCIES
   jekyll
+  jekyll-browserify
+  jekyll-graphviz
   redcarpet
 
 BUNDLED WITH

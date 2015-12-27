@@ -1,5 +1,5 @@
 /.sass-cache
 /src/.jekyll-metadata
 /public
-/.bundle
-/.rbenv
+/vendor
+/.bundle/config

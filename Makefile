@@ -1,35 +1,19 @@
-export RBENV_ROOT := .rbenv
-export PATH := $(RBENV_ROOT)/bin:$(PATH)
-
-RBENV := rbenv
-RBENV_EXEC := $(RBENV) exec
-RUBY := $(RBENV_EXEC) ruby
-JEKYLL := $(RBENV_EXEC) jekyll
-BUNDLE := $(RBENV_EXEC) bundle
+BUNDLE_PATH := vendor/bundler
+BUNDLE = bundle
+JEKYLL = $(BUNDLE) exec jekyll
 
 .PHONY: build serve clean
 
-build: bundle-install
+build: bundle-installed
 	$(JEKYLL) build
 
-serve: bundle-install
+serve: bundle-installed
 	$(JEKYLL) serve
 
-clean: bundle-install
+clean: bundle-installed
 	$(JEKYLL) clean
 
-###
+bundle-installed: $(BUNDLE_PATH)
 
-.PHONY: bundle-install bundler ruby
-
-bundle-install: bundler
-	@$(BUNDLE) check &>/dev/null || \
-	$(BUNDLE) install
-
-bundler: ruby
-	@$(RUBY) -r bundler -e '' &>/dev/null || \
-	$(RBENV_EXEC) gem install bundler
-
-ruby:
-	@$(RUBY) -v &>/dev/null || \
-	./scripts/install_ruby.sh $(RBENV_ROOT)
+$(BUNDLE_PATH):
+	bundle install --path "$(BUNDLE_PATH)"
