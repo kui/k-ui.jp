@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    browserify_rb (0.3.0)
+    browserify_rb (1.0.0)
     colorator (0.1)
     ffi (1.9.10)
     jekyll (3.0.1)
@@ -13,8 +13,8 @@ GEM
       mercenary (~> 0.3.3)
       rouge (~> 1.7)
       safe_yaml (~> 1.0)
-    jekyll-browserify (0.2.0)
-      browserify_rb (~> 0.3.0)
+    jekyll-browserify (1.1.1)
+      browserify_rb (~> 1.0.0)
     jekyll-graphviz (0.1.0)
     jekyll-sass-converter (1.4.0)
       sass (~> 3.4)

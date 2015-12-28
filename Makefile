@@ -13,7 +13,10 @@ serve: bundle-installed
 clean: bundle-installed
 	$(JEKYLL) clean
 
-bundle-installed: $(BUNDLE_PATH)
+bundle-installed: $(BUNDLE_PATH) node_modules
 
 $(BUNDLE_PATH):
 	bundle install --path "$(BUNDLE_PATH)"
+
+node_modules:
+	npm install
