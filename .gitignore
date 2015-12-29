@@ -3,3 +3,4 @@
 /public
 /vendor
 /.bundle/config
+/node_modules
