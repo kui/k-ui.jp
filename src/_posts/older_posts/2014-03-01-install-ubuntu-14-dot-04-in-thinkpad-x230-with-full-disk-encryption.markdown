@@ -44,7 +44,7 @@ Ubuntu インストール
 
 具体的な方法はこれみる:
 
-* [Manual full disk encryption setup guide for Ubuntu 13.10 & Linux Mint 16 | LinuxBSDos.com](http://www.linuxbsdos.com/2014/01/16/manual-full-disk-encryption-setup-guide-for-ubuntu-13-10-linux-mint-16/)
+* [Manual full disk encryption setup guide for Ubuntu 13.10 & Linux Mint 16 \| LinuxBSDos.com](http://www.linuxbsdos.com/2014/01/16/manual-full-disk-encryption-setup-guide-for-ubuntu-13-10-linux-mint-16/)
 
 今回の件に合わせるとだいたいこんな感じ（順番が大事）:
 

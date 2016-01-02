@@ -13,16 +13,16 @@ baseurl: ""
 permalink: "/blog/:year/:month/:day/:title/"
 timezone: "Japan"
 
-markdown: redcarpet
-redcarpet:
-  extensions:
-    - with_toc_data
-    - tables
-    - fenced_code_blocks
-    - autolink
+markdown: kramdown
+kramdown:
+  auto_ids: true
+  input: GFM
+  hard_wrap: false
+
+highlighter: rouge
 
 browserify:
-  command: "$(npm bin)/browserify -t babelify -"
+  command: "$(npm bin)/browserify -t babelify -g uglifyify -"
 
 # Additional Info
 qiita_id: k_ui

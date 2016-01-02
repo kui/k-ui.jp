@@ -11,9 +11,10 @@ $code-bg-color: #ddeeff;
 
 .highlight {
   background-color: $code-bg-color;
-  padding: 8px 8px;
-  > pre {
-    margin: 0px;
+  padding: 0px;
+  > code {
+    display: block;
+    padding: 6px;
   }
 }
 
@@ -41,6 +42,7 @@ body {
     }
     code {
       background-color: $code-bg-color;
+      padding: 3px;
     }
   }
 
