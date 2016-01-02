@@ -7,16 +7,7 @@
 $font-color: #333;
 $serif-font: Georgia, Times, "IPA明朝", serif;
 $gothic-font: Verdana, Arial, Meiryo, "メイリオ", "IPAゴシック", "IPAGothic", "MS P Gothic", "ＭＳ Ｐゴシック", sans-serif;
-$code-bg-color: #ddeeff;
-
-.highlight {
-  background-color: $code-bg-color;
-  padding: 0px;
-  > code {
-    display: block;
-    padding: 6px;
-  }
-}
+$code-bg-color: #eee;
 
 body {
   font-family: $serif-font;
@@ -39,6 +30,29 @@ body {
   > article {
     h1,h2,h3,h4,h5,h6 {
       font-family: $gothic-font;
+
+      > .heading-anchor {
+        text-decoration: none;
+        &:after {
+          content: " \00A7";
+          color: $font-color;
+          font-weight: 300;
+          opacity: 0;
+          transition: opacity 0.1s ease-out;
+        }
+      }
+      &:hover > .heading-anchor:after {
+        opacity: 1;
+      }
+    }
+
+    .highlight {
+      background-color: $code-bg-color;
+      padding: 0px;
+      > code {
+        display: block;
+        padding: 6px;
+      }
     }
     code {
       background-color: $code-bg-color;
