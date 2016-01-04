@@ -24,6 +24,5 @@ highlighter: rouge
 browserify:
   command: "$(npm bin)/browserify -t babelify -g uglifyify -"
 
-# Additional Info
 qiita_id: k_ui
 github_id: kui
