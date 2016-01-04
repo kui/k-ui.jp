@@ -1,5 +1,4 @@
-import renderElement from './render-element';
-import fetchAsJson from './fetch-as-json';
+import { renderElement, fetchAsJson } from './util';
 import objectPairs from 'lodash/object/pairs';
 
 const BASE_URL = 'https://api.github.com';

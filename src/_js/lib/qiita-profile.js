@@ -1,12 +1,11 @@
-import renderElement from './render-element';
-import fetchAsJson from './fetch-as-json';
+import { renderElement, fetchAsJson } from './util';
 
 const BASE_URL = 'https://qiita.com/api/v2';
 
 export default class QiitaProfile {
-  constructor(userName, itemsNum) {
+  constructor(userName, itemsNum = 5) {
     this.userName = userName;
-    this.perPage = itemsNum || 5;
+    this.perPage = itemsNum;
 
     console.log('QiitaProfile: Constructor %o', this);
   }
