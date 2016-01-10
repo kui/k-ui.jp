@@ -1,0 +1,46 @@
+#!/bin/bash
+set -eu
+cd "$(dirname "$0")/.."
+
+DIR="$(pwd)"
+DEFAULT_DEST="public"
+NEW_DEST="new-public"
+
+main() {
+    build
+    logrotate --state=logrotate.state <(cat <<EOF
+"$DIR/cron.log" {
+  mounthly
+  missingok
+  rotate 6
+  compress
+}
+EOF
+)
+}
+
+build() {
+    if ! has_update; then
+        return
+    fi
+
+    git pull >/dev/null
+
+    rm -fr "$NEW_DEST"
+    make build DEST="$NEW_DEST"
+
+    mv "$DEFAULT_DEST"{,~}
+    mv "$NEW_DEST" "$DEFAULT_DEST"
+}
+
+has_update() {
+    command git fetch --all >/dev/null
+    [[ "$(command git rev-parse '@')" != "$(command git rev-parse '@{u}')" ]]
+}
+
+timestamp() {
+    perl -pe 'use POSIX;$t=POSIX::strftime("%FT%T%z",localtime);s/^/$t | /;'
+}
+
+main 2>&1 | timestamp | tee -a cron.log
+exit ${PIPESTATUS[0]}

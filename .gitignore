@@ -1,6 +1,9 @@
+*~
 /.sass-cache
 /src/.jekyll-metadata
 /public
 /vendor
 /.bundle/config
 /node_modules
+/cron.log
+/logrotate.state
