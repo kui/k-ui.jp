@@ -5,9 +5,14 @@ JEKYLL := $(BUNDLE) exec jekyll
 SERVER_PORT := 39278
 SERVER_URL  := http://localhost:$(SERVER_PORT)/
 
-.PHONY: build serve clean open-server
+.PHONY: build slow-build serve clean open-server
 
 build: bundle-installed
+	$(JEKYLL) build
+
+slow-build: bundle-installed
+	bundle install --path "$(BUNDLE_PATH)"
+	npm install
 	$(JEKYLL) build
 
 serve: bundle-installed
