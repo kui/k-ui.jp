@@ -24,5 +24,13 @@ highlighter: rouge
 browserify:
   command: "$(npm bin)/browserify -t babelify -g uglifyify -"
 
+defaults:
+  -
+    scope:
+      type: posts
+    values:
+      layout: post
+
 qiita_id: k_ui
 github_id: kui
+twitter_id: k_ui

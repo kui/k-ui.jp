@@ -1,0 +1,45 @@
+#!/bin/bash
+set -eu
+
+cd "$(dirname "$0")/.."
+
+if [[ $# -eq 0 || -z "$1" ]]; then
+    printf "Input tilte: "
+    read title
+else
+    title="$1"
+fi
+
+date="$(date +'%FT%T%z')"
+
+year="$(date +%Y)"
+month="$(date +%m)"
+prefix="$(date +%F)"
+file="src/_posts/$year/$month/$prefix-$title.md"
+
+mkdir -p "$(dirname "$file")"
+
+if [[ -e "$file" ]]; then
+    printf "Already exists: %s\n" "$file"
+    printf "Overwrite? y/n [n]: "
+    read answer
+
+    if [[ "$answer" != "y" ]]; then
+        printf "Abort\n"
+        exit
+    fi
+fi
+
+cat <<EOF > "$file"
+---
+title: $title
+date: $date
+---
+
+EOF
+
+printf "Create new post: %s\n" "$file"
+if which editor &>/dev/null; then
+    printf "Edit: %s\n" "$file"
+    "${EDITOR:-edit}" "$file"
+fi
