@@ -28,7 +28,7 @@ build() {
         return
     fi
 
-    git log "$local_ref"..."$remote_ref"
+    git log --oneline "$local_ref"..."$remote_ref"
 
     git pull >/dev/null
 
