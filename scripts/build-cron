@@ -20,9 +20,15 @@ EOF
 }
 
 build() {
-    if ! has_update; then
+    command git fetch --all >/dev/null
+    local local_ref="$(command git rev-parse '@')"
+    local remote_ref="$(command git rev-parse '@{u}')"
+
+    if [[ "$local_ref" = "$remote_ref" ]]; then
         return
     fi
+
+    git log "$local_ref"..."$remote_ref"
 
     git pull >/dev/null
 
@@ -33,11 +39,6 @@ build() {
         mv "$DEFAULT_DEST"{,~}
     fi
     mv "$NEW_DEST" "$DEFAULT_DEST"
-}
-
-has_update() {
-    command git fetch --all >/dev/null
-    [[ "$(command git rev-parse '@')" != "$(command git rev-parse '@{u}')" ]]
 }
 
 timestamp() {
