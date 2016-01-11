@@ -3,6 +3,8 @@ layout: post
 comment: true
 title: eclipse (3.7, indigo) + maven で WTP 使う
 ---
+<ins>2016/01/12 追記: 画像を失くしたので削除しました</ins>
+
 <p>Eclipse の新しいやつ出ましたね。</p>
 <p>ということで、タイトルの通り、Eclipse 3.7 と Maven で WTP 使う。つまり、Servlet の開発をしようぜって話。</p>
 <ol>
@@ -28,8 +30,6 @@ title: eclipse (3.7, indigo) + maven で WTP 使う
  <li>Install ウィンドウ消えるまで "Next >" ボタン押し続ける → インストール完了</li>
 </ol>
 
-<a href="http://k-ui.jp/wp-content/uploads/2011/07/installing_m2e_1.png"><img src="http://k-ui.jp/wp-content/uploads/2011/07/installing_m2e_1.png" alt="Installing m2e" title="Install_m2e" width="700" class="size-full wp-image-335" /></a>
-
 <h4>m2e-wtp インストール</h4>
 <p>Eclipse + maven で WTP 使うためのプラグイン。</p>
 <ol>
@@ -41,8 +41,6 @@ title: eclipse (3.7, indigo) + maven で WTP 使う
  <li>Install ウィンドウ消えるまで "Next >" ボタン押し続ける → インストール完了</li>
 </ol>
 <p>本来なら、WIndow → Preferences → 右カラムの "Maven" → "Discovery" →  右の "Open Catalog" ってたどって、見つけられるはずなんだけど、どうやらバグがあるらしくここのカタログからは省かれているらしい。（ソース: <a href="http://dev.eclipse.org/mhonarc/lists/m2e-users/msg00938.html">[m2e-users] m2e-wtp temporary removed from m2e marketplace catalog</a>）</p>
-
-<a href="http://k-ui.jp/wp-content/uploads/2011/07/installing_m2e_2.png"><img src="http://k-ui.jp/wp-content/uploads/2011/07/installing_m2e_2.png" alt="installing m2e-wtp" title="installing_m2e-wtp" width="700" class="size-full wp-image-336" /></a>
 
 ### 新規プロジェクト作成
 <p>WTP に則った新たなプロジェクト作成します。</p>

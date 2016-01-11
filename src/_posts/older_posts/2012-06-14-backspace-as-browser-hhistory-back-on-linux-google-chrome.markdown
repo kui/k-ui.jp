@@ -29,7 +29,7 @@ Linux 版 Google Chrome (or Chromium) を使っていると、バックスペー
 
 [Keyconfig](https://chrome.google.com/webstore/detail/okneonigbfnolfkmfgjmaeniipdjkgkl?hl=ja)
 を使えばそれ相当のことが実現できるんだろうけれど、同様の機能は、
-[前回の投稿のキーリマッパー](http://k-ui.jp/blog/2012/06/06/rbindkeys-configurable-key-remapper-in-ruby/)
+[前回の投稿のキーリマッパー](/blog/2012/06/06/rbindkeys-configurable-key-remapper-in-ruby/)
 と昔作った [knavi](https://chrome.google.com/webstore/detail/pfcgnkljgjobpkbgcifmpnhglafhkifg)
 で実現してしまっているため、Keyconfig が大げさになってしまう。
 （そもそも Keyconfig の HaH 機能に不満があって knavi 作ったんだけど。）

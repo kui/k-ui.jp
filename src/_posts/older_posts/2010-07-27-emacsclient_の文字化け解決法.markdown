@@ -5,11 +5,11 @@ title: emacsclient の文字化け解決法
 ---
 ふつーの `emacs` で起動しても文字化けしないのに、`emacs --daemon` で emacs サーバを立ち上げて、`emacsclient -t somefile` すると、文字が化けてしまう問題の解決方法。下記を .emacs などに追加する。
 
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~scheme
 ;; emacsclient でアクセスした時の文字コード設定
 ;; バグ: "emacsclient -c" で起動すると実行されない
 (add-hook 'server-visit-hook
-		  (lambda ()
+          (lambda ()
 			(set-terminal-coding-system 'utf-8)
 			(set-keyboard-coding-system 'utf-8)
 			))

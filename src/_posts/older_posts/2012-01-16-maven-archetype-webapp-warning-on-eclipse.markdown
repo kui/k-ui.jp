@@ -6,7 +6,7 @@ comments: true
 categories: [java, eclipse, maven]
 ---
 
-[eclipse (3.7, indigo) + maven で WTP 使う](http://k-ui.jp/blog/2011/07/20/using_eclipse_and_maven_with_wtp/) で紹介した通りの環境を作成した。
+[eclipse (3.7, indigo) + maven で WTP 使う](/blog/2011/07/20/using_eclipse_and_maven_with_wtp/) で紹介した通りの環境を作成した。
 
 しかし、WTP との連携するか否かに関わらず、"File" -> "New..." -> "Maven Project"
 で作成すると、作成されたプロジェクトから下記のような警告が出る。

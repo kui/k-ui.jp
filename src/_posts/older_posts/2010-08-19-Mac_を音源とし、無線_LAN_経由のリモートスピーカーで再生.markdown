@@ -30,26 +30,29 @@ Macbook, Linux それぞれ順を追って説明します。
 
 <h4>Linux 側の設定（受信）</h4>
 esound を使って、MacBook からの音入力を待つようにします。ターミナルで下のようなコマンドをタイプします。
-<pre>$ esd -tcp -public</pre>
+
+~~~~~~~~~~~~~~~~~~~~~~~~~bash
+$ esd -tcp -public
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
 すると、ピコピコ♪ といった感じの音が鳴り、プロンプトが帰ってこない状態になります。ピコピコ音が聞こえない場合は、サウンドカード周りの設定がうまくいっていないかもしれません。
 
 <h4>Macbook 側の設定（送信）</h4>
+
 <ol>
  <li>esound のインストール</li>
  <li>サウンド出力の設定
   「左上の林檎マーク → システム環境設定 → サウンド → 出力タブ」にて下の画像のように設定
-  <a href="http://k-ui.jp/wp-content/uploads/2010/08/39c88b6a4b979a9cf3ee9be771d80656.png"><img src="http://k-ui.jp/wp-content/uploads/2010/08/39c88b6a4b979a9cf3ee9be771d80656.png" alt="" title="output_soundflower" width="669" height="484" class="alignnone size-full wp-image-262" /></a>
 </li>
  <li>サウンド入力の設定
   上の作業に引き続き、「入力タブ」にて下の画像のように設定
-<a href="http://k-ui.jp/wp-content/uploads/2010/08/b79376767e3943cb145de8d821adab65.png"><img src="http://k-ui.jp/wp-content/uploads/2010/08/b79376767e3943cb145de8d821adab65.png" alt="" title="input_soundflower" width="669" height="483" class="alignnone size-full wp-image-263" /></a>
  </li>
  <li>esound の起動
   ターミナルにて、
-  <pre>
+  <code><pre>
 $ esd -tcp -bind ::1 &
-$ esdrec -s ::1 | esdcat -s <Linux マシンの IP アドレス>
-</pre>
+$ esdrec -s ::1 | esdcat -s ＜Linux マシンの IP アドレス＞
+</pre></code>
   とタイプします。一行目の行末の & がないとやはりプロンプトが帰ってこないので気をつけてください。
  </li>
 </ol>

@@ -3,10 +3,10 @@ layout: post
 comment: true
 title: cygterm 使用時、mkgroup, mkpasswd しても起動時のエラーが取れない
 ---
-<a href="http://k-ui.jp/?p=107">Cygwin + PuTTY + zsh + screen + emacs での日本語環境設定</a> を参考にして、あらたな Windows 環境を整備していたら思いの外苦労したのでメモ。
+<a href="/blog/2010/07/23/Cygwin_+_PuTTY_+_zsh_+_screen_+_emacs_での日本語環境設定/">Cygwin + PuTTY + zsh + screen + emacs での日本語環境設定</a> を参考にして、あらたな Windows 環境を整備していたら思いの外苦労したのでメモ。
 
 ### 問題
-64 bit 版 Windows 7 でかつドメインコントローラ下のアカウントで <a href="http://k-ui.jp/?p=107">Cygwin + PuTTY + zsh + screen + emacs での日本語環境設定</a>をしてみたら、Cygterm 起動時に、以下のようなエラーを吐きながらシェルが立ち上がる。
+64 bit 版 Windows 7 でかつドメインコントローラ下のアカウントで <a href="/blog/2010/07/23/Cygwin_+_PuTTY_+_zsh_+_screen_+_emacs_での日本語環境設定/">Cygwin + PuTTY + zsh + screen + emacs での日本語環境設定</a>をしてみたら、Cygterm 起動時に、以下のようなエラーを吐きながらシェルが立ち上がる。
 
 <pre>
 Your group is currently "mkpasswd".  This indicates that

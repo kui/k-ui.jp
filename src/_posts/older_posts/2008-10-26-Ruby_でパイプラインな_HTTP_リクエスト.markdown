@@ -8,8 +8,10 @@ title: Ruby でパイプラインな HTTP リクエスト
 どうやら、Net::HTTP は、HTTP プロトコルのパイプライン処理をできるようになってないようす。その為、Net::HTTP の拡張が必要になりました。
 
 ### メインコード
+
 <a href="http://blog.livedoor.jp/dankogai/archives/50719947.html">404 Blog Not Found:HTTPサーバーのパイプライン対応</a>　のパイプラインの例を ruby コード化するとこんな感じ。
-~~~~~~~~~~~~~~~~~~~~~
+
+~~~~~~~~~~~~~~~~~~~~~ruby
 require "net/http"
 require "pipelinig_http.rb" # Net::HTTP の拡張
 
@@ -45,15 +47,14 @@ end
 
 main if __FILE__ == $0
 ~~~~~~~~~~~~~~~~~~~~~
+
 上記のコードで、require されてる pipelining_http.rb は、今回のために用意したファイルで、次に示す内容になっています。
 
 ### パイプライン処理のための Net::HTTP の拡張　pipelining_http.rb
 
-Net::HTTP#just_request, Net::HTTP#fetch_response は、次のように拡張される。実質、Net::HTTP#request を二つに分断した感じなってます。一応アップロードしておく。また今回の例では HEAD リクエストしかしていませんが、GETもPUTもできるはずです。（PUTは未確認）
+Net::HTTP#just_request, Net::HTTP#fetch_response は、次のように拡張される。実質、Net::HTTP#request を二つに分断した感じなってます。また今回の例では HEAD リクエストしかしていませんが、GETもPUTもできるはずです。（PUTは未確認）
 
-<a href="http://k-ui.jp/dl/pipelining_http-0.1.tar.gz">pipelining_http-0.1.tar.gz</a>
-
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~ruby
 class Net::HTTP
 
   def just_request(req, body=nil)
@@ -106,6 +107,7 @@ end
 個人的に、end_transport のあたりの処理が気に入りません。要改善。
 
 ### 実行結果
+
 ~~~~~~~~~~~~~~~~~~~~~
 ##### Net::HTTP::Head #####
          accept: */*

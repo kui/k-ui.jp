@@ -3,9 +3,10 @@ layout: post
 comment: true
 title: Google Chrome で Hit-a-Hint (with magic key)
 ---
-Google Chrome で Hit-a-Hint (HaH) ライクなキーボードナビゲーション拡張機能 <a href="https://chrome.google.com/extensions/detail/pfcgnkljgjobpkbgcifmpnhglafhkifg?hl=ja">KNavi</a> を作りました。
 
-<a href="https://chrome.google.com/extensions/detail/pfcgnkljgjobpkbgcifmpnhglafhkifg?hl=ja"><img src="http://k-ui.jp/wp-content/uploads/2010/10/2f427aaf949c9269fe4b67bebe5a69e4.png" alt="" title="KNaviPageSS" width="50%" class="alignnone size-full wp-image-281" /></a>
+<ins>2016/01/12 追記: 画像を無くしたので削除しました</ins>
+
+Google Chrome で Hit-a-Hint (HaH) ライクなキーボードナビゲーション拡張機能 <a href="https://chrome.google.com/extensions/detail/pfcgnkljgjobpkbgcifmpnhglafhkifg?hl=ja">KNavi</a> を作りました。
 
 使い方はこんな感じ
 <ol>

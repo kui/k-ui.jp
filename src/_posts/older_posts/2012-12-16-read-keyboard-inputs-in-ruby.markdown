@@ -145,7 +145,7 @@ Ctrl+C さえ入力できなくなってしまい、スクリプトの停止が�
 [ruinput][6] を用いて、書き込み用の仮想のイベントデバイスを作成することになります。
 
 
-[1]: http://k-ui.jp/blog/2012/06/06/rbindkeys-configurable-key-remapper-in-ruby/ "Ruby で設定できる Linux 環境向けキーリマッパー作った - 電卓片手に"
+[1]: /blog/2012/06/06/rbindkeys-configurable-key-remapper-in-ruby/ "Ruby で設定できる Linux 環境向けキーリマッパー作った - 電卓片手に"
 [2]: https://github.com/kui/revdev "kui/revdev · GitHub"
 [3]: https://github.com/kui/revdev/tree/master/sample "revdev/sample at master · kui/revdev · GitHub "
 [4]: https://github.com/kui/revdev/blob/master/sample/key_dump "revdev/sample/key_dump at master · kui/revdev · GitHub"

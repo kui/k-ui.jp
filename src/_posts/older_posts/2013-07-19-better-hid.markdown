@@ -12,7 +12,7 @@ Apple Magic Trackpad と Apple Wireless Keyboard を合体して使う
 立派な腱鞘炎になりました。（正確に言うとテニス肘）
 
 [express]: http://www.bullettrain.com/express.html
-[apple_keyboard]: http://k-ui.jp/blog/2013/03/05/apple-wireless-keyboard-for-linux/
+[apple_keyboard]: /blog/2013/03/05/apple-wireless-keyboard-for-linux/
 
 
 医者からの条件
