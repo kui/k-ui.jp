@@ -4,18 +4,23 @@ set -eu
 cd "$(dirname "$0")/.."
 
 if [[ $# -eq 0 || -z "$1" ]]; then
-    printf "Input tilte: "
+    printf "Input title: "
     read title
+    if [[ -z "$title" ]]; then
+        printf "Abort: empty title\n"
+        exit 1
+    fi
 else
     title="$1"
 fi
 
-date="$(date +'%FT%T%z')"
+date="$(date +'%F %T%z')"
 
 year="$(date +%Y)"
 month="$(date +%m)"
 prefix="$(date +%F)"
-file="src/_posts/$year/$month/$prefix-$title.md"
+escaped_title="$(perl -pe "chomp; s/\s/_/g" <<< "$title")"
+file="src/_posts/$year/$month/$prefix-$escaped_title.md"
 
 mkdir -p "$(dirname "$file")"
 
