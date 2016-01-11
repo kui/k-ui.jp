@@ -17,6 +17,7 @@ body {
     > h1 {
       text-align: center;
       font-weight: 500;
+      font-size: 150%;
       > a {
         color: $font-color;
         text-decoration: none;
@@ -28,7 +29,7 @@ body {
   }
 
   > article {
-    h1,h2,h3,h4,h5,h6 {
+    h1, h2, h3, h4, h5, h6 {
       font-family: $gothic-font;
 
       > .heading-anchor {
@@ -61,7 +62,7 @@ body {
   }
 
   > footer {
-    text-align: center;
+    text-align: right;
     font-size: small;
   }
 }
