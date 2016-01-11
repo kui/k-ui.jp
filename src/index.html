@@ -1,6 +1,21 @@
 ---
 layout: page
 ---
+<section id="about">
+  <h1>{{ site.author }}</h1>
+  <ul>
+    <li>GitHub: <a href="https://github.com/{{ site.github_id }}">{{ site.github_id }}</a></li>
+    <li>Twitter: <a href="https://twitter.com/{{ site.twitter_id }}">{{ site.twitter_id }}</a></li>
+    <li>Tumblr: <a href="http://{{ site.tumblr_id }}.tumblr.com/">{{ site.tumblr_id }}</a></li>
+    {% if site.qiita_id %}
+    <li>Qiita: <a href="https://qiita.com/{{ site.qiita_id }}">{{ site.qiita_id }}</a></li>
+    {% endif %}
+    {% if site.email %}
+    <li>Mail: {{ site.email }}</li>
+    {% endif %}
+  </ul>
+</section>
+
 <section id="recent-posts">
   <h1>最近のブログ投稿</h1>
   <ul>

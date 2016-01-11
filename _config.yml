@@ -1,7 +1,7 @@
 # -*- coding:utf-8-unix; mode:yaml; -*-
 
 title: "電卓片手に"
-email: #keiichiro.ui@gmail.com
+email: keiichiro.ui at gmail.com
 author: "Keiichiro Ui"
 description: ねこほしい
 
@@ -34,3 +34,4 @@ defaults:
 qiita_id: k_ui
 github_id: kui
 twitter_id: k_ui
+tumblr_id: k-ui
