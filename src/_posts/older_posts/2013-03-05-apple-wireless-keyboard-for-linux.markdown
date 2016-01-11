@@ -13,7 +13,7 @@ Linux でデスクトップ環境使ってるくせに、Apple Wireless Keyboard
 Magic Trackpad を合体して使う [BulletTrain の Express][Express]
 を買ってしまった。
 
-![Express の画像](http://k-ui.jp/d/2013-03-05/express.jpg)
+![Express の画像](/assets/2013/03/express.jpg)
 
 ↑こんな見た目。同じ合体でも [MagicWand][] みたいに横並びのやつより、
 ノート PC みたいな配置が欲しかったので Express にしました。

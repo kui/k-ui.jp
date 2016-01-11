@@ -6,15 +6,17 @@ comments: true
 categories: [coffescript, javascript, node]
 ---
 
-[以前作ったユーザスクリプト](http://k-ui.jp/blog/2012/06/14/backspace-as-browser-hhistory-back-on-linux-google-chrome/ "Linux 版 Google Chrome で、バックスペースをブラウザの「戻る」として使う - 電卓片手に") を拡張機能にしました。
+<ins>2016/01/11 追記: Google Chrome が対応したため crx ファイルは消しています</ins>
 
-* [Backspace-as-History-Back-on-Linux.crx](http://k-ui.jp/d/Backspace-as-History-Back-on-Linux.crx)
+[以前作ったユーザスクリプト](/blog/2012/06/14/backspace-as-browser-hhistory-back-on-linux-google-chrome/ "Linux 版 Google Chrome で、バックスペースをブラウザの「戻る」として使う - 電卓片手に") を拡張機能にしました。
+
+* Backspace-as-History-Back-on-Linux.crx
 
 ### インストール方法
 
 いつからのバージョンからか、野良拡張機能、ユーザスクリプトのインストールには[ひと手間必要になりました。](http://support.google.com/chrome_webstore/bin/answer.py?hl=ja&answer=2664769)
 
-1. [crx をダウンロード](http://k-ui.jp/d/Backspace-as-History-Back-on-Linux.crx)
+1. crx をダウンロード
 2. 拡張機能のページを開く
 3. ダウンロードした crx ファイルを拡張機能ページにドラッグ&ドロップ
 4. **インストール** をクリック

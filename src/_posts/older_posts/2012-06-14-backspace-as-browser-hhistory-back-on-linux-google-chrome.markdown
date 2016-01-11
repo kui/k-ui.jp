@@ -6,7 +6,9 @@ comments: true
 categories: [coffeescript, javascript, node ]
 ---
 
-[前回の投稿](http://k-ui.jp/blog/2012/06/06/rbindkeys-configurable-key-remapper-in-ruby/)
+<ins>2016/01/11 追記: Google Chrome が対応したため crx ファイルは消しています</ins>
+
+[前回の投稿](/blog/2012/06/06/rbindkeys-configurable-key-remapper-in-ruby/)
 に引き続き、Ubuntu によるデスクトップ環境を整えてる。
 
 Linux 版 Google Chrome (or Chromium) を使っていると、バックスペースで
@@ -19,8 +21,7 @@ Linux 版 Google Chrome (or Chromium) を使っていると、バックスペー
 
 ### インストール
 
-[backspace_as_browser_back_on_linux.user.js](http://k-ui.jp/d/backspace_as_browser_back_on_linux.user.js)
-をクリックすると、下から生えてくるバーで何やら聞かれるので「続行」を押す。
+`backspace_as_browser_back_on_linux.user.js` をクリックすると、下から生えてくるバーで何やら聞かれるので「続行」を押す。
 
 ### どうして XXX 使わなかったの？
 

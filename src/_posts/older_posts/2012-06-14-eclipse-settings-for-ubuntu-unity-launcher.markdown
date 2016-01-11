@@ -8,7 +8,7 @@ categories: [eclipse, unbuntu]
 
 Ubuntu の左端のランチャーで、Eclipse がちゃんと表示されない。こんな感じ。
 
-![Eclipse アイコンが表示されない Unity Launcher のスクリーンショット](http://k-ui.jp/d/2012-06-14-unknown_icon_eclipse.png)
+![Eclipse アイコンが表示されない Unity Launcher のスクリーンショット](/assets/2012/06/unknown_icon_eclipse.png)
 
 これはこのままだと登録してもアイコンがこのまま。
 
@@ -33,7 +33,7 @@ xdg-open .
 最初のスクリーンショットの状態で上記の操作をすると、一定時間経過後、
 下の画像のようになる。
 
-![Eclipse アイコンがきちんと表示された Unity Launcher のスクリーンショット](http://k-ui.jp/d/2012-06-14-known_icon_eclipse.png)
+![Eclipse アイコンがきちんと表示された Unity Launcher のスクリーンショット](/assets/2012/06/known_icon_eclipse.png)
 
 
 ### 終わり

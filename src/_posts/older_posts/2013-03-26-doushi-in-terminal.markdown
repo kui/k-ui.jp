@@ -6,7 +6,7 @@ comments: true
 categories: terminal
 ---
 
-![実行例](http://k-ui.jp/d/2013-03-26/doushi.png)
+![実行例](/assets/2013/03/doushi.png)
 
 元ネタはこちら:
 

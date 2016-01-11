@@ -35,14 +35,14 @@ Apple Magic Trackpad と Apple Wireless Keyboard を合体して使う
 
 そしてこんなのを作りました:
 
-![](/d/1374244114.jpg)
+![](/assets/2013/07/1374244114.jpg)
 
 ハンズでカットの依頼をして試行錯誤した結果です。三代目です。
 一代目、二代目はあんまりの出来だったので写真取る前に破棄してしまいました。
 
 これ、何に使うかというと:
 
-![](/d/1374244118.jpg)
+![](/assets/2013/07/1374244118.jpg)
 
 こんな感じで、Apple Wireless Keyboard の逆チルトにして使えて、
 更にパームレストが高い位置にあり、キーボードとトラックパッドの
@@ -57,7 +57,7 @@ Apple Magic Trackpad と Apple Wireless Keyboard を合体して使う
 
 立派に活躍している逆チルト Thinkpad Keyboard が!!!!
 
-![](/d/1374244124.jpg)
+![](/assets/2013/07/1374244124.jpg)
 
 最近発売した、[コンパクトな新型 Thinkpad Keyboard][compact_kbd] は、
 よくタイピング感に抵抗があるレビューを観る感じですが、私はあんまり気にならなかったです。
