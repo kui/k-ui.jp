@@ -36,7 +36,8 @@ build() {
     make build DEST="$NEW_DEST"
 
     if [[ -e "$DEFAULT_DEST" ]]; then
-        mv "$DEFAULT_DEST"{,~}
+        cp -r "$DEFAULT_DEST"/* "$DEFAULT_DEST"~
+        rm "$DEFAULT_DEST"
     fi
     mv "$NEW_DEST" "$DEFAULT_DEST"
 }
