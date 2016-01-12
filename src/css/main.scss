@@ -5,12 +5,11 @@
 @import "syntax-highlighting";
 
 $font-color: #333;
-$serif-font: Georgia, Times, "IPA明朝", serif;
-$gothic-font: Verdana, Arial, Meiryo, "メイリオ", "IPAゴシック", "IPAGothic", "MS P Gothic", "ＭＳ Ｐゴシック", sans-serif;
+$gothic-font: "Helvetica Neue", Helvetica, "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "IPAゴシック", "IPAGothic", sans-serif;
 $code-bg-color: #eee;
 
 body {
-  font-family: $serif-font;
+  font-family: $gothic-font;
   color: $font-color;
 
   > header {
@@ -47,17 +46,17 @@ body {
       }
     }
 
-    .highlight {
+    pre {
       background-color: $code-bg-color;
-      padding: 0px;
+      padding: 0;
       > code {
         display: block;
-        padding: 6px;
+        padding: 6pt;
       }
     }
     code {
       background-color: $code-bg-color;
-      padding: 3px;
+      padding: 0 3pt;
     }
   }
 
