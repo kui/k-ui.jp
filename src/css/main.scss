@@ -5,11 +5,11 @@
 @import "syntax-highlighting";
 
 $font-color: #333;
-$gothic-font: "Helvetica Neue", Helvetica, "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "IPAゴシック", "IPAGothic", sans-serif;
+$sans-serif: "Helvetica Neue", Helvetica, "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "IPA Pゴシック", "IPA PGothic", sans-serif;
 $code-bg-color: #eee;
 
 body {
-  font-family: $gothic-font;
+  font-family: $sans-serif;
   color: $font-color;
 
   > header {
@@ -29,8 +29,6 @@ body {
 
   > article {
     h1, h2, h3, h4, h5, h6 {
-      font-family: $gothic-font;
-
       > .heading-anchor {
         text-decoration: none;
         &:after {
@@ -48,15 +46,14 @@ body {
 
     pre {
       background-color: $code-bg-color;
-      padding: 0;
       > code {
         display: block;
-        padding: 6pt;
       }
     }
     code {
+      font-family: Consolas, "Liberation Mono", Menlo, Courier, "IPAゴシック", "IPAGothic",  monospace;
       background-color: $code-bg-color;
-      padding: 0 3pt;
+      padding: 1pt 3pt;
     }
   }
 
