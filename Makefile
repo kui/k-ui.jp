@@ -40,7 +40,7 @@ deploy: $(DEST)
 
 $(DEST): build
 
-clean: init
+clean: init clean-js
 	$(JEKYLL) clean $(JEKYLL_OPTS)
 
 cron:
