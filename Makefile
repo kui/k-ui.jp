@@ -73,8 +73,10 @@ init: cd $(BUNDLE_PATH) node_modules
 cd:
 	@cd $(CURDIR)
 
-$(BUNDLE_PATH):
+$(BUNDLE_PATH): Gemfile
+	rm -fr "$(BUNDLE_PATH)"
 	$(BUNDLE_INSTALL)
 
-node_modules:
+node_modules: package.json
+	rm -fr node_modules
 	$(NPM_INSTALL)
