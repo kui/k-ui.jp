@@ -32,7 +32,7 @@ build() {
 
     git pull >/dev/null
 
-    rm -fr "$NEW_DEST"
+    rm -fr "$NEW_DEST" vendor/bundler node_modules
     make build DEST="$NEW_DEST"
 
     if [[ -e "$DEFAULT_DEST" ]]; then
