@@ -50,7 +50,7 @@ var topJs = {
       <li>
         <article>
           <a href="{{html_url}}">{{name}}</a>: {{description}}
-          (pushed at {{dateformat(pushed_at, 'ja-JP', { year: 'numeric', month: 'numeric', day: 'numeric' })}})
+          (pushed at {{#dateformatJp}}{{pushed_at}}{{/dateformatJp}})
         </article>
       </li>
       {{/repos}}
@@ -69,9 +69,7 @@ var topJs = {
       <li>
         <article>
           <a rel="full-article" href="{{url}}">{{title}}</a>
-          (<time datetime="{{post.date}}" pubdate>{{
-            dateformat(created_at, 'ja-JP', { year: 'numeric', month: 'numeric', day: 'numeric' })
-          }}</time>)
+          (<time datetime="{{post.date}}" pubdate>{{#dateformatJp}}{{created_at}}{{/dateformatJp}}</time>)
         </article>
       </li>
       {{/items}}

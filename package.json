@@ -8,10 +8,8 @@
     "babel-preset-stage-1": "^6.3.13",
     "babel-preset-stage-2": "^6.3.13",
     "babel-preset-stage-3": "^6.3.13",
-    "babel-runtime": "^6.3.19",
-    "handlebars": "^4.0.5",
     "lodash": "^4.0.0",
-    "ractive": "^0.7.3",
+    "mustache": "^2.2.1",
     "webpack": "^1.12.11",
     "whatwg-fetch": "^0.10.1"
   }

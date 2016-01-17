@@ -1,10 +1,7 @@
-import "whatwg-fetch";
-// import handlebars from 'handlebars';
-import Ractive from 'ractive';
+import 'whatwg-fetch';
+import Mustache from 'mustache';
 import isString from 'lodash/isString';
 import toArray from 'lodash/toArray';
-
-Ractive.DEBUG = false;
 
 export async function fetchAsJson(url) {
   const res = await fetch(url);
@@ -32,35 +29,6 @@ export async function renderElement(srcElement, dstElement, fetchModel) {
   }
 }
 
-// handlebars.registerHelper('dateformat', (isoString, locale, options) => {
-//   const d = new Date(isoString);
-//   const f = new Intl.DateTimeFormat(locale, options.hash);
-//   return f.format(d);
-// });
-
-// async function render(srcElement, dstElement, fetchModel) {
-//     if (isString(srcElement)) {
-//       srcElement = document.querySelector(srcElement);
-//     }
-
-//     if (!srcElement) {
-//       throw Error(`source element not found: ${srcElement}`);
-//     }
-
-//     const model = await fetchModel();
-
-//     const src = srcElement.innerHTML;
-//     const template = handlebars.compile(src);
-
-//     const content = template(model);
-
-//     removeAllChildNodes(dstElement);
-
-//     dstElement.insertAdjacentHTML('afterbegin', content);
-
-//     return content;
-// }
-
 async function render(srcElement, dstElement, fetchModel) {
   if (isString(srcElement)) {
     srcElement = document.querySelector(srcElement);
@@ -71,17 +39,17 @@ async function render(srcElement, dstElement, fetchModel) {
   }
 
   const model = await fetchModel();
-  model.dateformat = (isoString, locale, opts) => {
-    const d = new Date(isoString);
-    const f = new Intl.DateTimeFormat(locale, opts);
+  model.dateformatJp = () => (template, render) => {
+    const d = new Date(render(template));
+    const f = new Intl.DateTimeFormat(
+      'ja-JP',
+      { year: 'numeric', month: 'numeric', day: 'numeric' }
+    );
     return f.format(d);
-  }
-
-  new Ractive({
-    el: dstElement,
-    template: srcElement.innerHTML,
-    data: model
-  });
+  };
+  const content = Mustache.render(srcElement.innerHTML, model);
+  removeAllChildNodes(dstElement);
+  dstElement.insertAdjacentHTML('afterbegin', content);
 }
 
 function removeAllChildNodes(element) {
