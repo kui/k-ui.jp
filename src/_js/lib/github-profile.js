@@ -1,5 +1,5 @@
 import { renderElement, fetchAsJson } from './util';
-import objectPairs from 'lodash/object/pairs';
+import toPairs from 'lodash/toPairs';
 
 const BASE_URL = 'https://api.github.com';
 
@@ -21,7 +21,7 @@ export default class GithubProfile {
   }
 
   async fetchModel() {
-    const query = objectPairs(this.opts)
+    const query = toPairs(this.opts)
             .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
             .join('&');
     const [ profile, repos ] = await Promise.all([

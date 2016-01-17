@@ -21,9 +21,6 @@ kramdown:
 
 highlighter: rouge
 
-browserify:
-  command: "$(npm bin)/browserify -t babelify -g uglifyify -"
-
 defaults:
   -
     scope:

@@ -1,7 +1,10 @@
 import "whatwg-fetch";
-import handlebars from 'handlebars';
-import isString from 'lodash/lang/isString';
-import toArray from 'lodash/lang/toArray';
+// import handlebars from 'handlebars';
+import Ractive from 'ractive';
+import isString from 'lodash/isString';
+import toArray from 'lodash/toArray';
+
+Ractive.DEBUG = false;
 
 export async function fetchAsJson(url) {
   const res = await fetch(url);
@@ -29,33 +32,56 @@ export async function renderElement(srcElement, dstElement, fetchModel) {
   }
 }
 
-handlebars.registerHelper('dateformat', (isoString, locale, options) => {
-  const d = new Date(isoString);
-  const f = new Intl.DateTimeFormat(locale, options.hash);
-  return f.format(d);
-});
+// handlebars.registerHelper('dateformat', (isoString, locale, options) => {
+//   const d = new Date(isoString);
+//   const f = new Intl.DateTimeFormat(locale, options.hash);
+//   return f.format(d);
+// });
+
+// async function render(srcElement, dstElement, fetchModel) {
+//     if (isString(srcElement)) {
+//       srcElement = document.querySelector(srcElement);
+//     }
+
+//     if (!srcElement) {
+//       throw Error(`source element not found: ${srcElement}`);
+//     }
+
+//     const model = await fetchModel();
+
+//     const src = srcElement.innerHTML;
+//     const template = handlebars.compile(src);
+
+//     const content = template(model);
+
+//     removeAllChildNodes(dstElement);
+
+//     dstElement.insertAdjacentHTML('afterbegin', content);
+
+//     return content;
+// }
 
 async function render(srcElement, dstElement, fetchModel) {
-    if (isString(srcElement)) {
-      srcElement = document.querySelector(srcElement);
-    }
+  if (isString(srcElement)) {
+    srcElement = document.querySelector(srcElement);
+  }
 
-    if (!srcElement) {
-      throw Error(`source element not found: ${srcElement}`);
-    }
+  if (!srcElement) {
+    throw Error(`source element not found: ${srcElement}`);
+  }
 
-    const model = await fetchModel();
+  const model = await fetchModel();
+  model.dateformat = (isoString, locale, opts) => {
+    const d = new Date(isoString);
+    const f = new Intl.DateTimeFormat(locale, opts);
+    return f.format(d);
+  }
 
-    const src = srcElement.innerHTML;
-    const template = handlebars.compile(src);
-
-    const content = template(model);
-
-    removeAllChildNodes(dstElement);
-
-    dstElement.insertAdjacentHTML('afterbegin', content);
-
-    return content;
+  new Ractive({
+    el: dstElement,
+    template: srcElement.innerHTML,
+    data: model
+  });
 }
 
 function removeAllChildNodes(element) {

@@ -1,7 +1,13 @@
+import 'babel-polyfill';
 import QiitaProfile from './lib/qiita-profile';
 import GitHubProfile from './lib/github-profile';
 
-export default async function main({ qiitaId, githubId }) {
+async function main() {
+  if (!window.topJs) {
+    console.error('main: Abort: "topJs" not found');
+    return;
+  }
+  var { qiitaId, githubId } = window.topJs;
   printBanner();
   console.log('main: Wait DOM content loaded');
   await waitContentLoaded();
@@ -55,3 +61,5 @@ async function renderGithubProfile(uid) {
   });
   await qiitaProfile.render(srcElement, dstElement);
 }
+
+main();

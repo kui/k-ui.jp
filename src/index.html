@@ -1,6 +1,14 @@
 ---
 layout: page
 ---
+<script src="{{ "/js/top.js" | prepend: site.baseurl }}" async></script>
+<script>
+var topJs = {
+  qiitaId:  '{{ site.qiita_id }}',
+  githubId: '{{ site.github_id }}',
+};
+</script>
+
 <section id="about">
   <h1>{{ site.author }}</h1>
   <ul>
@@ -38,14 +46,14 @@ layout: page
   </div>
   <div id="js-github-profile-source" hidden>{% raw %}
     <ul>
-      {{#each repos}}
+      {{#repos}}
       <li>
         <article>
           <a href="{{html_url}}">{{name}}</a>: {{description}}
-          (pushed at {{dateformat pushed_at 'ja-JP' year=numeric month=numeric day=numeric }})
+          (pushed at {{dateformat(pushed_at, 'ja-JP', { year: 'numeric', month: 'numeric', day: 'numeric' })}})
         </article>
       </li>
-      {{/each}}
+      {{/repos}}
     </ul>
   </div>{% endraw %}
 </section>
@@ -57,16 +65,16 @@ layout: page
   </div>
   <div id="js-qiita-profile-source" hidden>{% raw %}
     <ul>
-      {{#each items}}
+      {{#items}}
       <li>
         <article>
           <a rel="full-article" href="{{url}}">{{title}}</a>
           (<time datetime="{{post.date}}" pubdate>{{
-            dateformat created_at 'ja-JP' year=numeric month=numeric day=numeric
+            dateformat(created_at, 'ja-JP', { year: 'numeric', month: 'numeric', day: 'numeric' })
           }}</time>)
         </article>
       </li>
-      {{/each}}
+      {{/items}}
     </ul>
   </div>{% endraw %}
   <p><a href="http://qiita.com/{{ site.qiita_id }}/items">&laquo; Qiita 投稿の一覧</a></p>
