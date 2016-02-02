@@ -2,7 +2,6 @@
 # Only the main Sass file needs front matter (the dashes are enough)
 ---
 @charset "utf-8";
-@import "syntax-highlighting";
 
 $font-color: #333;
 $sans-serif: "Helvetica Neue", Helvetica, "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "IPA Pゴシック", "IPA PGothic", sans-serif;
@@ -43,22 +42,38 @@ body {
         opacity: 1;
       }
     }
-
-    pre {
-      background-color: $code-bg-color;
-      > code {
-        display: block;
-      }
-    }
-    code {
-      font-family: Consolas, "Liberation Mono", Menlo, Courier, "IPAゴシック", "IPAGothic",  monospace;
-      background-color: $code-bg-color;
-      padding: 1pt 3pt;
+    blockquote {
+      border-left: solid 3px #ccc;
+      margin: 0 20px;
+      padding: 1px 10px;
+      font-style: oblique;
     }
   }
 
   > footer {
     text-align: right;
     font-size: small;
+  }
+}
+
+
+///====================================================
+// code elements
+///====================================================
+
+@import "syntax-highlighting";
+
+body > article {
+  pre {
+    background-color: $code-bg-color;
+    > code {
+      display: block;
+      font-size: 90%;
+    }
+  }
+  code {
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, "IPAゴシック", "IPAGothic",  monospace;
+    background-color: $code-bg-color;
+    padding: 1pt 3pt;
   }
 }
