@@ -1,4 +1,3 @@
-import 'babel-polyfill';
 import QiitaProfile from './lib/qiita-profile';
 import GitHubProfile from './lib/github-profile';
 
