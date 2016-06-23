@@ -14,6 +14,9 @@ module.exports = {
             'stage-1',
             'stage-2',
             'stage-3'
+          ],
+          plugins: [
+            'transform-runtime'
           ]
         }
       }
