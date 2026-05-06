@@ -4,7 +4,7 @@ import { ensureDir } from "@std/fs";
 export async function buildJs(): Promise<void> {
   await ensureDir("public/js");
   await esbuild.build({
-    entryPoints: ["src/_js/top.js"],
+    entryPoints: ["src/_js/top.ts"],
     bundle: true,
     outfile: "public/js/top.js",
     format: "iife",
