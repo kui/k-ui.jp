@@ -16,10 +16,6 @@ export const siteConfig: SiteConfig = {
   author: "Keiichiro Ui",
   email: "keiichiro.ui@gmail.com",
   description: "ねこほしい",
-  qiita_id: "k_ui",
-  github_id: "kui",
-  twitter_id: "k_ui",
-  tumblr_id: "k-ui",
   time: Temporal.Now.instant(),
 };
 

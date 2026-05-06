@@ -7,10 +7,6 @@ export interface SiteConfig {
   author: string;
   email: string;
   description: string;
-  qiita_id: string;
-  github_id: string;
-  twitter_id: string;
-  tumblr_id: string;
   time: Temporal.Instant;
 }
 
