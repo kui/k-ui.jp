@@ -3,7 +3,6 @@ import { walk, ensureDir, copy } from "@std/fs";
 import { parseFrontMatter } from "./frontmatter.ts";
 import { render } from "./template.ts";
 import { renderMarkdown } from "./markdown.ts";
-import { compileSCSS } from "./scss.ts";
 import type { SiteConfig, Post, SiteData } from "./types.ts";
 
 const SRC = "src";
@@ -253,18 +252,9 @@ async function buildAtom(site: SiteData): Promise<void> {
   await Deno.writeTextFile(join(OUT, "atom.xml"), xml);
 }
 
-// ─── CSS ──────────────────────────────────────────────────────────────────────
-
-async function buildCSS(): Promise<void> {
-  const css = await compileSCSS(join(SRC, "css", "main.scss"));
-  const outPath = join(OUT, "css", "main.css");
-  await ensureDir(dirname(outPath));
-  await Deno.writeTextFile(outPath, css);
-}
-
 // ─── 静的アセット ─────────────────────────────────────────────────────────────
 
-const SKIP_DIRS = new Set(["_posts", "_layouts", "_sass", "_js", "_plugins", "css"]);
+const SKIP_DIRS = new Set(["_posts", "_layouts", "_sass", "_js", "_plugins"]);
 const SKIP_EXTS = new Set([".md", ".markdown", ".scss", ".html", ".xml"]);
 
 async function copyStaticAssets(): Promise<void> {
@@ -330,7 +320,6 @@ export async function build(): Promise<void> {
     ...posts.map((p) => buildPost(p, site)),
     buildHtmlPages(site),
     buildAtom(site),
-    buildCSS(),
     copyStaticAssets(),
   ]);
 
