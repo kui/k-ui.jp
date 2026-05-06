@@ -4,6 +4,7 @@ import { Temporal } from "temporal-polyfill";
 import { parseFrontMatter, hasFrontMatter } from "./frontmatter.ts";
 import { render } from "./template.ts";
 import { renderMarkdown } from "./markdown.ts";
+import { buildJs } from "./js.ts";
 import type { SiteConfig, Post, SiteData } from "./types.ts";
 
 const SRC = "src";
@@ -283,6 +284,7 @@ export async function build(): Promise<void> {
   await Promise.all([
     ...posts.map((p) => buildPost(p, site)),
     buildSrc(site),
+    buildJs(),
   ]);
 
   console.log("Done →", OUT);

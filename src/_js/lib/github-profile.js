@@ -1,5 +1,4 @@
 import { renderElement, fetchAsJson } from './util';
-import toPairs from 'lodash/toPairs';
 
 const BASE_URL = 'https://api.github.com';
 
@@ -21,10 +20,10 @@ export default class GithubProfile {
   }
 
   async fetchModel() {
-    const query = toPairs(this.opts)
-            .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
-            .join('&');
-    const [ profile, repos ] = await Promise.all([
+    const query = Object.entries(this.opts)
+      .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+      .join('&');
+    const [profile, repos] = await Promise.all([
       fetchAsJson(`${BASE_URL}/users/${this.uid}`),
       fetchAsJson(`${BASE_URL}/users/${this.uid}/repos?per_page=${this.perPage}&${query}`)
     ]);

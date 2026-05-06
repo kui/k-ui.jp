@@ -1,7 +1,4 @@
-import 'whatwg-fetch';
 import Mustache from 'mustache';
-import isString from 'lodash/isString';
-import toArray from 'lodash/toArray';
 
 export async function fetchAsJson(url) {
   const cachekey = `fetch-cache-${url}`;
@@ -31,7 +28,7 @@ function isNew(dateString) {
 }
 
 export async function renderElement(srcElement, dstElement, fetchModel) {
-  if (isString(dstElement)) {
+  if (typeof dstElement === "string") {
     dstElement = document.querySelector(dstElement);
   }
 
@@ -49,7 +46,7 @@ export async function renderElement(srcElement, dstElement, fetchModel) {
 }
 
 async function render(srcElement, dstElement, fetchModel) {
-  if (isString(srcElement)) {
+  if (typeof srcElement === "string") {
     srcElement = document.querySelector(srcElement);
   }
 
@@ -67,12 +64,6 @@ async function render(srcElement, dstElement, fetchModel) {
     return f.format(d);
   };
   const content = Mustache.render(srcElement.innerHTML, model);
-  removeAllChildNodes(dstElement);
+  dstElement.replaceChildren();
   dstElement.insertAdjacentHTML('afterbegin', content);
-}
-
-function removeAllChildNodes(element) {
-  for (const n of toArray(element.childNodes)) {
-    element.removeChild(n);
-  }
 }
