@@ -1,3 +1,5 @@
+import { parse as parseYaml } from "@std/yaml";
+
 export interface FrontMatterResult {
   data: Record<string, unknown>;
   content: string;
@@ -20,67 +22,11 @@ export function parseFrontMatter(raw: string): FrontMatterResult {
 
   const yamlStr = body.slice(0, closeMatch.index);
   const content = body.slice(closeMatch.index + closeMatch[0].length + 1);
+  const parsed = parseYaml(yamlStr);
+  const data =
+    parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)
+      ? (parsed as Record<string, unknown>)
+      : {};
 
-  return { data: parseYaml(yamlStr), content };
-}
-
-function parseYaml(text: string): Record<string, unknown> {
-  const result: Record<string, unknown> = {};
-  const lines = text.split("\n");
-  let i = 0;
-
-  while (i < lines.length) {
-    const line = lines[i];
-
-    if (line.trim() === "" || line.trim().startsWith("#")) {
-      i++;
-      continue;
-    }
-
-    const colonIdx = line.indexOf(":");
-    if (colonIdx === -1) {
-      i++;
-      continue;
-    }
-
-    const key = line.slice(0, colonIdx).trim();
-    const rest = line.slice(colonIdx + 1);
-    const valueStr = rest.trim();
-
-    if (valueStr === "") {
-      // Block sequence: collect "- item" lines
-      const items: unknown[] = [];
-      i++;
-      while (i < lines.length && /^\s+-\s/.test(lines[i])) {
-        items.push(parseScalar(lines[i].replace(/^\s+-\s+/, "").trim()));
-        i++;
-      }
-      if (items.length > 0) {
-        result[key] = items;
-      }
-    } else {
-      result[key] = parseScalar(valueStr);
-      i++;
-    }
-  }
-
-  return result;
-}
-
-function parseScalar(value: string): unknown {
-  if (
-    (value.startsWith('"') && value.endsWith('"')) ||
-    (value.startsWith("'") && value.endsWith("'"))
-  ) {
-    return value.slice(1, -1);
-  }
-
-  if (value === "true") return true;
-  if (value === "false") return false;
-  if (value === "null" || value === "~") return null;
-
-  if (/^-?\d+$/.test(value)) return parseInt(value, 10);
-  if (/^-?\d+\.\d+$/.test(value)) return parseFloat(value);
-
-  return value;
+  return { data, content };
 }

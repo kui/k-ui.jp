@@ -6,6 +6,7 @@
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "jsr:@std/path@*": "1.1.4",
     "jsr:@std/path@^1.1.4": "1.1.4",
+    "jsr:@std/yaml@^1.1.0": "1.1.0",
     "npm:babel-loader@^6.2.4": "6.4.1_babel-core@6.26.3_webpack@1.15.0",
     "npm:babel-plugin-transform-runtime@^6.9.0": "6.23.0",
     "npm:babel-preset-es2015@^6.9.0": "6.24.1",
@@ -37,6 +38,9 @@
       "dependencies": [
         "jsr:@std/internal"
       ]
+    },
+    "@std/yaml@1.1.0": {
+      "integrity": "fc1c5c63e05c4c5eb6118355f557958035d41940d6c29d35b306ef7155d6edb0"
     }
   },
   "npm": {
@@ -2208,6 +2212,7 @@
     "dependencies": [
       "jsr:@std/fs@^1.0.23",
       "jsr:@std/path@^1.1.4",
+      "jsr:@std/yaml@^1.1.0",
       "npm:marked@15",
       "npm:mustache@4"
     ],
