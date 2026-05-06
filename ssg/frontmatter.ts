@@ -15,9 +15,13 @@ export function parseFrontMatter(raw: string): FrontMatterResult {
   if (!match) return { data: {}, content: raw };
 
   const parsed = parseYaml(match[1], { schema: "core" });
-  const data =
-    parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)
-      ? (parsed as Record<string, unknown>)
-      : {};
-  return { data, content: raw.slice(match[0].length) };
+  if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
+    throw new TypeError(
+      `Front matter must be a YAML mapping, got: ${JSON.stringify(parsed)}`,
+    );
+  }
+  return {
+    data: parsed as Record<string, unknown>,
+    content: raw.slice(match[0].length),
+  };
 }
