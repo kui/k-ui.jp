@@ -5,6 +5,11 @@ export interface FrontMatterResult {
   content: string;
 }
 
+export function hasFrontMatter(bytes: Uint8Array): boolean {
+  return bytes.length >= 3 &&
+    bytes[0] === 0x2D && bytes[1] === 0x2D && bytes[2] === 0x2D;
+}
+
 export function parseFrontMatter(raw: string): FrontMatterResult {
   if (!raw.startsWith("---")) {
     return { data: {}, content: raw };

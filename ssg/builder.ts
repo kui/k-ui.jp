@@ -1,6 +1,6 @@
 import { join, relative, dirname, basename } from "@std/path";
 import { walk, ensureDir } from "@std/fs";
-import { parseFrontMatter } from "./frontmatter.ts";
+import { parseFrontMatter, hasFrontMatter } from "./frontmatter.ts";
 import { render } from "./template.ts";
 import { renderMarkdown } from "./markdown.ts";
 import type { SiteConfig, Post, SiteData } from "./types.ts";
@@ -212,20 +212,14 @@ async function buildPost(post: Post, site: SiteData): Promise<void> {
 
 // ─── src/ ビルド ──────────────────────────────────────────────────────────────
 
-const FM_MARKER = new TextEncoder().encode("---");
-
 async function buildEntry(filePath: string, site: SiteData): Promise<void> {
   const rel = relative(SRC, filePath).replace(/\\/g, "/");
   const outPath = join(OUT, rel);
   await ensureDir(dirname(outPath));
 
   const bytes = await Deno.readFile(filePath);
-  const hasFM = bytes.length >= 3 &&
-    bytes[0] === FM_MARKER[0] &&
-    bytes[1] === FM_MARKER[1] &&
-    bytes[2] === FM_MARKER[2];
 
-  if (!hasFM) {
+  if (!hasFrontMatter(bytes)) {
     await Deno.writeFile(outPath, bytes);
     return;
   }

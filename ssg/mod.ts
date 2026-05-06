@@ -10,7 +10,7 @@ switch (cmd) {
 
   case "serve": {
     await build();
-    await serve("public", 39278);
+    serve("public", 39278);
     break;
   }
 
