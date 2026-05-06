@@ -41,18 +41,14 @@ var topJs = {
   <div id="js-github-profile">
     <p>ロード中...</p>
   </div>
-  <div id="js-github-profile-source" hidden>
-    <ul>
-      {{#repos}}
-      <li>
-        <article>
-          <a href="{{html_url}}">{{name}}</a>: {{description}}
-          (pushed at {{#dateformatJp}}{{pushed_at}}{{/dateformatJp}})
-        </article>
-      </li>
-      {{/repos}}
-    </ul>
-  </div>
+  <template id="js-github-profile-template">
+    <li>
+      <article>
+        <a class="js-repo-link" href=""></a>: <span class="js-repo-desc"></span>
+        (pushed at <time class="js-repo-pushed"></time>)
+      </article>
+    </li>
+  </template>
 </section>
 
 <section id="qiita">
@@ -60,17 +56,13 @@ var topJs = {
   <div id="js-qiita-profile">
     <p>ロード中...</p>
   </div>
-  <div id="js-qiita-profile-source" hidden>
-    <ul>
-      {{#items}}
-      <li>
-        <article>
-          <a rel="full-article" href="{{url}}">{{title}}</a>
-          (<time pubdate>{{#dateformatJp}}{{created_at}}{{/dateformatJp}}</time>)
-        </article>
-      </li>
-      {{/items}}
-    </ul>
-  </div>
+  <template id="js-qiita-profile-template">
+    <li>
+      <article>
+        <a class="js-item-link" rel="full-article" href=""></a>
+        (<time class="js-item-date" pubdate></time>)
+      </article>
+    </li>
+  </template>
   <p><a href="http://qiita.com/k_ui/items">&laquo; Qiita 投稿の一覧</a></p>
 </section>

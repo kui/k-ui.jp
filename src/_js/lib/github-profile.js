@@ -1,4 +1,4 @@
-import { renderElement, fetchAsJson } from './util';
+import { fetchAsJson, formatDateJp } from './util';
 
 const BASE_URL = 'https://api.github.com';
 
@@ -11,12 +11,34 @@ export default class GithubProfile {
     console.log('GithubProfile: Constructor %o', this);
   }
 
-  async render(srcElement, dstElement) {
-    return renderElement(
-      srcElement,
-      dstElement,
-      () => this.fetchModel()
-    );
+  async render(templateSelector, containerSelector) {
+    const tmpl = document.querySelector(templateSelector);
+    const container = document.querySelector(containerSelector);
+    if (!container) {
+      console.log('Ignore render: not found container');
+      return;
+    }
+
+    try {
+      const { repos } = await this.fetchModel();
+      container.replaceChildren();
+      const ul = document.createElement('ul');
+      for (const repo of repos) {
+        const clone = tmpl.content.cloneNode(true);
+        const a = clone.querySelector('.js-repo-link');
+        a.href = repo.html_url;
+        a.textContent = repo.name;
+        clone.querySelector('.js-repo-desc').textContent = repo.description ?? '';
+        const time = clone.querySelector('.js-repo-pushed');
+        time.dateTime = repo.pushed_at;
+        time.textContent = formatDateJp(repo.pushed_at);
+        ul.appendChild(clone);
+      }
+      container.appendChild(ul);
+    } catch (e) {
+      container.textContent = e.message;
+      throw e;
+    }
   }
 
   async fetchModel() {

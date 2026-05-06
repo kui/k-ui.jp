@@ -10,6 +10,7 @@
     "@std/path": "jsr:@std/path@^1.1.4",
     "@std/yaml": "jsr:@std/yaml@^1.1.0",
     "esbuild": "npm:esbuild@^0.25",
+    "temporal-polyfill": "npm:temporal-polyfill@^0.3.2",
     "marked": "npm:marked@^15",
     "mustache": "npm:mustache@^4"
   }

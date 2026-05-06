@@ -42,14 +42,12 @@ async function waitContentLoaded() {
 }
 
 async function renderQiitaProfile(uid) {
-  const srcElement = '#js-qiita-profile-source';
-  const dstElement = '#js-qiita-profile';
   const qiitaProfile = new QiitaProfile(uid, 5);
-  await qiitaProfile.render(srcElement, dstElement);
+  await qiitaProfile.render('#js-qiita-profile-template', '#js-qiita-profile');
 }
 
 async function renderGithubProfile(uid) {
-  const srcElement = '#js-github-profile-source';
+  const tmplElement = '#js-github-profile-template';
   const dstElement = '#js-github-profile';
 
   const qiitaProfile = new GitHubProfile(uid, 5, {
@@ -58,7 +56,7 @@ async function renderGithubProfile(uid) {
     sort: 'pushed',
     direction: 'desc',
   });
-  await qiitaProfile.render(srcElement, dstElement);
+  await qiitaProfile.render(tmplElement, dstElement);
 }
 
 main();

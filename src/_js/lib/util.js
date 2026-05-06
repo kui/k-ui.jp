@@ -1,5 +1,3 @@
-import Mustache from 'mustache';
-
 export async function fetchAsJson(url) {
   const cachekey = `fetch-cache-${url}`;
   const cache = localStorage[cachekey];
@@ -27,43 +25,10 @@ function isNew(dateString) {
   return new Date().getTime() - d.getTime() < 30 * 60 * 1000;
 }
 
-export async function renderElement(srcElement, dstElement, fetchModel) {
-  if (typeof dstElement === "string") {
-    dstElement = document.querySelector(dstElement);
-  }
-
-  if (!dstElement) {
-    console.log('Ignore render: not found dstElement');
-    return;
-  }
-
-  try {
-    return render(srcElement, dstElement, fetchModel);
-  } catch (e) {
-    dstElement.textContent = e.message;
-    throw e;
-  }
-}
-
-async function render(srcElement, dstElement, fetchModel) {
-  if (typeof srcElement === "string") {
-    srcElement = document.querySelector(srcElement);
-  }
-
-  if (!srcElement) {
-    throw Error(`source element not found: ${srcElement}`);
-  }
-
-  const model = await fetchModel();
-  model.dateformatJp = () => (template, render) => {
-    const d = new Date(render(template));
-    const f = new Intl.DateTimeFormat(
-      'ja-JP',
-      { year: 'numeric', month: 'numeric', day: 'numeric' }
-    );
-    return f.format(d);
-  };
-  const content = Mustache.render(srcElement.innerHTML, model);
-  dstElement.replaceChildren();
-  dstElement.insertAdjacentHTML('afterbegin', content);
+export function formatDateJp(dateString) {
+  const d = new Date(dateString);
+  return new Intl.DateTimeFormat(
+    'ja-JP',
+    { year: 'numeric', month: 'numeric', day: 'numeric' }
+  ).format(d);
 }
