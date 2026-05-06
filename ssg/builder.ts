@@ -1,0 +1,338 @@
+import { join, relative, dirname, basename, extname } from "@std/path";
+import { walk, ensureDir, copy } from "@std/fs";
+import { parseFrontMatter } from "./frontmatter.ts";
+import { render } from "./template.ts";
+import { renderMarkdown } from "./markdown.ts";
+import { compileSCSS } from "./scss.ts";
+import type { SiteConfig, Post, SiteData } from "./types.ts";
+
+const SRC = "src";
+const OUT = "public";
+
+export const siteConfig: SiteConfig = {
+  title: "電卓片手に",
+  url: "http://k-ui.jp",
+  baseurl: "",
+  author: "Keiichiro Ui",
+  email: "keiichiro.ui@gmail.com",
+  description: "ねこほしい",
+  qiita_id: "k_ui",
+  github_id: "kui",
+  twitter_id: "k_ui",
+  tumblr_id: "k-ui",
+  time: new Date(),
+};
+
+// ─── 日付フォーマット (JST) ───────────────────────────────────────────────────
+
+function jstDate(d: Date): Date {
+  return new Date(d.getTime() + 9 * 60 * 60000);
+}
+
+function fmtDateDisplay(d: Date): string {
+  const j = jstDate(d);
+  return `${j.getUTCFullYear()}/${j.getUTCMonth() + 1}/${j.getUTCDate()}`;
+}
+
+function fmtDateMonthDay(d: Date): string {
+  const j = jstDate(d);
+  const m = String(j.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(j.getUTCDate()).padStart(2, "0");
+  return `${m}月 ${day}日`;
+}
+
+// ─── HTML ユーティリティ ──────────────────────────────────────────────────────
+
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+}
+
+function expandUrls(html: string, baseUrl: string): string {
+  return html.replace(
+    /(href|src)="(\/[^"]*)"/g,
+    (_, attr, path) => `${attr}="${baseUrl}${path}"`
+  );
+}
+
+// ─── Post loading ─────────────────────────────────────────────────────────────
+
+function parsePostFilename(
+  filePath: string
+): { date: Date; slug: string } | null {
+  const name = basename(filePath).replace(/\.(md|markdown)$/, "");
+  const m = name.match(/^(\d{4})-(\d{2})-(\d{2})-(.+)$/);
+  if (!m) return null;
+  return {
+    date: new Date(`${m[1]}-${m[2]}-${m[3]}T12:00:00+09:00`),
+    slug: m[4],
+  };
+}
+
+async function loadPosts(): Promise<Post[]> {
+  const posts: Post[] = [];
+
+  for await (const entry of walk(join(SRC, "_posts"), {
+    exts: [".md", ".markdown"],
+  })) {
+    const raw = await Deno.readTextFile(entry.path);
+    const { data, content } = parseFrontMatter(raw);
+    const meta = parsePostFilename(entry.path);
+    if (!meta) continue;
+
+    const { date, slug } = meta;
+    const title = String(data.title ?? slug.replace(/-/g, " "));
+    const j = jstDate(date);
+    const yy = String(j.getUTCFullYear());
+    const mm = String(j.getUTCMonth() + 1).padStart(2, "0");
+    const dd = String(j.getUTCDate()).padStart(2, "0");
+    const url = `/blog/${yy}/${mm}/${dd}/${slug}/`;
+    const html = renderMarkdown(content);
+
+    posts.push({
+      title,
+      date,
+      slug,
+      url,
+      content: html,
+      excerpt: extractExcerpt(html),
+      layout: String(data.layout ?? "post"),
+      filePath: entry.path,
+    });
+  }
+
+  return posts.sort((a, b) => b.date.getTime() - a.date.getTime());
+}
+
+function extractExcerpt(html: string): string {
+  return html.match(/<p>([\s\S]*?)<\/p>/)?.[0] ?? "";
+}
+
+// ─── コンテキスト構築 ─────────────────────────────────────────────────────────
+
+function makeSiteCtx(site: SiteData) {
+  return {
+    ...site.config,
+    year: site.config.time.getFullYear(),
+    time_xmlschema: site.config.time.toISOString(),
+  };
+}
+
+function makeRecentPosts(posts: Post[], baseurl: string) {
+  return posts.slice(0, 5).map((p) => ({
+    title: p.title,
+    url: baseurl + p.url,
+    date_iso: p.date.toISOString(),
+    date_display: fmtDateDisplay(p.date),
+  }));
+}
+
+interface YearPost {
+  title: string;
+  url: string;
+  date_xmlschema: string;
+  date_month_day: string;
+}
+
+function groupByYear(posts: Post[]): { year: string; posts: YearPost[] }[] {
+  const map = new Map<string, YearPost[]>();
+  for (const p of posts) {
+    const y = String(jstDate(p.date).getUTCFullYear());
+    if (!map.has(y)) map.set(y, []);
+    map.get(y)!.push({
+      title: p.title,
+      url: p.url,
+      date_xmlschema: p.date.toISOString(),
+      date_month_day: fmtDateMonthDay(p.date),
+    });
+  }
+  return Array.from(map.entries())
+    .sort((a, b) => Number(b[0]) - Number(a[0]))
+    .map(([year, posts]) => ({ year, posts }));
+}
+
+function makeAtomPosts(posts: Post[], siteUrl: string) {
+  return posts.slice(0, 10).map((p) => ({
+    title: p.title,
+    full_url: siteUrl + p.url,
+    date_xmlschema: p.date.toISOString(),
+    id: siteUrl + p.url,
+    content: expandUrls(p.excerpt || p.content, siteUrl),
+  }));
+}
+
+// ─── レイアウト適用 ───────────────────────────────────────────────────────────
+
+const layoutCache = new Map<string, { src: string; parentLayout?: string }>();
+
+async function loadLayout(name: string) {
+  if (layoutCache.has(name)) return layoutCache.get(name)!;
+  const path = join(SRC, "_layouts", `${name}.html`);
+  const raw = await Deno.readTextFile(path);
+  const { data, content } = parseFrontMatter(raw);
+  const parent = data.layout as string | undefined;
+  const entry = {
+    src: content,
+    parentLayout:
+      parent && parent !== "null" && parent !== "nil" ? parent : undefined,
+  };
+  layoutCache.set(name, entry);
+  return entry;
+}
+
+async function applyLayouts(
+  body: string,
+  layoutName: string,
+  ctx: Record<string, unknown>
+): Promise<string> {
+  const layout = await loadLayout(layoutName);
+  const rendered = render(layout.src, { ...ctx, content: body });
+  if (layout.parentLayout) {
+    return applyLayouts(rendered, layout.parentLayout, ctx);
+  }
+  return rendered;
+}
+
+// ─── ページ・記事ビルド ────────────────────────────────────────────────────────
+
+async function buildPost(post: Post, site: SiteData): Promise<void> {
+  const ctx = {
+    site: makeSiteCtx(site),
+    page: {
+      title: post.title,
+      url: post.url,
+      date_xmlschema: post.date.toISOString(),
+      date_display: fmtDateDisplay(post.date),
+      excerpt: stripHtml(post.excerpt),
+    },
+  };
+  const html = await applyLayouts(post.content, post.layout, ctx);
+  const outPath = join(OUT, post.url, "index.html");
+  await ensureDir(dirname(outPath));
+  await Deno.writeTextFile(outPath, html);
+}
+
+async function buildPage(filePath: string, site: SiteData): Promise<void> {
+  const raw = await Deno.readTextFile(filePath);
+  const { data, content } = parseFrontMatter(raw);
+
+  const rel = relative(SRC, filePath);
+  let url = "/" + rel.replace(/\\/g, "/");
+  if (url.endsWith("index.html")) url = url.slice(0, -10) || "/";
+
+  const ctx = {
+    site: makeSiteCtx(site),
+    page: {
+      title: (data.title as string | undefined) ?? "",
+      url,
+    },
+    recentPosts: makeRecentPosts(site.posts, site.config.baseurl),
+    postsByYear: groupByYear(site.posts),
+  };
+
+  const rendered = render(content, ctx);
+  const layout = data.layout as string | undefined;
+  const html =
+    !layout || layout === "null" || layout === "nil"
+      ? rendered
+      : await applyLayouts(rendered, layout, ctx);
+
+  const outPath = join(OUT, rel);
+  await ensureDir(dirname(outPath));
+  await Deno.writeTextFile(outPath, html);
+}
+
+async function buildAtom(site: SiteData): Promise<void> {
+  const raw = await Deno.readTextFile(join(SRC, "atom.xml"));
+  const { content } = parseFrontMatter(raw);
+  const ctx = {
+    site: makeSiteCtx(site),
+    atomPosts: makeAtomPosts(site.posts, site.config.url),
+  };
+  const xml = render(content, ctx);
+  await ensureDir(join(OUT));
+  await Deno.writeTextFile(join(OUT, "atom.xml"), xml);
+}
+
+// ─── CSS ──────────────────────────────────────────────────────────────────────
+
+async function buildCSS(): Promise<void> {
+  const css = await compileSCSS(join(SRC, "css", "main.scss"));
+  const outPath = join(OUT, "css", "main.css");
+  await ensureDir(dirname(outPath));
+  await Deno.writeTextFile(outPath, css);
+}
+
+// ─── 静的アセット ─────────────────────────────────────────────────────────────
+
+const SKIP_DIRS = new Set(["_posts", "_layouts", "_sass", "_js", "_plugins", "css"]);
+const SKIP_EXTS = new Set([".md", ".markdown", ".scss", ".html", ".xml"]);
+
+async function copyStaticAssets(): Promise<void> {
+  for await (const entry of walk(SRC, { maxDepth: 1 })) {
+    if (entry.path === SRC) continue;
+    const name = basename(entry.path);
+    if (name.startsWith("_") || SKIP_DIRS.has(name)) continue;
+
+    if (entry.isDirectory) {
+      await copyDir(entry.path);
+    } else {
+      if (SKIP_EXTS.has(extname(name))) continue;
+      const out = join(OUT, relative(SRC, entry.path));
+      await ensureDir(dirname(out));
+      await copy(entry.path, out, { overwrite: true });
+    }
+  }
+  await copyJsFiles();
+}
+
+async function copyDir(dir: string): Promise<void> {
+  for await (const entry of walk(dir)) {
+    if (entry.isDirectory) continue;
+    if (SKIP_EXTS.has(extname(entry.path))) continue;
+    const out = join(OUT, relative(SRC, entry.path));
+    await ensureDir(dirname(out));
+    await copy(entry.path, out, { overwrite: true });
+  }
+}
+
+async function copyJsFiles(): Promise<void> {
+  const jsDir = join(SRC, "_js");
+  for await (const entry of walk(jsDir)) {
+    if (entry.isDirectory) continue;
+    const out = join(OUT, "js", relative(jsDir, entry.path));
+    await ensureDir(dirname(out));
+    await copy(entry.path, out, { overwrite: true });
+  }
+}
+
+async function buildHtmlPages(site: SiteData): Promise<void> {
+  for await (const entry of walk(SRC, {
+    exts: [".html"],
+    skip: [new RegExp(`${SRC}/_`)],
+  })) {
+    await buildPage(entry.path, site);
+  }
+}
+
+// ─── エントリポイント ─────────────────────────────────────────────────────────
+
+export async function build(): Promise<void> {
+  console.log("Building...");
+  layoutCache.clear();
+  try { await Deno.remove(OUT, { recursive: true }); } catch { /* ok */ }
+  await ensureDir(OUT);
+
+  const posts = await loadPosts();
+  const site: SiteData = { config: siteConfig, posts };
+  console.log(`  ${posts.length} posts`);
+
+  await Promise.all([
+    ...posts.map((p) => buildPost(p, site)),
+    buildHtmlPages(site),
+    buildAtom(site),
+    buildCSS(),
+    copyStaticAssets(),
+  ]);
+
+  console.log("Done →", OUT);
+}

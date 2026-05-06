@@ -3,28 +3,24 @@ layout: null
 ---
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title><![CDATA[{{ site.title }}]]></title>
-  <link href="{{ "/atom.xml" | prepend: site.baseurl | prepend: site.url }}" rel="self" type="application/atom+xml" />
-  <link href="{{ "/" | prepend: site.baseurl | prepend: site.url }}" />
-  <updated>{{ site.time | date_to_xmlschema }}</updated>
-  <id>{{ site.url }}/</id>
+  <title>[[site.title]]</title>
+  <link href="[[site.url]]/atom.xml" rel="self" type="application/atom+xml" />
+  <link href="[[site.url]]/" />
+  <updated>[[site.time_xmlschema]]</updated>
+  <id>[[site.url]]/</id>
   <author>
-    <name>{{ site.author | xml_escape }}</name>
-    {% if site.email %}<email>{{ site.email | xml_escape }}</email>{% endif %}
+    <name>[[site.author]]</name>
+    [[#site.email]]<email>[[site.email]]</email>[[/site.email]]
   </author>
-  <generator>Jekyll v{{ jekyll.version }}</generator>
+  <generator>k-ui.jp SSG</generator>
 
-  {% for post in site.posts limit: 10 %}
+  [[#atomPosts]]
   <entry>
-    <title type="html">{{ post.title | xml_escape }}</title>
-    <link href="{{ post.url | prepend: site.baseurl | prepend: site.url }}"/>
-    <updated>{{ post.date | date_to_xmlschema }}</updated>
-    <id>{{ site.url }}{{ post.id }}</id>
-    {% if post.excerpt %}
-    <content type="html">{{ post.excerpt | expand_urls: site.url | xml_escape }}</content>
-    {% else %}
-    <content type="html">{{ post.content | expand_urls: site.url | xml_escape }}</content>
-    {% endif %}
+    <title type="html">[[title]]</title>
+    <link href="[[full_url]]"/>
+    <updated>[[date_xmlschema]]</updated>
+    <id>[[id]]</id>
+    <content type="html">[[content]]</content>
   </entry>
-  {% endfor %}
+  [[/atomPosts]]
 </feed>
