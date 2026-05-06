@@ -1,3 +1,4 @@
+import { Temporal } from "temporal-polyfill";
 import { build } from "./builder.ts";
 import { serve } from "./server.ts";
 
@@ -16,15 +17,12 @@ switch (cmd) {
 
   case "new-post": {
     const title = Deno.args[1] ?? "new-post";
-    const now = new Date();
-    const pad = (n: number) => String(n).padStart(2, "0");
-    const y = now.getFullYear();
-    const m = pad(now.getMonth() + 1);
-    const d = pad(now.getDate());
+    const now = Temporal.Now.zonedDateTimeISO("Asia/Tokyo");
+    const [y, m, d] = now.toPlainDate().toString().split("-");
     const slug = title.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
     const path = `src/_posts/${y}/${m}/${y}-${m}-${d}-${slug}.md`;
 
-    const dateStr = `${y}-${m}-${d} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+    const dateStr = now.toString({ timeZoneName: "never" });
     const fm = `---\ntitle: ${title}\ndate: ${dateStr}\n---\n\n`;
 
     await Deno.mkdir(`src/_posts/${y}/${m}`, { recursive: true });

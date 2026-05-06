@@ -1,5 +1,6 @@
 import { join, relative, dirname, basename } from "@std/path";
 import { walk, ensureDir } from "@std/fs";
+import { Temporal } from "temporal-polyfill";
 import { parseFrontMatter, hasFrontMatter } from "./frontmatter.ts";
 import { render } from "./template.ts";
 import { renderMarkdown } from "./markdown.ts";
@@ -19,25 +20,27 @@ export const siteConfig: SiteConfig = {
   github_id: "kui",
   twitter_id: "k_ui",
   tumblr_id: "k-ui",
-  time: new Date(),
+  time: Temporal.Now.instant(),
 };
 
-// ─── 日付フォーマット (JST) ───────────────────────────────────────────────────
+// ─── 日付ユーティリティ (Asia/Tokyo 基準) ────────────────────────────────────
 
-function jstDate(d: Date): Date {
-  return new Date(d.getTime() + 9 * 60 * 60000);
+function inTokyo(instant: Temporal.Instant): Temporal.ZonedDateTime {
+  return instant.toZonedDateTimeISO("Asia/Tokyo");
 }
 
-function fmtDateDisplay(d: Date): string {
-  const j = jstDate(d);
-  return `${j.getUTCFullYear()}/${j.getUTCMonth() + 1}/${j.getUTCDate()}`;
+function fmtDateDisplay(instant: Temporal.Instant): string {
+  const zdt = inTokyo(instant);
+  return `${zdt.year}/${zdt.month}/${zdt.day}`;
 }
 
-function fmtDateMonthDay(d: Date): string {
-  const j = jstDate(d);
-  const m = String(j.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(j.getUTCDate()).padStart(2, "0");
-  return `${m}月 ${day}日`;
+function fmtDateMonthDay(instant: Temporal.Instant): string {
+  const zdt = inTokyo(instant);
+  return `${String(zdt.month).padStart(2, "0")}月 ${String(zdt.day).padStart(2, "0")}日`;
+}
+
+function toISOString(instant: Temporal.Instant): string {
+  return inTokyo(instant).toString({ timeZoneName: "never" });
 }
 
 // ─── HTML ユーティリティ ──────────────────────────────────────────────────────
@@ -57,35 +60,44 @@ function expandUrls(html: string, baseUrl: string): string {
 
 function parsePostFilename(
   filePath: string
-): { date: Date; slug: string } | null {
-  const name = basename(filePath).replace(/\.(md|markdown)$/, "");
+): { date: Temporal.Instant; slug: string } | null {
+  const name = basename(filePath).replace(/\.(md|markdown|html)$/, "");
   const m = name.match(/^(\d{4})-(\d{2})-(\d{2})-(.+)$/);
   if (!m) return null;
   return {
-    date: new Date(`${m[1]}-${m[2]}-${m[3]}T12:00:00+09:00`),
+    date: Temporal.Instant.from(`${m[1]}-${m[2]}-${m[3]}T00:00:00+09:00`),
     slug: m[4],
   };
+}
+
+function parseDateValue(val: unknown): Temporal.Instant {
+  if (typeof val !== "string") throw new TypeError(`date must be a string, got: ${typeof val}`);
+  const s = val.trim();
+  try { return Temporal.Instant.from(s); } catch { /* fall through */ }
+  try { return Temporal.ZonedDateTime.from(s).toInstant(); } catch { /* fall through */ }
+  try { return Temporal.PlainDateTime.from(s).toZonedDateTime("Asia/Tokyo").toInstant(); } catch { /* fall through */ }
+  try { return Temporal.PlainDate.from(s).toZonedDateTime({ timeZone: "Asia/Tokyo", plainTime: "00:00" }).toInstant(); } catch { /* fall through */ }
+  throw new RangeError(`unparseable date: "${val}"`);
 }
 
 async function loadPosts(): Promise<Post[]> {
   const posts: Post[] = [];
 
   for await (const entry of walk(join(SRC, "_posts"), {
-    exts: [".md", ".markdown"],
+    exts: [".md", ".markdown", ".html"],
   })) {
     const raw = await Deno.readTextFile(entry.path);
     const { data, content } = parseFrontMatter(raw);
     const meta = parsePostFilename(entry.path);
     if (!meta) continue;
 
-    const { date, slug } = meta;
+    const { slug } = meta;
+    const date = data.date !== undefined ? parseDateValue(data.date) : meta.date;
     const title = String(data.title ?? slug.replace(/-/g, " "));
-    const j = jstDate(date);
-    const yy = String(j.getUTCFullYear());
-    const mm = String(j.getUTCMonth() + 1).padStart(2, "0");
-    const dd = String(j.getUTCDate()).padStart(2, "0");
-    const url = `/blog/${yy}/${mm}/${dd}/${slug}/`;
-    const html = renderMarkdown(content);
+    const zdt = inTokyo(date);
+    const url = `/blog/${zdt.year}/${String(zdt.month).padStart(2, "0")}/${String(zdt.day).padStart(2, "0")}/${slug}/`;
+    const isMarkdown = /\.(md|markdown)$/.test(entry.path);
+    const html = isMarkdown ? renderMarkdown(content) : content;
 
     posts.push({
       title,
@@ -99,7 +111,7 @@ async function loadPosts(): Promise<Post[]> {
     });
   }
 
-  return posts.sort((a, b) => b.date.getTime() - a.date.getTime());
+  return posts.sort((a, b) => Temporal.Instant.compare(b.date, a.date));
 }
 
 function extractExcerpt(html: string): string {
@@ -111,8 +123,8 @@ function extractExcerpt(html: string): string {
 function makeSiteCtx(site: SiteData) {
   return {
     ...site.config,
-    year: site.config.time.getFullYear(),
-    time_xmlschema: site.config.time.toISOString(),
+    year: inTokyo(site.config.time).year,
+    time_xmlschema: toISOString(site.config.time),
   };
 }
 
@@ -120,7 +132,7 @@ function makeRecentPosts(posts: Post[], baseurl: string) {
   return posts.slice(0, 5).map((p) => ({
     title: p.title,
     url: baseurl + p.url,
-    date_iso: p.date.toISOString(),
+    date_iso: toISOString(p.date),
     date_display: fmtDateDisplay(p.date),
   }));
 }
@@ -135,12 +147,12 @@ interface YearPost {
 function groupByYear(posts: Post[]): { year: string; posts: YearPost[] }[] {
   const map = new Map<string, YearPost[]>();
   for (const p of posts) {
-    const y = String(jstDate(p.date).getUTCFullYear());
+    const y = String(inTokyo(p.date).year);
     if (!map.has(y)) map.set(y, []);
     map.get(y)!.push({
       title: p.title,
       url: p.url,
-      date_xmlschema: p.date.toISOString(),
+      date_xmlschema: toISOString(p.date),
       date_month_day: fmtDateMonthDay(p.date),
     });
   }
@@ -153,7 +165,7 @@ function makeAtomPosts(posts: Post[], siteUrl: string) {
   return posts.slice(0, 10).map((p) => ({
     title: p.title,
     full_url: siteUrl + p.url,
-    date_xmlschema: p.date.toISOString(),
+    date_xmlschema: toISOString(p.date),
     id: siteUrl + p.url,
     content: expandUrls(p.excerpt || p.content, siteUrl),
   }));
@@ -199,7 +211,7 @@ async function buildPost(post: Post, site: SiteData): Promise<void> {
     page: {
       title: post.title,
       url: post.url,
-      date_xmlschema: post.date.toISOString(),
+      date_xmlschema: toISOString(post.date),
       date_display: fmtDateDisplay(post.date),
       excerpt: stripHtml(post.excerpt),
     },
@@ -213,7 +225,7 @@ async function buildPost(post: Post, site: SiteData): Promise<void> {
 // ─── src/ ビルド ──────────────────────────────────────────────────────────────
 
 async function buildEntry(filePath: string, site: SiteData): Promise<void> {
-  const rel = relative(SRC, filePath).replace(/\\/g, "/");
+  const rel = relative(SRC, filePath);
   const outPath = join(OUT, rel);
   await ensureDir(dirname(outPath));
 

@@ -27,7 +27,7 @@ export function parseFrontMatter(raw: string): FrontMatterResult {
 
   const yamlStr = body.slice(0, closeMatch.index);
   const content = body.slice(closeMatch.index + closeMatch[0].length + 1);
-  const parsed = parseYaml(yamlStr);
+  const parsed = parseYaml(yamlStr, { schema: "core" });
   const data =
     parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)
       ? (parsed as Record<string, unknown>)

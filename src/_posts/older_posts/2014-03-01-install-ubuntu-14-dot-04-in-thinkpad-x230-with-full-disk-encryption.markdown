@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Thinkpad X230 に Ubuntu 14.04 を暗号化しつつインストール"
-date: 2014-03-01 21:03:06 +0900
+date: 2014-03-01 21:03:06+0900
 comments: true
 categories: Ubuntu
 ---

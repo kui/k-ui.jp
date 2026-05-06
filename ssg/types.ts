@@ -1,3 +1,5 @@
+import type { Temporal } from "temporal-polyfill";
+
 export interface SiteConfig {
   title: string;
   url: string;
@@ -9,12 +11,12 @@ export interface SiteConfig {
   github_id: string;
   twitter_id: string;
   tumblr_id: string;
-  time: Date;
+  time: Temporal.Instant;
 }
 
 export interface Post {
   title: string;
-  date: Date;
+  date: Temporal.Instant;
   slug: string;
   url: string;
   content: string;

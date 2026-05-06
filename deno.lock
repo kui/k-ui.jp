@@ -19,6 +19,7 @@
     "npm:marked@15": "15.0.12",
     "npm:mustache@4": "4.2.0",
     "npm:mustache@^2.2.1": "2.3.2",
+    "npm:temporal-polyfill@~0.3.2": "0.3.2",
     "npm:webpack@^1.13.1": "1.15.0",
     "npm:whatwg-fetch@1": "1.1.1"
   },
@@ -2052,6 +2053,15 @@
     "tapable@0.1.10": {
       "integrity": "sha512-jX8Et4hHg57mug1/079yitEKWGB3LCwoxByLsNim89LABq8NqgiX+6iYVOsq0vX8uJHkU+DZ5fnq95f800bEsQ=="
     },
+    "temporal-polyfill@0.3.2": {
+      "integrity": "sha512-TzHthD/heRK947GNiSu3Y5gSPpeUDH34+LESnfsq8bqpFhsB79HFBX8+Z834IVX68P3EUyRPZK5bL/1fh437Eg==",
+      "dependencies": [
+        "temporal-spec"
+      ]
+    },
+    "temporal-spec@0.3.1": {
+      "integrity": "sha512-B4TUhezh9knfSIMwt7RVggApDRJZo73uZdj8AacL2mZ8RP5KtLianh2MXxL06GN9ESYiIsiuoLQhgVfwe55Yhw=="
+    },
     "timers-browserify@2.0.12": {
       "integrity": "sha512-9phl76Cqm6FhSX9Xe1ZUAMLtm1BLkKj2Qd5ApyWkXzsMRaA7dgr81kf4wJmQf/hAvg8EEyJxDo3du/0KlhPiKQ==",
       "dependencies": [
@@ -2228,6 +2238,7 @@
         "npm:babel-runtime@^6.9.2",
         "npm:lodash@^4.13.1",
         "npm:mustache@^2.2.1",
+        "npm:temporal-polyfill@~0.3.2",
         "npm:webpack@^1.13.1",
         "npm:whatwg-fetch@1"
       ]
