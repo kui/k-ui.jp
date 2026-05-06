@@ -1,5 +1,5 @@
-import { join, relative, dirname, basename, extname } from "@std/path";
-import { walk, ensureDir, copy } from "@std/fs";
+import { join, relative, dirname, basename } from "@std/path";
+import { walk, ensureDir } from "@std/fs";
 import { parseFrontMatter } from "./frontmatter.ts";
 import { render } from "./template.ts";
 import { renderMarkdown } from "./markdown.ts";
@@ -191,7 +191,7 @@ async function applyLayouts(
   return rendered;
 }
 
-// ─── ページ・記事ビルド ────────────────────────────────────────────────────────
+// ─── 記事ビルド ───────────────────────────────────────────────────────────────
 
 async function buildPost(post: Post, site: SiteData): Promise<void> {
   const ctx = {
@@ -210,12 +210,30 @@ async function buildPost(post: Post, site: SiteData): Promise<void> {
   await Deno.writeTextFile(outPath, html);
 }
 
-async function buildPage(filePath: string, site: SiteData): Promise<void> {
-  const raw = await Deno.readTextFile(filePath);
+// ─── src/ ビルド ──────────────────────────────────────────────────────────────
+
+const FM_MARKER = new TextEncoder().encode("---");
+
+async function buildEntry(filePath: string, site: SiteData): Promise<void> {
+  const rel = relative(SRC, filePath).replace(/\\/g, "/");
+  const outPath = join(OUT, rel);
+  await ensureDir(dirname(outPath));
+
+  const bytes = await Deno.readFile(filePath);
+  const hasFM = bytes.length >= 3 &&
+    bytes[0] === FM_MARKER[0] &&
+    bytes[1] === FM_MARKER[1] &&
+    bytes[2] === FM_MARKER[2];
+
+  if (!hasFM) {
+    await Deno.writeFile(outPath, bytes);
+    return;
+  }
+
+  const raw = new TextDecoder().decode(bytes);
   const { data, content } = parseFrontMatter(raw);
 
-  const rel = relative(SRC, filePath);
-  let url = "/" + rel.replace(/\\/g, "/");
+  let url = "/" + rel;
   if (url.endsWith("index.html")) url = url.slice(0, -10) || "/";
 
   const ctx = {
@@ -226,6 +244,7 @@ async function buildPage(filePath: string, site: SiteData): Promise<void> {
     },
     recentPosts: makeRecentPosts(site.posts, site.config.baseurl),
     postsByYear: groupByYear(site.posts),
+    atomPosts: makeAtomPosts(site.posts, site.config.url),
   };
 
   const rendered = render(content, ctx);
@@ -235,72 +254,15 @@ async function buildPage(filePath: string, site: SiteData): Promise<void> {
       ? rendered
       : await applyLayouts(rendered, layout, ctx);
 
-  const outPath = join(OUT, rel);
-  await ensureDir(dirname(outPath));
   await Deno.writeTextFile(outPath, html);
 }
 
-async function buildAtom(site: SiteData): Promise<void> {
-  const raw = await Deno.readTextFile(join(SRC, "atom.xml"));
-  const { content } = parseFrontMatter(raw);
-  const ctx = {
-    site: makeSiteCtx(site),
-    atomPosts: makeAtomPosts(site.posts, site.config.url),
-  };
-  const xml = render(content, ctx);
-  await ensureDir(join(OUT));
-  await Deno.writeTextFile(join(OUT, "atom.xml"), xml);
-}
-
-// ─── 静的アセット ─────────────────────────────────────────────────────────────
-
-const SKIP_DIRS = new Set(["_posts", "_layouts", "_sass", "_js", "_plugins"]);
-const SKIP_EXTS = new Set([".md", ".markdown", ".scss", ".html", ".xml"]);
-
-async function copyStaticAssets(): Promise<void> {
-  for await (const entry of walk(SRC, { maxDepth: 1 })) {
-    if (entry.path === SRC) continue;
-    const name = basename(entry.path);
-    if (name.startsWith("_") || SKIP_DIRS.has(name)) continue;
-
-    if (entry.isDirectory) {
-      await copyDir(entry.path);
-    } else {
-      if (SKIP_EXTS.has(extname(name))) continue;
-      const out = join(OUT, relative(SRC, entry.path));
-      await ensureDir(dirname(out));
-      await copy(entry.path, out, { overwrite: true });
-    }
-  }
-  await copyJsFiles();
-}
-
-async function copyDir(dir: string): Promise<void> {
-  for await (const entry of walk(dir)) {
-    if (entry.isDirectory) continue;
-    if (SKIP_EXTS.has(extname(entry.path))) continue;
-    const out = join(OUT, relative(SRC, entry.path));
-    await ensureDir(dirname(out));
-    await copy(entry.path, out, { overwrite: true });
-  }
-}
-
-async function copyJsFiles(): Promise<void> {
-  const jsDir = join(SRC, "_js");
-  for await (const entry of walk(jsDir)) {
-    if (entry.isDirectory) continue;
-    const out = join(OUT, "js", relative(jsDir, entry.path));
-    await ensureDir(dirname(out));
-    await copy(entry.path, out, { overwrite: true });
-  }
-}
-
-async function buildHtmlPages(site: SiteData): Promise<void> {
+async function buildSrc(site: SiteData): Promise<void> {
   for await (const entry of walk(SRC, {
-    exts: [".html"],
-    skip: [new RegExp(`${SRC}/_`)],
+    includeDirs: false,
+    skip: [/\/_/],
   })) {
-    await buildPage(entry.path, site);
+    await buildEntry(entry.path, site);
   }
 }
 
@@ -318,9 +280,7 @@ export async function build(): Promise<void> {
 
   await Promise.all([
     ...posts.map((p) => buildPost(p, site)),
-    buildHtmlPages(site),
-    buildAtom(site),
-    copyStaticAssets(),
+    buildSrc(site),
   ]);
 
   console.log("Done →", OUT);
