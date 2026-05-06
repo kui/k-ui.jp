@@ -3,7 +3,7 @@ layout: post
 title: "プライベートな CA で自宅サーバと通信するための iPhone の設定"
 date: 2012-10-15 21:25
 comments: true
-categories: 
+categories:
 ---
 
 プライベートな CA によって署名された証明書（もしくは自己署名証明書、オレオレ証明書）を
@@ -16,8 +16,8 @@ SSL サーバ証明書なら、ブラウザから警告でるだけなので気�
 
 1. iPhone をホストマシンに接続。Windows, Mac どちらでも問題ない。
 2. iPhone Configuration Utility のインストール。
-   * [Windows 版のダウンロードページ](http://support.apple.com/kb/DL1466)、
-   * [Mac OS X 版のダウンロードページ](http://support.apple.com/kb/DL1465)。
+   - [Windows 版のダウンロードページ](http://support.apple.com/kb/DL1466)、
+   - [Mac OS X 版のダウンロードページ](http://support.apple.com/kb/DL1465)。
 3. 「iPhone 構成ユーティリティ」起動。Spotlight で入力したほうが早いかも。
 4. 左カラムの「ライブラリ」の「構成プロファイル」を選択。
 5. 左上の「✔ 新規 」みたいな水色のボタンを押す。
@@ -32,4 +32,3 @@ SSL サーバ証明書なら、ブラウザから警告でるだけなので気�
     ![参考画像: インストール後の iPhone の画面](/assets/2012/10/installing-a-profile-in-iphone.jpg)
 
 あとは、SSL 証明書を使ってるサーバと通信してみてるテストをすれば、おしまい。
-

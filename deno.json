@@ -15,5 +15,9 @@
     "marked": "npm:marked@^15",
     "shiki": "npm:shiki@^1",
     "mustache": "npm:mustache@^4"
+  },
+  "fmt": {
+    "proseWrap": "preserve",
+    "exclude": ["src/atom.xml", "src/**/*.html"]
   }
 }

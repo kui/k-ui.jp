@@ -13,11 +13,10 @@ Node で作ったコードを、Windows 実行形式にまとめて配布しや�
 
 手順としては大まかに、2 ステップです。
 
-* Windows 上で Node のビルド環境を整備
-* js の配置/設定/ビルド
+- Windows 上で Node のビルド環境を整備
+- js の配置/設定/ビルド
 
 また対象にしてる Node のバージョンは、0.7.2 です。
-
 
 ### Windows 上で Node のビルド環境を整備
 
@@ -25,12 +24,12 @@ Node で作ったコードを、Windows 実行形式にまとめて配布しや�
 
 Node.exe をビルドするために必要なシステムは2つ。
 
-* Microsoft Visual C++ 2010 (Express)
-	* 無いなら [Microsoft Visual Studio Express](http://www.microsoft.com/japan/msdn/vstudio/express/) でダウンロード
-* Git
-	* [Cygwin](http://www.cygwin.com/) 入ってるなら Cygwin の setup.exe でインストールできる
-	* 無いなら [msysgit](http://code.google.com/p/msysgit/) をインストール
- 
+- Microsoft Visual C++ 2010 (Express)
+  - 無いなら [Microsoft Visual Studio Express](http://www.microsoft.com/japan/msdn/vstudio/express/) でダウンロード
+- Git
+  - [Cygwin](http://www.cygwin.com/) 入ってるなら Cygwin の setup.exe でインストールできる
+  - 無いなら [msysgit](http://code.google.com/p/msysgit/) をインストール
+
 はじめに github からソースコード取得する。
 
 ```
@@ -48,7 +47,7 @@ Node.exe をビルドするために必要なシステムは2つ。
 foo
 undefined
 > # Ctrl+D で node 終了
-> 
+>
 ```
 
 Windows の環境変数 Path に、Cygwin へのパスがあるとマズイらしい（要検証、ソース紛失）
@@ -57,9 +56,9 @@ Windows の環境変数 Path に、Cygwin へのパスがあるとマズイら�
 
 目的の js ファイルを下記のような foo.js とします。
 
-~~~~~~~~~~~~~~~~~~~~~
+```
 console.log('foo');
-~~~~~~~~~~~~~~~~~~~~~
+```
 
 先ほど同様、"Visual Studio コマンド プロンプト" で下記を実行。
 

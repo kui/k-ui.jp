@@ -3,15 +3,20 @@ layout: post
 comment: true
 title: Mac を音源とし、無線 LAN 経由のリモートスピーカーで再生
 ---
+
 MacBook 上の音を全て、リモートマシン （Linux機） で再生する方法を紹介します。つまり、音を、
+
 <pre>
 MacBook → 無線LAN → Linux → スピーカー → ♪
 </pre>
+
 といった感じに飛ばすことを、<a href="http://www.apple.com/jp/airmacexpress/features/airtunes.html">AirMac Express</a> 無しで実現する方法です。問題点として後述しますが、実用のレベルかどうかと聴かれるとかなり怪しいです。
 <a href="http://rolf.haynberg.de/?p=14">Digital Trivia >> How to: AirTunes without AirPort</a> を参考にさせていただきました。
 
 ### 必要な環境・知識
+
 ターミナルを使います。MacBookに 必要なソフトウェアは
+
 <ul>
  <li><a href="http://www.macports.org/">Macports</a></li>
  <li><a href="http://code.google.com/p/soundflower/">SoundFlower</a></li>
@@ -20,20 +25,22 @@ MacBook → 無線LAN → Linux → スピーカー → ♪
 です。各々のインストール方法はググッてみてください。
 
 Linux に必要なソフトウェアは、
+
 <ul>
  <li>esound</li>
 </ul>
 のみになります。esound は、ターミナルで `sudo aptitude install esound` を実行すればインストール出来ます。（※ただし Ubuntu、Debian 環境に限る）
 
 ### 手順
+
 Macbook, Linux それぞれ順を追って説明します。
 
 <h4>Linux 側の設定（受信）</h4>
 esound を使って、MacBook からの音入力を待つようにします。ターミナルで下のようなコマンドをタイプします。
 
-~~~~~~~~~~~~~~~~~~~~~~~~~bash
+```bash
 $ esd -tcp -public
-~~~~~~~~~~~~~~~~~~~~~~~~~
+```
 
 すると、ピコピコ♪ といった感じの音が鳴り、プロンプトが帰ってこない状態になります。ピコピコ音が聞こえない場合は、サウンドカード周りの設定がうまくいっていないかもしれません。
 
@@ -60,17 +67,23 @@ $ esdrec -s ::1 | esdcat -s ＜Linux マシンの IP アドレス＞
 以上です。あとは、iTunes などから音楽を流したりシステム音を鳴らしてみてテストをしてみてください。
 
 ### 引っかかったところ
+
 Linux 側で、esound を起動しようとしたら、
+
 <pre>
 Error: /dev/dsp: No such file or directory
 </pre>
+
 というエラーを吐いて起動しなかった。これは、
+
 <pre>
 $ sudo aptitude install oss-compat
 </pre>
+
 と、oss-compat をインストールすれば済む様子。
 
 ### 問題点
+
 <ul>
  <li>0.1 秒くらいかそれよりも小さいレベルで遅延がある</li>
  <li>ネットワーク負荷が掛かると、どこかがボトルネックになってしまい音がブツブツ切れる</li>

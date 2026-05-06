@@ -3,6 +3,7 @@ layout: post
 comment: true
 title: Emacs キーバインドに関する Windows と Mac OSX の差異
 ---
+
 Mac OS X が手元に来て7ヶ月くらい経とうとしてる。そろそろ軽度（！？）Emacs 病を患っている人間から見た Windows と Mac OS X の違いをまとめてみた。
 
 具体的には、Emacs に関わる話としては、
@@ -66,6 +67,7 @@ keyfake は。。。うごかにあ！フツーにコンパイルしちゃダメ
 ### まとめ
 
 Windows、Mac OS X、Linux(GNOME) における Emacs キーバインドの対応状況を確認しました。
+
 <dl>
 <dt>Windows</dt>
 <dd>不安定だけど多機能、マークセットできる</dd>

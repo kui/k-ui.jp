@@ -3,6 +3,7 @@ layout: post
 comment: true
 title: MacOSX の Firefox で、拡張機能 LoL（HaH） の「新しいタブで開く」問題
 ---
+
 マウスなしでもリンクを辿れる拡張機能 LoL（元祖はHit-a-Hint） にはとてもお世話になってます。
 Macbook で Firefox の LoL（HaH, Hit-a-Hint） を使っていると、「新しいタブで開く」って動作が正しく行われない問題に関する対処方法について書きたいと思う。
 
@@ -40,7 +41,7 @@ Win Firefox の LoL だと、新しいタブでリンクを開くには、
 
 ダウンロードしたファイルは zip で圧縮されているので展開します。
 
-~~~~~~~~~~~~~~~~~~~~~
+```
 $ unzip lol-1.4-fx.xpi 
 Archive:  lol-1.4-fx.xpi
    creating: chrome/
@@ -50,11 +51,11 @@ Archive:  lol-1.4-fx.xpi
    creating: defaults/preferences/
   inflating: defaults/preferences/prefs.js
   inflating: install.rdf
-~~~~~~~~~~~~~~~~~~~~~
+```
 
 さらに、LoL.jar も zip で圧縮されているのでやっぱり展開します。
 
-~~~~~~~~~~~~~~~~~~~~~
+```
 $ cd chrome 
 $ unzip LoL.jar 
 Archive:  LoL.jar
@@ -69,48 +70,108 @@ Archive:  LoL.jar
  extracting: locale/fi-FI/hah.dtd
  extracting: locale/hu-HU/hah.dtd
  extracting: skin/icon.png
-~~~~~~~~~~~~~~~~~~~~~
+```
 
 <h4>手順3：overlay.js 書き換え</h4>
 書き換えます。僕は Emacs なので Emacs で。
 
-~~~~~~~~~~~~~~~~~~~~~
+```
 $ emacs content/overlay.js
-~~~~~~~~~~~~~~~~~~~~~
+```
 
 そして、「initmouse」で検索してください。四つくらい見つかるかな？そして
 
-~~~~~~~~~~~~~~~~~~~~~js
-                                  evt.initMouseEvent('mousedown', true, true, view, 1, x+1, y+1, 0, 0,
-                                                                         event.ctrlKey, event.altKey, event.shiftKey, event.metaKey, 0, null);
-                                  elem.dispatchEvent(evt);
+```js
+evt.initMouseEvent(
+  "mousedown",
+  true,
+  true,
+  view,
+  1,
+  x + 1,
+  y + 1,
+  0,
+  0,
+  event.ctrlKey,
+  event.altKey,
+  event.shiftKey,
+  event.metaKey,
+  0,
+  null,
+);
+elem.dispatchEvent(evt);
 
-                                  var evt = doc.createEvent('MouseEvents');
-                                  evt.initMouseEvent('click', true, true, view, 1, x+1, y+1, 0, 0,
-                                                                         event.ctrlKey, event.altKey, event.shiftKey, event.metaKey, 0, null);
-~~~~~~~~~~~~~~~~~~~~~
+var evt = doc.createEvent("MouseEvents");
+evt.initMouseEvent(
+  "click",
+  true,
+  true,
+  view,
+  1,
+  x + 1,
+  y + 1,
+  0,
+  0,
+  event.ctrlKey,
+  event.altKey,
+  event.shiftKey,
+  event.metaKey,
+  0,
+  null,
+);
+```
 
 と initMouseEvent が二回使われていますね。そこの第１３引数に書いてある「metaKey」を「ctrlKey」に置換します。
 こうなる。
 
-~~~~~~~~~~~~~~~~~~~~~js
-                                 var evt = doc.createEvent('MouseEvents');
-                                  evt.initMouseEvent('mousedown', true, true, view, 1, x+1, y+1, 0, 0,
-                                                                         event.ctrlKey, event.altKey, event.shiftKey, event.ctrlKey, 0, null);
+```js
+var evt = doc.createEvent("MouseEvents");
+evt.initMouseEvent(
+  "mousedown",
+  true,
+  true,
+  view,
+  1,
+  x + 1,
+  y + 1,
+  0,
+  0,
+  event.ctrlKey,
+  event.altKey,
+  event.shiftKey,
+  event.ctrlKey,
+  0,
+  null,
+);
 
 elem.dispatchEvent(evt);
 
-                                  var evt = doc.createEvent('MouseEvents');
-                                  evt.initMouseEvent('click', true, true, view, 1, x+1, y+1, 0, 0,
-                                                                         event.ctrlKey, event.altKey, event.shiftKey, event.ctrlKey, 0, null);
-                                  elem.dispatchEvent(evt);
-~~~~~~~~~~~~~~~~~~~~~
+var evt = doc.createEvent("MouseEvents");
+evt.initMouseEvent(
+  "click",
+  true,
+  true,
+  view,
+  1,
+  x + 1,
+  y + 1,
+  0,
+  0,
+  event.ctrlKey,
+  event.altKey,
+  event.shiftKey,
+  event.ctrlKey,
+  0,
+  null,
+);
+elem.dispatchEvent(evt);
+```
 
 <h4>手順4：元の通りに圧縮する</h4>
 
 元の通りに圧縮しましょう。何となく勿体無いので、元の xpi ファイルは取っておき、mylol.xpi というファイルを作っています。
 
-~~~~~~~~~~~~~~~~~~~~~
+```
 $ zip -r LoL.jar content locale skin 
   adding: content/ (stored 0%)
   adding: content/bindings.xml (deflated 78%)
@@ -140,7 +201,7 @@ $ zip -r mylol.xpi chrome/LoL.jar chrome.manifest defaults install.rdf
   adding: defaults/preferences/ (stored 0%)
   adding: defaults/preferences/prefs.js (deflated 60%)
   adding: install.rdf (deflated 63%)
-~~~~~~~~~~~~~~~~~~~~~
+```
 
 <h4>手順5：インストールする</h4>
 

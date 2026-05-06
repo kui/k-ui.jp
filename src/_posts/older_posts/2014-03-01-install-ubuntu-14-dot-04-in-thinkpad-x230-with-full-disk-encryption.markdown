@@ -20,8 +20,7 @@ mSATA には、[480GB Crucial M500 SATA 6Gbps mSATA SSD][msata] を使った。
 多少環境に余裕があるのでまだデイリービルド版しかない Ubuntu 14.04 をいれてみた。
 <ins>追記: Beta1 でてた・・・<ins>
 
-USB からインストールするための準備
-----------------------------------
+## USB からインストールするための準備
 
 X230 には CD/DVD のドライバがないため、USB フラッシュメモリからインストールする。
 
@@ -35,8 +34,7 @@ wget http://cdimage.ubuntu.com/daily-live/current/trusty-desktop-amd64.iso
 sudo dd bs=4M if=trusty-desktop-amd64.iso of=/dev/sdc
 ```
 
-Ubuntu インストール
--------------------
+## Ubuntu インストール
 
 用意したメディアを X230 の USB 端子に指してふつーにインストール。
 
@@ -44,16 +42,16 @@ Ubuntu インストール
 
 具体的な方法はこれみる:
 
-* [Manual full disk encryption setup guide for Ubuntu 13.10 & Linux Mint 16 \| LinuxBSDos.com](http://www.linuxbsdos.com/2014/01/16/manual-full-disk-encryption-setup-guide-for-ubuntu-13-10-linux-mint-16/)
+- [Manual full disk encryption setup guide for Ubuntu 13.10 & Linux Mint 16 \| LinuxBSDos.com](http://www.linuxbsdos.com/2014/01/16/manual-full-disk-encryption-setup-guide-for-ubuntu-13-10-linux-mint-16/)
 
 今回の件に合わせるとだいたいこんな感じ（順番が大事）:
 
 1. 手動でパーティションの設定する
 2. `/boot` にマウントするパーティション(254MB, ext2)
 3. スワップ領域のためのパーティション(8000MB, 暗号化された云々)
-	* リストに `/dev/mapper/sda5_crypt` が載る。名前はちょっと違うかも。
+   - リストに `/dev/mapper/sda5_crypt` が載る。名前はちょっと違うかも。
 4. `/` にマウントするパーティション(残り全部MB, 暗号化された云々)
-	* リストに `/dev/mapper/sda6_crypt` が載る。名前はちょっと違うかも。
+   - リストに `/dev/mapper/sda6_crypt` が載る。名前はちょっと違うかも。
 5. `/dev/mapper/sda6_crypt` を `/` にマウントするように設定
 6. `/dev/mapper/sda5_crypt` をスワップに設定
 
@@ -62,8 +60,7 @@ Ubuntu インストール
 という旨のメッセージがでて、中途半端な状態になってしまう。
 こうなると、これ以上は意図しない挙動ばかりになって詰むので、電源切って最初からやり直しましょう。
 
-省電力のための設定
--------------------
+## 省電力のための設定
 
 基本的には、[Kernel/PowerManagement/PowerSavingTweaks - Ubuntu Wiki](https://wiki.ubuntu.com/Kernel/PowerManagement/PowerSavingTweaks) を参考に設定する。
 
@@ -83,12 +80,11 @@ GRUB_CMDLINE_LINUX_DEFAULT="quiet splash i915.i915_enable_rc6=1 i915.i915_enable
 
 ほかにも、みんな大好き ArchWiki も参考にできそうな項目がある。
 
-* https://wiki.archlinux.org/index.php/Power_saving
+- https://wiki.archlinux.org/index.php/Power_saving
 
 ただ、省電力の設定っていまいち効果を実感しにくいので効果あるのか不安になる。
 
-これだけでおわり
----------------
+## これだけでおわり
 
 これだけで、輝度/音量設定キーなど特殊なキーも潰れずに使えていて満足。
 

@@ -8,7 +8,7 @@ categories: [java]
 
 Java の話。もうすぐ EOL なのに、Java SE 6 を基準に話をします。
 
-__追記__: [ズバリそのものの英語記事][10] あるので、正確なモノを求めるならこちらを参照してください。
+**追記**: [ズバリそのものの英語記事][10] あるので、正確なモノを求めるならこちらを参照してください。
 
 Java は標準で [`WeakHashMap`][1] というクラスがあります。
 これは、エントリ（キーバリューペア）が [弱参照][2] されているため、
@@ -20,12 +20,10 @@ Java は標準で [`WeakHashMap`][1] というクラスがあります。
 
 `WeakhashMap` をキャッシュとして使うべきじゃない理由としては簡潔に書くと:
 
-* 弱参照を使っている
-* 元になる参照はバリューじゃなくてキーである
+- 弱参照を使っている
+- 元になる参照はバリューじゃなくてキーである
 
 こんな感じです。順に詳しく説明をします。
-
-
 
 ### 弱参照を使っている
 
@@ -51,9 +49,9 @@ Java は標準で [`WeakHashMap`][1] というクラスがあります。
 
 と書き、実行すると:
 
-	before: {foo=bar}
-	# gc
-	after: {}
+    before: {foo=bar}
+    # gc
+    after: {}
 
 というようにアッサリ消えてしまいます。
 
@@ -69,17 +67,15 @@ Java は標準で [`WeakHashMap`][1] というクラスがあります。
 （といっても、この javadoc、日本語も英語も説明が微妙なのでググったほうが良いかも）
 
 > 「じゃー `WeakHashMap` 使うのやめて `SoftHashMap` を使えばいいんだね。」
-> 
+>
 > 「[えっ Java SE に標準で付いて来ない][6]の？じゃあ、`WeakHashMap` コピペして `s/Weak/Soft/` すればいいんでしょ」
 
 となる（なった）のですが、もうひとつの理由が存在するため、そうも行かないことがわかりました。
 
-
-
 ### 元になる参照がバリューじゃなくてキーである
 
 コレは少しわかりにくいのですが、なんで困るかというと、
-*バリューオブジェクトに強参照が残っていても消えてしまう* という点が困ってしまう点です。
+_バリューオブジェクトに強参照が残っていても消えてしまう_ という点が困ってしまう点です。
 
 例えば:
 
@@ -112,16 +108,15 @@ Java は標準で [`WeakHashMap`][1] というクラスがあります。
 
 コレを実行すると:
 
-	before: {key1=val1, key2=val2, key3=val3}
-	# gc
-	after: {key2=val2}
-	key1: null
-	key2: val2
-	key3: null
+    before: {key1=val1, key2=val2, key3=val3}
+    # gc
+    after: {key2=val2}
+    key1: null
+    key2: val2
+    key3: null
 
 上記の例の `key3` のエントリのように、バリューを強参照してるのに、
 キャッシュから消されてしまうのはキャッシュとしてはあまり一般的でない挙動であると思います。
-
 
 ### じゃあどうすればいいの・・・
 
@@ -129,13 +124,12 @@ Java は標準で [`WeakHashMap`][1] というクラスがあります。
 
 現状考えられるのは、2つです。
 
-* キャッシュのためのライブラリ（[Ehcache][5] など）を使う
-* `Collections.synchronizedMap(new HashMap<Object, SoftReference<Object>>())`
+- キャッシュのためのライブラリ（[Ehcache][5] など）を使う
+- `Collections.synchronizedMap(new HashMap<Object, SoftReference<Object>>())`
 
 前者は割と身も蓋もない感じなので置いておくとして、後者を使う際には、
 「`HashMap` から強参照されたまなのキーオブジェクトと `SoftReference` そのモノは、
 ヒープ領域に困っても GC されない」という点に注意しなければならないです。
-
 
 [1]: http://docs.oracle.com/javase/jp/6/api/java/util/WeakHashMap.html "クラス WeakHashMap<K,V> (Java Platform SE 6)"
 [2]: http://docs.oracle.com/javase/jp/6/api/java/lang/ref/WeakReference.html "クラス WeakReference<T> (Java Platform SE 6)"

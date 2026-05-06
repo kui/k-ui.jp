@@ -3,12 +3,15 @@ layout: post
 comment: true
 title: Emacs から Wordpress に投稿＋α
 ---
+
 <a href="http://code.google.com/p/wp-emacs/">Emacs から Wordpress に投稿するための Elisp (wp-emacs)</a> があるようなので試してみた。
+
 <ol>
  <li>ファイルのダウンロードし、パスが通っている場所に配置をする。
 
-  <a href="http://wp-emacs.googlecode.com/svn/trunk/">svn の リポジトリ</a> から、下の二つをダウンロードする
-  <ul>
+<a href="http://wp-emacs.googlecode.com/svn/trunk/">svn の リポジトリ</a> から、下の二つをダウンロードする
+
+<ul>
    <li><a href="http://wp-emacs.googlecode.com/svn/trunk/weblogger.el">weblogger.el</a></li>
    <li><a href="http://wp-emacs.googlecode.com/svn/trunk/xml-rpc.el">xml-rpc.el</a></li>
   </ul>
@@ -22,18 +25,19 @@ title: Emacs から Wordpress に投稿＋α
  </li>
  <li>wordpress の設定を変更
 
-  標準のままだと、XML-RPC が使えない。下記の様に辿り wordpress の設定を変更する。
-  <pre>ダッシュボード → 設定（左上辺り？）→ 投稿設定 → XML-RPC の項目にチェックを入れる</pre>
- </li>
+標準のままだと、XML-RPC が使えない。下記の様に辿り wordpress の設定を変更する。
+
+<pre>ダッシュボード → 設定（左上辺り？）→ 投稿設定 → XML-RPC の項目にチェックを入れる</pre>
+</li>
  <li>`M-x weblogger-setup-weblog` とタイプし、server-url, user name, password を設定
   server-url は、http://(サーバー名)/(wordpress のトップまでのパス)/xmlrpc/</li>
  <li>`M-x weblogger-start-entry` とタイプすると、新しい記事を作成できる
-  
-  あるいは、先程の `;; (grobal-setkey ...` をコメントから外すならば、`C-c b s` で新しい記事を作成できる</li>
+
+あるいは、先程の `;; (grobal-setkey ...` をコメントから外すならば、`C-c b s` で新しい記事を作成できる</li>
+
 </ol>
 
-これで基本的な設定はおしまい。ただしこれだと、記事を編集したいだけの時に、具合が良くない。` M-x weblogger-fetch-entries` でできるはずなのだが、ユーザー情報の読み込みが上手くいかない。次の"＋α"で、その他いくつかの問題点を解決している。
-
+これで基本的な設定はおしまい。ただしこれだと、記事を編集したいだけの時に、具合が良くない。`M-x weblogger-fetch-entries` でできるはずなのだが、ユーザー情報の読み込みが上手くいかない。次の"＋α"で、その他いくつかの問題点を解決している。
 
 ### ＋α
 
@@ -42,7 +46,7 @@ title: Emacs から Wordpress に投稿＋α
 
 まずは、.emacs の先程書いた２行を下記に置き換える
 
-~~~~~~~~~~~~~~~~~~~~~elisp
+```elisp
 (require 'weblogger nil t) ;; weblogger.el がないときロードしない
 (if (featurep 'weblogger) ;; weblogger.el があるときだけ以下を実行する
     (let ()
@@ -77,14 +81,14 @@ title: Emacs から Wordpress に投稿＋α
     (interactive)
     (weblogger-select-configuration "default") ;; "default" 部分は適切な文字に置き換え
     (weblogger-start-entry))))
-~~~~~~~~~~~~~~~~~~~~~
+```
 
 次に .zshrc に下記を追加
 
-~~~~~~~~~~~~~~~~~~~~~zsh
+```zsh
 alias wordpress="emacs -f kui-weblogger-edit"
 alias wordpress="emacs -f kui-weblogger-create"
-~~~~~~~~~~~~~~~~~~~~~
+```
 
 これで、シェルから `wordpress` ってコマンド一発で Wordpress を編集できる状態になる
 

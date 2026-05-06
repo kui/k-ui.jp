@@ -3,19 +3,22 @@ layout: post
 comment: true
 title: Last.FM ラジオクライアント Ruby ライブラリ - lastfm12
 ---
+
 そういえば、と思い出したので。
 
 「<a href="/blog/2008/10/19/last.fm_のラジオ再生のための_Ruby_ライブラリを作ってみた/">last.fm のラジオ再生のための Ruby ライブラリを作ってみた</a>」で紹介したライブラリを大分昔に <a href="http://lastfm12.rubyforge.org/">RubyForge に登録していた</a> ので告知させて頂きます。登録そのものはもう２年前で、RubyGem リポジトリ環境も大分変わってますね。。。
 
 ### インストール方法
+
 <pre>
 $ sudo gem install lastfm12
 </pre>
 
 ### 使い方
+
 <a href="/blog/2008/10/19/last.fm_のラジオ再生のための_Ruby_ライブラリを作ってみた/">以前の記事</a>とほとんど変わっていませんが、クラスメソッド `play_loop` というちょっと使いやすそうなメソッドを一つ追加しました。使い方はこんな感じ。
 
-~~~~~~~~~~~~~~~~~~~~~ruby
+```ruby
 #!ruby -Ku
 # -*- coding: utf-8 -*-
 #
@@ -64,13 +67,13 @@ LastFM12.play_loop("user_name" => user_name,
   `mpg123 -b 1024 #{track.location}`
 
 end
-~~~~~~~~~~~~~~~~~~~~~
+```
 
 注意して欲しいのはやはり前回と同じく `track.location`。`track.location`で与えられる URL は、一度アクセスしてたら二度とその URL は使えません。そのトラックとも一期一会なわけですね。
 
 使ってみると分かるんですが、今再生している曲は、残り時間幾つくらいか分からないのが困ります。そこで、データストリームを直接受け取るような使い方もできるようになりました。使い方はこんな感じ。
 
-~~~~~~~~~~~~~~~~~~~~~ruby
+```ruby
 #!ruby -Ku
 # -*- coding: utf-8 -*-
 #
@@ -116,7 +119,7 @@ LastFM12.play_loop("user_name" => user_name,
   end
 
 end
-~~~~~~~~~~~~~~~~~~~~~
+```
 
 `LastFM12::Track#location` と net/http を使えば同じことが出来ますがちょっとややこしいのでメソッド化してしまいました。ストリーミング再生に open-uri は不適なのがよくわかったんだぜ。。。
 

@@ -1,11 +1,11 @@
-import { join, relative, dirname, basename } from "@std/path";
-import { walk, ensureDir } from "@std/fs";
+import { basename, dirname, join, relative } from "@std/path";
+import { ensureDir, walk } from "@std/fs";
 import { Temporal } from "temporal-polyfill";
-import { parseFrontMatter, hasFrontMatter } from "./frontmatter.ts";
+import { hasFrontMatter, parseFrontMatter } from "./frontmatter.ts";
 import { render } from "./template.ts";
 import { renderMarkdown } from "./markdown.ts";
 import { buildJs } from "./js.ts";
-import type { SiteConfig, Post, SiteData } from "./types.ts";
+import type { Post, SiteConfig, SiteData } from "./types.ts";
 
 const SRC = "src";
 const OUT = "public";
@@ -33,7 +33,9 @@ function fmtDateDisplay(instant: Temporal.Instant): string {
 
 function fmtDateMonthDay(instant: Temporal.Instant): string {
   const zdt = inTokyo(instant);
-  return `${String(zdt.month).padStart(2, "0")}月 ${String(zdt.day).padStart(2, "0")}日`;
+  return `${String(zdt.month).padStart(2, "0")}月 ${
+    String(zdt.day).padStart(2, "0")
+  }日`;
 }
 
 function toISOString(instant: Temporal.Instant): string {
@@ -49,14 +51,14 @@ function stripHtml(html: string): string {
 function expandUrls(html: string, baseUrl: string): string {
   return html.replace(
     /(href|src)="(\/[^"]*)"/g,
-    (_, attr, path) => `${attr}="${baseUrl}${path}"`
+    (_, attr, path) => `${attr}="${baseUrl}${path}"`,
   );
 }
 
 // ─── Post loading ─────────────────────────────────────────────────────────────
 
 function parsePostFilename(
-  filePath: string
+  filePath: string,
 ): { date: Temporal.Instant; slug: string } | null {
   const name = basename(filePath).replace(/\.(md|markdown|html)$/, "");
   const m = name.match(/^(\d{4})-(\d{2})-(\d{2})-(.+)$/);
@@ -68,31 +70,51 @@ function parsePostFilename(
 }
 
 function parseDateValue(val: unknown): Temporal.Instant {
-  if (typeof val !== "string") throw new TypeError(`date must be a string, got: ${typeof val}`);
+  if (typeof val !== "string") {
+    throw new TypeError(`date must be a string, got: ${typeof val}`);
+  }
   const s = val.trim();
-  try { return Temporal.Instant.from(s); } catch { /* fall through */ }
-  try { return Temporal.ZonedDateTime.from(s).toInstant(); } catch { /* fall through */ }
-  try { return Temporal.PlainDateTime.from(s).toZonedDateTime("Asia/Tokyo").toInstant(); } catch { /* fall through */ }
-  try { return Temporal.PlainDate.from(s).toZonedDateTime({ timeZone: "Asia/Tokyo", plainTime: "00:00" }).toInstant(); } catch { /* fall through */ }
+  try {
+    return Temporal.Instant.from(s);
+  } catch { /* fall through */ }
+  try {
+    return Temporal.ZonedDateTime.from(s).toInstant();
+  } catch { /* fall through */ }
+  try {
+    return Temporal.PlainDateTime.from(s).toZonedDateTime("Asia/Tokyo")
+      .toInstant();
+  } catch { /* fall through */ }
+  try {
+    return Temporal.PlainDate.from(s).toZonedDateTime({
+      timeZone: "Asia/Tokyo",
+      plainTime: "00:00",
+    }).toInstant();
+  } catch { /* fall through */ }
   throw new RangeError(`unparseable date: "${val}"`);
 }
 
 async function loadPosts(): Promise<Post[]> {
   const posts: Post[] = [];
 
-  for await (const entry of walk(join(SRC, "_posts"), {
-    exts: [".md", ".markdown", ".html"],
-  })) {
+  for await (
+    const entry of walk(join(SRC, "_posts"), {
+      exts: [".md", ".markdown", ".html"],
+    })
+  ) {
     const raw = await Deno.readTextFile(entry.path);
     const { data, content } = parseFrontMatter(raw);
     const meta = parsePostFilename(entry.path);
     if (!meta) continue;
 
     const { slug } = meta;
-    const date = data.date !== undefined ? parseDateValue(data.date) : meta.date;
+    const date = data.date !== undefined
+      ? parseDateValue(data.date)
+      : meta.date;
     const title = String(data.title ?? slug.replace(/-/g, " "));
     const zdt = inTokyo(date);
-    const url = `/blog/${zdt.year}/${String(zdt.month).padStart(2, "0")}/${String(zdt.day).padStart(2, "0")}/${slug}/`;
+    const url = `/blog/${zdt.year}/${String(zdt.month).padStart(2, "0")}/${
+      String(zdt.day).padStart(2, "0")
+    }/${slug}/`;
     const isMarkdown = /\.(md|markdown)$/.test(entry.path);
     const html = isMarkdown ? await renderMarkdown(content) : content;
 
@@ -180,8 +202,9 @@ async function loadLayout(name: string) {
   const parent = data.layout as string | undefined;
   const entry = {
     src: content,
-    parentLayout:
-      parent && parent !== "null" && parent !== "nil" ? parent : undefined,
+    parentLayout: parent && parent !== "null" && parent !== "nil"
+      ? parent
+      : undefined,
   };
   layoutCache.set(name, entry);
   return entry;
@@ -190,7 +213,7 @@ async function loadLayout(name: string) {
 async function applyLayouts(
   body: string,
   layoutName: string,
-  ctx: Record<string, unknown>
+  ctx: Record<string, unknown>,
 ): Promise<string> {
   const layout = await loadLayout(layoutName);
   const rendered = render(layout.src, { ...ctx, content: body });
@@ -252,19 +275,20 @@ async function buildEntry(filePath: string, site: SiteData): Promise<void> {
 
   const rendered = render(content, ctx);
   const layout = data.layout as string | undefined;
-  const html =
-    !layout || layout === "null" || layout === "nil"
-      ? rendered
-      : await applyLayouts(rendered, layout, ctx);
+  const html = !layout || layout === "null" || layout === "nil"
+    ? rendered
+    : await applyLayouts(rendered, layout, ctx);
 
   await Deno.writeTextFile(outPath, html);
 }
 
 async function buildSrc(site: SiteData): Promise<void> {
-  for await (const entry of walk(SRC, {
-    includeDirs: false,
-    skip: [/\/_/],
-  })) {
+  for await (
+    const entry of walk(SRC, {
+      includeDirs: false,
+      skip: [/\/_/],
+    })
+  ) {
     await buildEntry(entry.path, site);
   }
 }
@@ -274,7 +298,9 @@ async function buildSrc(site: SiteData): Promise<void> {
 export async function build(): Promise<void> {
   console.log("Building...");
   layoutCache.clear();
-  try { await Deno.remove(OUT, { recursive: true }); } catch { /* ok */ }
+  try {
+    await Deno.remove(OUT, { recursive: true });
+  } catch { /* ok */ }
   await ensureDir(OUT);
 
   const posts = await loadPosts();

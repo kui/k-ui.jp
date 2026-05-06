@@ -10,11 +10,11 @@ categories: terminal
 
 元ネタはこちら:
 
-* [vallog: ターミナルに黒魔道士][origin]
+- [vallog: ターミナルに黒魔道士][origin]
 
-これに、[割と人気のある（？）][1] FF3 の導師データを追加した: 
+これに、[割と人気のある（？）][1] FF3 の導師データを追加した:
 
-* <https://gist.github.com/kui/5245790>
+- <https://gist.github.com/kui/5245790>
 
 白魔道士の色を自分の好みのものに変更もしている。
 
@@ -39,6 +39,5 @@ ruby -ne 'print $_.gsub(/ /){"0"}.gsub(/\d/){"\e[4#{$&}m  \e[0m"}' dousi.dat
 で ruby があれば実行できる。perl や python でも似たようなワンライナ書けるはず。
 
 本当は <s>もちろんさん</s> 瀕死の白魔道士が可愛いんだけど・・・
-
 
 [origin]: http://valvallow.blogspot.jp/2013/03/blog-post.html "vallog: ターミナルに黒魔道士"

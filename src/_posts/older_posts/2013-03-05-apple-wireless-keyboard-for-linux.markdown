@@ -15,15 +15,12 @@ Magic Trackpad を合体して使う [BulletTrain の Express][Express]
 
 ![Express の画像](/assets/2013/03/express.jpg)
 
-↑こんな見た目。同じ合体でも [MagicWand][] みたいに横並びのやつより、
+↑こんな見た目。同じ合体でも [MagicWand][MagicWand] みたいに横並びのやつより、
 ノート PC みたいな配置が欲しかったので Express にしました。
 
 [hid-apple]: https://github.com/kui/hid-apple "kui/hid-apple · GitHub"
-[Express]: http://www.bullettrain.com/express.html "Express | Features "
+[Express]: http://www.bullettrain.com/express.html "Express | Features"
 [MagicWand]: https://www.google.co.jp/search?channel=fs&q=MagicWand%20TWS-KY-000001&oe=utf-8&hl=ja&um=1&ie=UTF-8&tbm=isch] "キーボード トラックパッド 合体 - Google 検索"
-
-
-
 
 ### Apple Wireless Keyboard
 
@@ -54,7 +51,7 @@ $ lsinput
 
 仕方が無いので、既存の Apple キーボードドライバに手を加えた:
 
-* kui/hid-apple · GitHub <https://github.com/kui/hid-apple>
+- kui/hid-apple · GitHub <https://github.com/kui/hid-apple>
 
 今回買ったキーボードの vendor, product を認識してくれるようにしただけです。
 

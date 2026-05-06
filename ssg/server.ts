@@ -1,18 +1,18 @@
-import { join, extname } from "@std/path";
+import { extname, join } from "@std/path";
 import { exists } from "@std/fs";
 
 const MIME: Record<string, string> = {
   ".html": "text/html; charset=utf-8",
-  ".css":  "text/css",
-  ".js":   "application/javascript",
+  ".css": "text/css",
+  ".js": "application/javascript",
   ".json": "application/json",
-  ".xml":  "application/xml",
-  ".png":  "image/png",
-  ".jpg":  "image/jpeg",
-  ".gif":  "image/gif",
-  ".svg":  "image/svg+xml",
-  ".ico":  "image/x-icon",
-  ".txt":  "text/plain",
+  ".xml": "application/xml",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".gif": "image/gif",
+  ".svg": "image/svg+xml",
+  ".ico": "image/x-icon",
+  ".txt": "text/plain",
 };
 
 export function serve(root: string, port: number): void {

@@ -3,7 +3,7 @@ layout: post
 title: "Linux 版 Google Chrome で、バックスペースをブラウザの「戻る」として使う"
 date: 2012-06-14 01:50
 comments: true
-categories: [coffeescript, javascript, node ]
+categories: [coffeescript, javascript, node]
 ---
 
 <ins>2016/01/11 追記: Google Chrome が対応したため crx ファイルは消しています</ins>
@@ -48,7 +48,7 @@ Linux 版 Google Chrome (or Chromium) を使っていると、バックスペー
 上記のように、既存のものに不満があったことに加えて、「CoffeeScript による
 ユーザスクリプトの開発をしたかった」というのも理由だったりする。
 
-* [kui/Backspace-as-History-Back-on-Linux - Github](https://github.com/kui/Backspace-as-History-Back-on-Linux)
+- [kui/Backspace-as-History-Back-on-Linux - Github](https://github.com/kui/Backspace-as-History-Back-on-Linux)
 
 CoffeeScript で BDD するのに [mocha](http://visionmedia.github.com/mocha/)、
 history.back などのモックに [sinon](http://sinonjs.org/) を使った。

@@ -13,10 +13,10 @@ categories: [ruby, rbindkeys]
 
 実行までには大体、
 
-* インストールする
-* 設定ファイル書く
-* リマップするキーボード選ぶ
-* 実行する
+- インストールする
+- 設定ファイル書く
+- リマップするキーボード選ぶ
+- 実行する
 
 なので順に書く。
 
@@ -140,7 +140,6 @@ pre_bind_key KEY_LEFTCTRL, KEY_CAPSLOCK
 
 こんな感じで設定できる。
 
-
 ### リマップするキーボードデバイスを選ぶ
 
 `sudo rbindkey -l` で選択可能なデバイス一覧みて、キーボードっぽい名前の
@@ -158,24 +157,23 @@ sudo rbindkey /dev/input/event2
 
 ツッコミよろしくお願いします。
 
-
 ### 参考
 
 おなじく Linux で動くことを想定したキーリマッパー
 
-* [私家版 窓使いの憂鬱 Linux & Mac (Darwin) 対応版](http://www42.tok2.com/home/negidakude/)
-	* キーリマッパーでは AutoHotKey に並んで有名な窓使いの憂鬱の移植版
-	* Windows ではこれの派生版[のどか](http://www.appletkan.com/nodoka.htm)
-	  使ってる
-	* ウィンドウごとのリマップ機能がない、これに追加機能すればよかったか。。。
-* [x11keymacs](http://yashiromann.sakura.ne.jp/x11keymacs/)
-	* リマップ部分を C+(?) で書く必要あり
-	* 参考になる情報たくさん
-* [xfumble](http://endoh-namazu.tierra.ne.jp/xfumble/)
-	* キー入力を盗むレイヤが rbindkeys, x11keymacs などと違う
-	* 設定ファイルが XML
-* [AutoKey](http://code.google.com/p/autokey/)
-	* ちょっとちがう。リマッパーっていうよりキーボードランチャー。
-* [evrouter](http://www.bedroomlan.org/projects/evrouter),
+- [私家版 窓使いの憂鬱 Linux & Mac (Darwin) 対応版](http://www42.tok2.com/home/negidakude/)
+  - キーリマッパーでは AutoHotKey に並んで有名な窓使いの憂鬱の移植版
+  - Windows ではこれの派生版[のどか](http://www.appletkan.com/nodoka.htm)
+    使ってる
+  - ウィンドウごとのリマップ機能がない、これに追加機能すればよかったか。。。
+- [x11keymacs](http://yashiromann.sakura.ne.jp/x11keymacs/)
+  - リマップ部分を C+(?) で書く必要あり
+  - 参考になる情報たくさん
+- [xfumble](http://endoh-namazu.tierra.ne.jp/xfumble/)
+  - キー入力を盗むレイヤが rbindkeys, x11keymacs などと違う
+  - 設定ファイルが XML
+- [AutoKey](http://code.google.com/p/autokey/)
+  - ちょっとちがう。リマッパーっていうよりキーボードランチャー。
+- [evrouter](http://www.bedroomlan.org/projects/evrouter),
   [evrouter 2](http://www.bedroomlan.org/projects/evrouter2)
-	* 2 の方が楽しみ。無印のほううまく動かなかった。
+  - 2 の方が楽しみ。無印のほううまく動かなかった。

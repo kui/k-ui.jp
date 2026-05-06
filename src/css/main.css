@@ -1,7 +1,10 @@
 @charset "utf-8";
 
 body {
-  font-family: "Helvetica Neue", Helvetica, "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "IPA Pゴシック", "IPA PGothic", sans-serif;
+  font-family:
+    "Helvetica Neue", Helvetica, "ヒラギノ角ゴ ProN W3",
+    "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "IPA Pゴシック",
+    "IPA PGothic", sans-serif;
   color: #333;
 
   > header > h1 {
@@ -46,11 +49,13 @@ body {
     }
 
     code {
-      font-family: Consolas, "Liberation Mono", Menlo, Courier, "IPAゴシック", "IPAGothic", monospace;
+      font-family:
+        Consolas, "Liberation Mono", Menlo, Courier, "IPAゴシック", "IPAGothic",
+        monospace;
     }
 
     pre {
-        margin: 12px;
+      margin: 12px;
     }
     pre > code {
       display: block;
@@ -63,4 +68,3 @@ body {
     font-size: small;
   }
 }
-

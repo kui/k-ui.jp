@@ -10,8 +10,7 @@ Vagrant 便利で色々いじってるんですが、ゲスト OS で `apt-get d
 再起動すると、共有ファイルとしてマウントしていた `/vagrant` がマウントでこけてしまいます。
 この解決方法についてメモ。
 
-現象と原因
---------
+## 現象と原因
 
 端末で:
 
@@ -57,13 +56,12 @@ $ sudo mount -t vboxsf -o uid=`id -u vagrant`,gid=`id -g vagrant` /vagrant /vagr
 原因は、カーネルアップデートしたことでファイル共有するためのカーネルモジュール？が
 うまく機能しなくなっているようです。
 
-解決策
----------------
+## 解決策
 
 一番直接的な方法としては、上記の状態から `virtualbox-ose-guest-utils` と
 カーネルヘッダをインストールしてしまうことです。
 
-今回は自動で更新してくれる Vagrant プラグイン [vagrant-vbguest][] を使ってみます。
+今回は自動で更新してくれる Vagrant プラグイン [vagrant-vbguest][vagrant-vbguest] を使ってみます。
 
 先述の端末の状態から:
 

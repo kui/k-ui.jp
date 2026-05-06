@@ -6,7 +6,7 @@ comments: true
 categories: [java, maven]
 ---
 
-[Jenkins][] が配布している war ファイルは、サーブレットコンテナに読み込ませれば
+[Jenkins][Jenkins] が配布している war ファイルは、サーブレットコンテナに読み込ませれば
 war ファイルとして機能するし、さらに以下のように単体で実行可能になっている:
 
 ```sh
@@ -16,18 +16,16 @@ java -jar jenkins.war
 これを実現するための簡単なサンプルを作ったので、これを実現するための要所を
 簡単に書いていきたい。
 
-* 実行可能な war サンプル: [kui/executable-war-sample · GitHub](https://github.com/kui/executable-war-sample)
-	* `jetty/`: Jetty 9 を使ったサンプル
-	* `winstone/`: winstone を使ったサンプル
-	* `non-executable/`: war ファイルサイズ比較のために用意した、なんの変哲もない war
+- 実行可能な war サンプル: [kui/executable-war-sample · GitHub](https://github.com/kui/executable-war-sample)
+  - `jetty/`: Jetty 9 を使ったサンプル
+  - `winstone/`: winstone を使ったサンプル
+  - `non-executable/`: war ファイルサイズ比較のために用意した、なんの変哲もない war
 
 [Jenkins]: http://jenkins-ci.org/
 
+## サンプルのビルド方法
 
-サンプルのビルド方法
----------------------
-
-ビルドには [Maven 3][] が必要になる。
+ビルドには [Maven 3][Maven 3] が必要になる。
 
 ```sh
 git clone git@github.com:kui/executable-war-sample.git
@@ -39,9 +37,7 @@ java -jar winstone/target/sample.war
 
 [Maven 3]: http://maven.apache.org/
 
-
-依存関係
---------------
+## 依存関係
 
 winstone をサーブレットコンテナとして使う場合は依存関係にこう書く:
 
@@ -73,20 +69,18 @@ winstone をサーブレットコンテナとして使う場合は依存関係�
 [本家 winstone](http://winstone.sourceforge.net/) は、[最近更新がない][winstone-versions] のが気になったので、
 比較的更新頻度の高い Jenkins が管理している winstone を使っている。
 
-* jenkinsci/winstone · GitHub <https://github.com/jenkinsci/winstone>
+- jenkinsci/winstone · GitHub <https://github.com/jenkinsci/winstone>
 
 [winstone-versions]: http://sourceforge.net/projects/winstone/files/winstone/
 
-
-Main.java
-------------------------
+## Main.java
 
 `java -jar sample.war` を実行した時に呼ばれるメソッドを定義している。
 
 主にやるべきことは:
 
-* war ファイル自身の場所の取得
-* 自分自身をサーブレットコンテナに読み込ませる
+- war ファイル自身の場所の取得
+- 自分自身をサーブレットコンテナに読み込ませる
 
 の二点になる。
 
@@ -115,15 +109,13 @@ public class Main {
 }
 ```
 
-pom.xml
--------
+## pom.xml
 
 つまるところ、実行可能 war は、その war に梱包するファイル配置を実行可能
 jar と同じようなファイル配置にすればよい。
 
 そのファイル配置を Maven にやらせる設定をする。ただし、通常は war を
 構築するだけのファイル配置になってしまうので、少々面倒な設定が必要になる。
-
 
 ### Main-Class の指定
 
@@ -154,7 +146,6 @@ jar と同じようなファイル配置にすればよい。
 
 失敗する理由は `unzip -l sample.jar` で中身を見てみるとわかるけれど、
 呼び出すはずの `jp.k_ui.sample.Main` が梱包されていなため。
-
 
 ### Main.java のコピー
 
@@ -191,7 +182,7 @@ jar と同じようなファイル配置にすればよい。
       </plugin>
 ```
 
-[Apache Ant][] を使って、war 化する前のディレクトリにコピーしている。
+[Apache Ant][Apache Ant] を使って、war 化する前のディレクトリにコピーしている。
 
 この状態で `java -jar sample.war` を実行すると、`Main` 見つからないという文句は消える代わりに、
 `Launcher` が見つからないと言ってくるはず。
@@ -244,20 +235,16 @@ war に梱包されていない。
 
 `mvn clean package` をしたあと、`java -jar sample.war` で実行できるはず。
 
-
-
-Winstone 対 Jetty
------------------
+## Winstone 対 Jetty
 
 結論から書くと Winstone のほうが向いているかなと感じました。理由としては:
 
-* 実行可能 war のファイルサイズ
-* `Main.java` の作りやすさ
+- 実行可能 war のファイルサイズ
+- `Main.java` の作りやすさ
 
 ### 実行可能 war のファイルサイズ
 
 察しはついていたが、今回のために用意したサンプルをビルドしてみて改めて理解した。
-
 
 ```sh
 $ git clone git@github.com:kui/executable-war-sample.git
@@ -271,19 +258,18 @@ $ ls -1sh **/sample.war
 
 実行可能 war にした時のファイルサイズの増分は:
 
-* Winstone: +280KB
-* Jetty: +1264KB
+- Winstone: +280KB
+- Jetty: +1264KB
 
 となり、Winstone のほうがファイルサイズが小さいことが分かった。ただし、
 元の war ファイルのサイズ次第では無視できるような差分かも。
-
 
 ### Main.java の作りやすさ
 
 これは、実際のコードと、作られた `sample.jar` の出来栄えを比較するのが一番早いかと。
 
-* [Winstone 版 Main.java](https://github.com/kui/executable-war-sample/blob/master/winstone/src/main/java/jp/k_ui/sample/Main.java)
-* [Jetty 版 Main.java](https://github.com/kui/executable-war-sample/blob/master/jetty/src/main/java/jp/k_ui/sample/Main.java)
+- [Winstone 版 Main.java](https://github.com/kui/executable-war-sample/blob/master/winstone/src/main/java/jp/k_ui/sample/Main.java)
+- [Jetty 版 Main.java](https://github.com/kui/executable-war-sample/blob/master/jetty/src/main/java/jp/k_ui/sample/Main.java)
 
 Winstone は `Launcher` にそのままコマンドライン引数を渡せば、`winstone.jar`
 として機能してくれるため、このようなお手軽 `Main.java` でも、ポートの指定、SSL の云々、
@@ -292,29 +278,25 @@ Winstone は `Launcher` にそのままコマンドライン引数を渡せば�
 
 Jetty には `Launcher` 相当がパッと調べた限りでは見当らない。（報告求む）
 
-
-おわり
---------------
+## おわり
 
 ここまで書いてしまいましたが Jenkins の `Main.java` は、少し違う方法をとっている:
 
-* Jenkins の `Main.java` 相当: [extras-executable-war/src/main/java/Main.java at master · jenkinsci/extras-executable-war · GitHub](https://github.com/jenkinsci/extras-executable-war/blob/master/src/main/java/Main.java)
+- Jenkins の `Main.java` 相当: [extras-executable-war/src/main/java/Main.java at master · jenkinsci/extras-executable-war · GitHub](https://github.com/jenkinsci/extras-executable-war/blob/master/src/main/java/Main.java)
 
 `ClassLoader` を `new` したり、`winstone.jar` はバラさずに war に梱包している。
 ここまで複雑な方法を取る理由がよくわからない。。。どういうことなんだろう。。。
 
-* TODO [Tomcat][] 使ったバージョン
-* TODO [Tiny Java Web Server][tjws] を使ったバージョン
+- TODO [Tomcat][Tomcat] 使ったバージョン
+- TODO [Tiny Java Web Server][tjws] を使ったバージョン
 
 [Tomcat]: http://tomcat.apache.org/
 [tjws]: http://tjws.sourceforge.net/
 
-
-参考
-------
+## 参考
 
 このへん参考にしたんですが、情報古かったり、設定が間違ってたり、Jetty
 しか使ってなかったりだったで手を加えてる。
 
-* [Internna - Geared towards Open Source: Step by step: Executable WAR files](http://internna.blogspot.jp/2011/08/step-by-step-executable-war-files.html)
-* [Embedded jetty executable war with Maven and Jetty 8.1](http://uguptablog.blogspot.jp/2012/09/embedded-jetty-executable-war-with.html)
+- [Internna - Geared towards Open Source: Step by step: Executable WAR files](http://internna.blogspot.jp/2011/08/step-by-step-executable-war-files.html)
+- [Embedded jetty executable war with Maven and Jetty 8.1](http://uguptablog.blogspot.jp/2012/09/embedded-jetty-executable-war-with.html)

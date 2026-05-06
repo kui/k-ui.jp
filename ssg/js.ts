@@ -3,7 +3,13 @@ import { ensureDir, walk } from "@std/fs";
 
 export async function buildJs(): Promise<void> {
   const entryPoints: string[] = [];
-  for await (const entry of walk("src/_js", { maxDepth: 1, exts: [".ts"], includeDirs: false })) {
+  for await (
+    const entry of walk("src/_js", {
+      maxDepth: 1,
+      exts: [".ts"],
+      includeDirs: false,
+    })
+  ) {
     entryPoints.push(entry.path);
   }
   if (entryPoints.length === 0) return;

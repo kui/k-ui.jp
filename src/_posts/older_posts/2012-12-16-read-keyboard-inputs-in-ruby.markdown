@@ -10,26 +10,24 @@ categories: [Linux, Ruby]
 簡単な解説をします。また、このパッケージは、[Linux + X11 向けのキーリマッパー][1]
 を作るにあたって、新たに作成したものです。
 
-* [kui/revdev - GitHub][2]
-
+- [kui/revdev - GitHub][2]
 
 ### そもそも Linux でのキーボード入力を読み取る方法
 
 主に2通り考えられます。
 
-* evdev から読み取る
-* X から読み取る
+- evdev から読み取る
+- X から読み取る
 
 この2つの関係としては
 
-* `キーボード -> ドライバ -> evdev -> X -> アプリケーション`
+- `キーボード -> ドライバ -> evdev -> X -> アプリケーション`
 
 という階層関係になっています。そのためより生（？）の入力情報がほしい場合は、
 evdev から読み取るのがよいです。
 
 X に解釈してもらったあとのものがほしい場合は X から読み取るのがよいのですが、
 今回の記事のスコープ外なので割愛します。
-
 
 ### インストール
 
@@ -45,7 +43,6 @@ gem 'revdev'
 
 を書き、端末で `$ bundle` を実行すればよいです。
 
-
 ### 使い方
 
 基本的には、[revdev/sample][3] の例を見ていただければ問題ないのです。今回の記事に最も
@@ -56,7 +53,6 @@ gem 'revdev'
 
 イベントデバイスとは、Linux カーネルが認識している入力出力装置を抽象化したものです。
 通常、`/dev/input/event?` （?:整数） という添字と共に配置されます。
-
 
 ### key_dump の使い方
 
@@ -109,13 +105,12 @@ $
 そのため、キーボードのイベントデバイスに対して `-g` オプションを付けると、
 Ctrl+C さえ入力できなくなってしまい、スクリプトの停止がかなり面倒になります。
 
-
 ### key_dump の解説
 
 [revdev/sample/key_dump][4] の 43 行目:
 
 ```ruby
-  evdev = EventDevice.new ARGV.first
+evdev = EventDevice.new ARGV.first
 ```
 
 `EventDevice.new イベントデバイスへのパス` でイベントデバイスを抽象化したオブジェクトを作成しています。
@@ -123,14 +118,14 @@ Ctrl+C さえ入力できなくなってしまい、スクリプトの停止が�
 メインのキーボード読み取るループは、[revdev/sample/key_dump][4] の 55 行目からのブロックになります:
 
 ```ruby
-  loop do
-    ie = evdev.read_input_event
-    next if spec_type and spec_type != ie.hr_type.to_s
-    t = ie.hr_type ? "#{ie.hr_type.to_s}(#{ie.type})" : ie.type
-    c = ie.hr_code ? "#{ie.hr_code.to_s}(#{ie.code})" : ie.code
-    v = ie.hr_value ? "#{ie.hr_value.to_s}(#{ie.value})" : ie.value
-    puts "type:#{t}	code:#{c}	value:#{v}"
-  end
+loop do
+  ie = evdev.read_input_event
+  next if spec_type and spec_type != ie.hr_type.to_s
+  t = ie.hr_type ? "#{ie.hr_type.to_s}(#{ie.type})" : ie.type
+  c = ie.hr_code ? "#{ie.hr_code.to_s}(#{ie.code})" : ie.code
+  v = ie.hr_value ? "#{ie.hr_value.to_s}(#{ie.value})" : ie.value
+  puts "type:#{t}	code:#{c}	value:#{v}"
+end
 ```
 
 43 行目で作成したオブジェクトから、`#read_input_evet` でイベント読み取りをします。ここで、
@@ -144,10 +139,9 @@ Ctrl+C さえ入力できなくなってしまい、スクリプトの停止が�
 
 [ruinput][6] を用いて、書き込み用の仮想のイベントデバイスを作成することになります。
 
-
 [1]: /blog/2012/06/06/rbindkeys-configurable-key-remapper-in-ruby/ "Ruby で設定できる Linux 環境向けキーリマッパー作った - 電卓片手に"
 [2]: https://github.com/kui/revdev "kui/revdev · GitHub"
-[3]: https://github.com/kui/revdev/tree/master/sample "revdev/sample at master · kui/revdev · GitHub "
+[3]: https://github.com/kui/revdev/tree/master/sample "revdev/sample at master · kui/revdev · GitHub"
 [4]: https://github.com/kui/revdev/blob/master/sample/key_dump "revdev/sample/key_dump at master · kui/revdev · GitHub"
 [5]: https://github.com/kui/revdev/blob/master/sample/device_info "revdev/sample/device_info at master · kui/revdev · GitHub"
 [6]: https://github.com/kui/ruinput "kui/ruinput · GitHub"

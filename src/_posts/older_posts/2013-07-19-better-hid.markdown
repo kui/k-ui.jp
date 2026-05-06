@@ -14,24 +14,20 @@ Apple Magic Trackpad と Apple Wireless Keyboard を合体して使う
 [express]: http://www.bullettrain.com/express.html
 [apple_keyboard]: /blog/2013/03/05/apple-wireless-keyboard-for-linux/
 
-
-医者からの条件
---------------
+## 医者からの条件
 
 割と安眠を妨げられるレベルで痛かったので医者に行くと、以下のようなことを
 おっしゃっていました:
 
-* 手首を手の甲の側に常に曲げていると、腱鞘炎になりやすい
-* パームレストできるところが低いキーボードや、奥が高くなるような
- 傾斜のキーボードを使ってるとそうなりやすい
-* 高めのパームレストを使え
+- 手首を手の甲の側に常に曲げていると、腱鞘炎になりやすい
+- パームレストできるところが低いキーボードや、奥が高くなるような
+  傾斜のキーボードを使ってるとそうなりやすい
+- 高めのパームレストを使え
 
 こんな条件の揃う英語配列キーボードは実在せず、逆チルトできる英語配列キーボードでも
 テンキー付きで狭い机事情に適さないものが多く、自作することを決心しました。
 
-
-作った
--------
+## 作った
 
 そしてこんなのを作りました:
 
@@ -48,12 +44,9 @@ Apple Magic Trackpad と Apple Wireless Keyboard を合体して使う
 更にパームレストが高い位置にあり、キーボードとトラックパッドの
 ドッキングして使えます。
 
-
 これでタイピング生活に幸せが！！！
 
-
-作った数カ月後
-----------------
+## 作った数カ月後
 
 立派に活躍している逆チルト Thinkpad Keyboard が!!!!
 
@@ -63,8 +56,8 @@ Apple Magic Trackpad と Apple Wireless Keyboard を合体して使う
 よくタイピング感に抵抗があるレビューを観る感じですが、私はあんまり気にならなかったです。
 それよりも:
 
-* Linux 上で使うと若干挙動が不安定な時があったり
-* パームレストがないので、写真のような対処が難しいのがネックだったり
+- Linux 上で使うと若干挙動が不安定な時があったり
+- パームレストがないので、写真のような対処が難しいのがネックだったり
 
 [compact_kbd]: http://shopap.lenovo.com/SEUILibrary/controller/e/jpweb/LenovoPortal/ja_JP/catalog.workflow:item.detail?GroupID=460&Code=0B47190&category-id=3FB2CEB78A0F49D18148731559AF4603
 

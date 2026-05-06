@@ -6,7 +6,9 @@ const TAGS: [string, string] = ["[[", "]]"];
 
 // Mustache 4 はデフォルトで '/' や '=' もエスケープするが、
 // URL 属性値が壊れるため '&' '<' '>' '"' "'" のみに絞る
-(Mustache as unknown as { escape: (s: string) => string }).escape = (s: string) =>
+(Mustache as unknown as { escape: (s: string) => string }).escape = (
+  s: string,
+) =>
   s
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")

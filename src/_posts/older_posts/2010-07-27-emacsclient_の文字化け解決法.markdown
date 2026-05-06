@@ -3,9 +3,10 @@ layout: post
 comment: true
 title: emacsclient の文字化け解決法
 ---
+
 ふつーの `emacs` で起動しても文字化けしないのに、`emacs --daemon` で emacs サーバを立ち上げて、`emacsclient -t somefile` すると、文字が化けてしまう問題の解決方法。下記を .emacs などに追加する。
 
-~~~~~~~~~~~~~~~~~~~~~scheme
+```scheme
 ;; emacsclient でアクセスした時の文字コード設定
 ;; バグ: "emacsclient -c" で起動すると実行されない
 (add-hook 'server-visit-hook
@@ -13,7 +14,7 @@ title: emacsclient の文字化け解決法
 			(set-terminal-coding-system 'utf-8)
 			(set-keyboard-coding-system 'utf-8)
 			))
-~~~~~~~~~~~~~~~~~~~~~
+```
 
 ### 補足: 上記の問題点など
 
@@ -22,6 +23,7 @@ title: emacsclient の文字化け解決法
 しかしながら、上記のコメントにも書いてあるが、`emacsclient -t -c` ファイル指定無しで開くとやはり文字化けが起きてしまう。残念ながらファイル指定無し起動は、適切な hook が無いよう。なので現状はどうしようもないのかな。。。
 
 そもそも、この原因が起きる人は、`emacsclient -t` で、今の端末に emacs を表示する人たちである。しかし、
+
 <ul>
  <li>ファイル名を指定して実行しないといけない</li>
  <li>オプション `-t` を付けないと、現在の端末では開けない</li>

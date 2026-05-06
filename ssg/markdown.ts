@@ -1,11 +1,19 @@
-import { createHighlighter, bundledLanguages, type Highlighter, type BundledLanguage } from "shiki";
+import {
+  type BundledLanguage,
+  bundledLanguages,
+  createHighlighter,
+  type Highlighter,
+} from "shiki";
 import { marked, type Tokens } from "marked";
 
 let highlighter: Highlighter | undefined;
 
 async function getHighlighter(): Promise<Highlighter> {
   if (!highlighter) {
-    highlighter = await createHighlighter({ themes: ["catppuccin-latte"], langs: [] });
+    highlighter = await createHighlighter({
+      themes: ["catppuccin-latte"],
+      langs: [],
+    });
   }
   return highlighter;
 }
@@ -28,9 +36,15 @@ marked.use({
       if (!hl.getLoadedLanguages().includes(lang as BundledLanguage)) {
         await hl.loadLanguage(lang as BundledLanguage);
       }
-      t.highlighted = hl.codeToHtml(t.text, { lang: lang as BundledLanguage, theme: "catppuccin-latte" });
+      t.highlighted = hl.codeToHtml(t.text, {
+        lang: lang as BundledLanguage,
+        theme: "catppuccin-latte",
+      });
     } else {
-      t.highlighted = hl.codeToHtml(t.text, { lang: "text", theme: "catppuccin-latte" });
+      t.highlighted = hl.codeToHtml(t.text, {
+        lang: "text",
+        theme: "catppuccin-latte",
+      });
     }
   },
   renderer: {

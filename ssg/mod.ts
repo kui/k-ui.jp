@@ -19,7 +19,10 @@ switch (cmd) {
     const title = Deno.args[1] ?? "new-post";
     const now = Temporal.Now.zonedDateTimeISO("Asia/Tokyo");
     const [y, m, d] = now.toPlainDate().toString().split("-");
-    const slug = title.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
+    const slug = title.toLowerCase().replace(/\s+/g, "-").replace(
+      /[^\w-]/g,
+      "",
+    );
     const path = `src/_posts/${y}/${m}/${y}-${m}-${d}-${slug}.md`;
 
     const dateStr = now.toString({ timeZoneName: "never" });

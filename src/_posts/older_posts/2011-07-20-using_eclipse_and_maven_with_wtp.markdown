@@ -3,6 +3,7 @@ layout: post
 comment: true
 title: eclipse (3.7, indigo) + maven で WTP 使う
 ---
+
 <ins>2016/01/12 追記: 画像を失くしたので削除しました</ins>
 
 <p>Eclipse の新しいやつ出ましたね。</p>
@@ -15,9 +16,11 @@ title: eclipse (3.7, indigo) + maven で WTP 使う
 </ol>
 
 ### Eclipse (indigo) 用意
+
 <p>いろいろありますが、今回は、<a href="http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/indigo/R/eclipse-jee-indigo-win32.zip">Eclipse IDE for Java EE Developers</a>（<a href="http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/indigo/R/eclipse-jee-indigo-win32-x86_64.zip">64bit版</a>）を使いました。解凍→起動で次の工程へ。</p>
 
 ### maven プラグイン (m2e, m2e-wtp) インストール
+
 <p>Eclipse から maven をお手軽に使えるプラグイン二つをインストールする。m2e だけだと、WTP と連携ができないので m2e-wtp も必要になる。</p>
 
 <h4>m2e インストール</h4>
@@ -43,6 +46,7 @@ title: eclipse (3.7, indigo) + maven で WTP 使う
 <p>本来なら、WIndow → Preferences → 右カラムの "Maven" → "Discovery" →  右の "Open Catalog" ってたどって、見つけられるはずなんだけど、どうやらバグがあるらしくここのカタログからは省かれているらしい。（ソース: <a href="http://dev.eclipse.org/mhonarc/lists/m2e-users/msg00938.html">[m2e-users] m2e-wtp temporary removed from m2e marketplace catalog</a>）</p>
 
 ### 新規プロジェクト作成
+
 <p>WTP に則った新たなプロジェクト作成します。</p>
 <ol>
  <li>メニューで File → New... とたどる。（New ウィンドウがでてくる）</li>
@@ -57,5 +61,6 @@ title: eclipse (3.7, indigo) + maven で WTP 使う
 <p>"src/main/java" をはじめから作成しないのにはポリシーがあってそうしてるらしいです。（ソース紛失）</p>
 
 ### 以上です
+
 <p>あとはフツーにウェブサーブレットの作成が可能になっています。ソースは "src/main/java" に、コンテキストルート？は Deployed Resource がそれになっています。</p>
 <p><strong>赤字</strong>で書いたところでハマってしまって辛かった。。。</p>

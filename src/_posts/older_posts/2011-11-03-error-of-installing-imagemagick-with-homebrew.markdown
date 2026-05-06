@@ -9,15 +9,14 @@ categories: [homebrew, imagemagick]
 この記事書いた時点では、homebrew 使って ImageMagick インストールしようとすると、
 下記のエラーが出て困る。
 
-~~~~~~~~~~~~~~~~~~~~~
+```
 $ sudo brew install imagemagick
 /usr/local/bin/git
 ==> Cloning https://github.com/adamv/ImageMagick.git
 Cloning into /Library/Caches/Homebrew/imagemagick--git...
 fatal: https://github.com/adamv/ImageMagick.git/info/refs not found: did you run git update-server-info on the server?
 Error: Failure while executing: git clone --depth 1 https://github.com/adamv/ImageMagick.git /Library/Caches/Homebrew/imagemagick--git
-~~~~~~~~~~~~~~~~~~~~~
-
+```
 
 ### 対処方法
 
@@ -26,7 +25,7 @@ Error: Failure while executing: git clone --depth 1 https://github.com/adamv/Ima
 [Help to install imagemagick thro homebrew - stackoverflow](http://stackoverflow.com/questions/7053996/help-to-install-imagemagick-thro-homebrew/7407154#7407154)
 の Marc L さんのコメントを参考にさせて頂きました。
 
-~~~~~~~~~~~~~~~~~~~~~
+```
 $ cd /usr/local
 $ sudo git reset --hard FETCH_HEAD
 HEAD is now at 1e8955c Nginx 1.0.9
@@ -40,8 +39,7 @@ Some tools will complain unless the ghostscript fonts are installed to:
   /usr/local/share/ghostscript/fonts
   ==> Summary
   /usr/local/Cellar/imagemagick/6.7.1-1: 1389 files, 32M, built in 3.7 minutes
-~~~~~~~~~~~~~~~~~~~~~
-
+```
 
 ### 原因
 

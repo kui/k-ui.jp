@@ -6,28 +6,23 @@ comments: true
 categories: ruby
 ---
 
-[Jekyll][] の 1.0 がでました。気になった所をメモ。基本的に、何が変わったかは [History.txt][] 見れば書いてあります。
+[Jekyll][Jekyll] の 1.0 がでました。気になった所をメモ。基本的に、何が変わったかは [History.txt][History.txt] 見れば書いてあります。
 
 [History.txt]: https://github.com/mojombo/jekyll/blob/master/History.txt
 [Jekyll]: https://github.com/mojombo/jekyll
 
-新しいドキュメント
-------------------
+## 新しいドキュメント
 
-* <http://jekyllrb.com/>
+- <http://jekyllrb.com/>
 
+## サブコマンド方式に変更
 
-サブコマンド方式に変更
------------------------------
-
-* `jekyll build`: サイト生成、以前の引数無し `jekyll` 相当
-* `jekyll serve`: サイト作成＋HTTPサーバ、以前の `jekyll --server` 相当。
+- `jekyll build`: サイト生成、以前の引数無し `jekyll` 相当
+- `jekyll serve`: サイト作成＋HTTPサーバ、以前の `jekyll --server` 相当。
 
 それぞれのサブコマンドは `-h, --help` でヘルプを見ることもできるようになってます。今風。
 
-
-jekyll new
------------------------------
+## jekyll new
 
 ブログのスケルトンの作成 (Scaffolding) がコマンドでできるようになりました:
 
@@ -41,9 +36,7 @@ $ jekyll serve
 # localhost:4000 にアクセスするとスケルトンの閲覧できる。
 ```
 
-
-下書き
-----------
+## 下書き
 
 下書きモードが追加されました。
 
@@ -58,12 +51,11 @@ $ jekyll build --drafts
 $ find _site -name foo.html # 生成物に foo.html が存在する
 ```
 
-
-excerpt
-------------
+## excerpt
 
 ページ/記事の属性に `excerpt` が追加されました。この属性には、その記事の最初のパラグラフが入っています。
 {% raw %}
+
 ```sh
 $ emacs index.html
 # タイトルと一緒に excerpt も表示するように改変
@@ -75,6 +67,7 @@ $ diff index.html index.html\~
 $ jekyll serve
 # トップページがタイトル一覧に加えて最初のパラグラフも表示するようになっている
 ```
+
 {% endraw %}
 
 `<meta type="description" ...` に使うのが良さそうなんですが、使い方次第では HTML タグが入ってしまうようなので、 Liquid の `strip_html` が必要になります。
@@ -82,17 +75,17 @@ $ jekyll serve
 こんな感じ？:
 
 {% raw %}
+
 ```html
 <meta type="description" content="{{ page.exerpt | strip_html }}">
 ```
+
 {% endraw %}
 
 ただ、`page.exerpt` と `site.posts` のもつ `post.experpt` が、なんか違うっぽいので要調査です。
 
+## おわり
 
-おわり
----------
-
-[Octopress][] が持っている機能がインポートされてきてるって印象を受けましたが、これからもたのしみですね。
+[Octopress][Octopress] が持っている機能がインポートされてきてるって印象を受けましたが、これからもたのしみですね。
 
 [Octopress]: http://octopress.org/

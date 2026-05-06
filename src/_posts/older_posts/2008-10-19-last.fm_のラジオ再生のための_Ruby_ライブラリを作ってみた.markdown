@@ -12,7 +12,7 @@ Linux を NAS 兼メディアセンターとして使っているので、Linux 
 
 ということで、<a href="http://code.google.com/p/thelastripper/wiki/LastFM12UnofficialDocumentation">LastFM12UnofficialDocumentation</a>を元に、last.fm ラジオの再生の助けになるライブラリを作ってみました。
 
-* lastfmradio-0.1.tar.gz のダウンロード
+- lastfmradio-0.1.tar.gz のダウンロード
 
 本当は、RubyForge なり GitHub になり置いた方が良いかもしれないんですが、どっちがいいんですかねぇ。
 
@@ -27,7 +27,7 @@ Linux を NAS 兼メディアセンターとして使っているので、Linux 
 
 mpg123 を使ってラジオ再生する
 
-~~~~~~~~~~~~~~~~~~~~~ruby
+```ruby
 #!ruby -Ku
 
 # last.fm 上でのアカウント名とパスワード
@@ -60,7 +60,7 @@ loop do
   end
 
 end
-~~~~~~~~~~~~~~~~~~~~~
+```
 
 `LastfmRadio#get_tracks` メソッドは要注意。返してくれるトラックの数はまちまちです。ラジオ局によっては、 1 つも取得できない時があります。これは、引数に整数を与えることで解決ができます。たとえば引数に 2 をあたえると、2 個以上のトラックを取得するまでリターンしなくなります。
 
@@ -85,7 +85,7 @@ end
 
 wget を使ってラジオから流れてくる曲をダウンロード
 
-~~~~~~~~~~~~~~~~~~~~~ruby
+```ruby
 require "lastfmradio"
 
 hash = {
@@ -113,7 +113,7 @@ loop do
     `mpg123 -q #{track.location}`
   end
 end
-~~~~~~~~~~~~~~~~~~~~~
+```
 
 こんな感じで使えます。
 

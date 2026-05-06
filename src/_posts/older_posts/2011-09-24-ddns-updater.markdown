@@ -20,8 +20,6 @@ categories: [coding, shellscript, ddns]
 
 [kui/ddns-updater - GitHub](https://github.com/kui/ddns-updater)
 
-
-
 ### インストール
 
 [バリュードメインの"ダイナミックDDNS機能のご利用方法"](http://www.value-domain.com/howto/?action=ddns)
@@ -30,24 +28,20 @@ categories: [coding, shellscript, ddns]
 の README.md のように実行をする。`etc/ddns-updater` を編集するときは、
 バリュードメインに登録したダイナミック DDNS 更新するためのパスワード等を入力する。
 
-
-
 ### 使い方
 
 設定が正しいかどうか確認するには、
 
-~~~~~~~~~~~~~~~~~~~~~
+```
 $ sudo /etc/init.d/ddns-updater update
-~~~~~~~~~~~~~~~~~~~~~
+```
 
 と実行し、更新を一度だけ実行してみる。これで問題なければ、ほかの init.d スクリプト同様、
 システムを再起動するか、下記を実行すれば良い。
 
-~~~~~~~~~~~~~~~~~~~~~
+```
 $ sudo /etc/init.d/ddns-updater start
-~~~~~~~~~~~~~~~~~~~~~
-
-
+```
 
 ### init.d スクリプト初めて作ってみたんだけど
 

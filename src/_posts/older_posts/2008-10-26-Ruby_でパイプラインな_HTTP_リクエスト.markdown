@@ -3,6 +3,7 @@ layout: post
 comment: true
 title: Ruby でパイプラインな HTTP リクエスト
 ---
+
 <a href="http://d.hatena.ne.jp/dayflower/20081024/1224830945">HTTP/1.1 の同時接続数について - daily dayflower</a> をみて「おお、こんな事出来たのか。pipelining すげぇ」と思い、Ruby でこれやるのにはどうしたらいいのか <a href="http://blog.livedoor.jp/dankogai/archives/50719947.html">404 Blog Not Found:HTTPサーバーのパイプライン対応</a> を参考に考えてみました。
 
 どうやら、Net::HTTP は、HTTP プロトコルのパイプライン処理をできるようになってないようす。その為、Net::HTTP の拡張が必要になりました。
@@ -11,7 +12,7 @@ title: Ruby でパイプラインな HTTP リクエスト
 
 <a href="http://blog.livedoor.jp/dankogai/archives/50719947.html">404 Blog Not Found:HTTPサーバーのパイプライン対応</a>　のパイプラインの例を ruby コード化するとこんな感じ。
 
-~~~~~~~~~~~~~~~~~~~~~ruby
+```ruby
 require "net/http"
 require "pipelinig_http.rb" # Net::HTTP の拡張
 
@@ -46,7 +47,7 @@ def r_print(r)
 end
 
 main if __FILE__ == $0
-~~~~~~~~~~~~~~~~~~~~~
+```
 
 上記のコードで、require されてる pipelining_http.rb は、今回のために用意したファイルで、次に示す内容になっています。
 
@@ -54,7 +55,7 @@ main if __FILE__ == $0
 
 Net::HTTP#just_request, Net::HTTP#fetch_response は、次のように拡張される。実質、Net::HTTP#request を二つに分断した感じなってます。また今回の例では HEAD リクエストしかしていませんが、GETもPUTもできるはずです。（PUTは未確認）
 
-~~~~~~~~~~~~~~~~~~~~~ruby
+```ruby
 class Net::HTTP
 
   def just_request(req, body=nil)
@@ -102,13 +103,13 @@ class Net::HTTP
   end
 
 end
-~~~~~~~~~~~~~~~~~~~~~
+```
 
 個人的に、end_transport のあたりの処理が気に入りません。要改善。
 
 ### 実行結果
 
-~~~~~~~~~~~~~~~~~~~~~
+```
 ##### Net::HTTP::Head #####
          accept: */*
 
@@ -164,7 +165,6 @@ end
  content-length: 103620
             age: 2203
     x-framework: Hatena/2.1
-
-~~~~~~~~~~~~~~~~~~~~~
+```
 
 以上でした。

@@ -59,13 +59,12 @@ EndSection
 細かい設定は、↑のファイルで設定するか、標準でついてくるマウス設定画面で
 設定できます。
 
-
 ### さらにジェスチャの設定
 
 上記2つのドライバだと簡単なジェスチャしか設定できない。evdev だと一本指、
 synaptics だと2-3本指。
 
-今回は、2本指までのジェスチャを synaptic に任せ、3本指以上は [ginn][] に任せました。
+今回は、2本指までのジェスチャを synaptic に任せ、3本指以上は [ginn][ginn] に任せました。
 （touchegg というのもあるようです。）
 
 ただこの ginn に関するドキュメントが少なすぎる・・・[サンプル XML][sample-xml]
@@ -150,7 +149,7 @@ ginn までそのイベントが届かないようです。
 マルチタッチジェスチャーイベントを奪ってる部分をコメントアウトして、
 ビルド・インストールする。という方法を取る他無いようです。残念な感じですね。
 
-[ginn]: https://wiki.ubuntu.com/Multitouch/Ginn "Multitouch/Ginn - Ubuntu Wiki "
+[ginn]: https://wiki.ubuntu.com/Multitouch/Ginn "Multitouch/Ginn - Ubuntu Wiki"
 [sample-xml]: https://wiki.ubuntu.com/Multitouch/AppleMagicTrackpad?action=AttachFile&do=view&target=wishes.xml
 [bug-report]: https://bugs.launchpad.net/unity/+bug/898853 "Bug #898853 “Touch: Unity hijacks multitouch gestures” : Bugs : Unity"
 

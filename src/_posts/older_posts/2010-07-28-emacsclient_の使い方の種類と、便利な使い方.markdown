@@ -3,7 +3,9 @@ layout: post
 comment: true
 title: emacsclient の使い方の種類と、便利な使い方
 ---
+
 前回の記事からわかるように emacsclient にハマっている。前回も軽く触れている通り、emacsclient、emacs サーバ機能には2通りの使い方があると思う。ちなみに前回は、<a href="/blog/2010/07/27/emacsclient_の文字化け解決法/">後者に関しての問題（文字化け）</a>でした。
+
 <ul>
  <li>母艦派： 一つの emacs を立ち上げっぱなし
   <ul>
@@ -29,17 +31,17 @@ emacsclient を便利に使いたいならこんな感じに成るんでしょ�
 <h4>母艦派</h4>
 alias を割り当てるだけ（？）
 
-~~~~~~~~~~~~~~~~~~~~~bash
+```bash
 alias e="emacsclient -n"
 # alias emacs="emacsclient -n" 
 # alias vi="emacsclient -n" # これはどうなの。。。
-~~~~~~~~~~~~~~~~~~~~~
+```
 
 <h4>デーモン派</h4>
 
 こちらは、既存のコマンド `emacs` の置換になるはずなので、少し複雑になります。サーバの立ち上げなどをシームレスに行うための処理が欲しくなりますしね。僕の .zshrc はこんな感じで落ち着きました。
 
-~~~~~~~~~~~~~~~~~~~~~bash
+```bash
 ## emacsclient をシームレスに使うための関数
 function e(){
     echo "[$0] emacsclient -c -t $*";
@@ -90,8 +92,7 @@ if ! [ -d $EMACS_TMP_DIR ]; then
         fi
     }
 fi
-
-~~~~~~~~~~~~~~~~~~~~~
+```
 
 `emacsclient -n -c` がダメなら、`emacs --daemon` した後、`emacsclient -n -c` しています。screen 使うときはそうもいかないので、デーモンと通信するためのソケットが存在するかどうか確認をするようになっています。コメントにも書いてありますが、<strong>バージョンによってソケットの場所と名前がビミョーに違う</strong>ので、確認したほうが良いかもしれません。
 

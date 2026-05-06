@@ -1,4 +1,5 @@
-# -*- coding: utf-8 -*-
+# -_- coding: utf-8 -_-
+
 ---
 layout: post
 title: "Wordpress から Octopress(Jekyll) に記事を変換"
@@ -12,7 +13,7 @@ categories: [octopress, wordpress]
 
 下記がそのスクリプト
 
-~~~~~~~~~~~~~~~~~~~~~
+```
 # -*- coding: utf-8 -*-
 require 'fileutils'
 require 'date'
@@ -64,14 +65,14 @@ doc.elements.each("rss/channel/item[wp:status = 'publish' and wp:post_type = 'po
   end
 
 end
-~~~~~~~~~~~~~~~~~~~~~
+```
 
 ### 使い方
 
 はじめに Wordpress から記事のエクスポートを行います。これにより手に入った
 XML を用いて下記を行います。
 
-~~~~~~~~~~~~~~~~~~~~~
+```
 $ ruby -Ku file_wp_xml_import.rb wordpress.2008-10-01.2011-09-01.xml
 $ ls _posts
 2008-10-14-Libra_の_siteinfo_を_AutoPagerize_の_wedata_に登録.markdown
@@ -91,4 +92,4 @@ $ ls _posts
 2011-06-01-cygterm_使用時、mkgroup,_mkpasswd_しても起動時のエラーが取れない.markdown
 2011-07-20-using_eclipse_and_maven_with_wtp.markdown
 2011-08-29-mail_コマンドでメール送信.markdown
-~~~~~~~~~~~~~~~~~~~~~
+```

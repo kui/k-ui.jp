@@ -18,18 +18,15 @@ categories:
 
 だいたいやるべきことは:
 
-* 認証局（の秘密鍵・証明書）の作成
-* HTTP サーバの秘密鍵・証明書の作成
-* クライアントの秘密鍵・証明書の作成
+- 認証局（の秘密鍵・証明書）の作成
+- HTTP サーバの秘密鍵・証明書の作成
+- クライアントの秘密鍵・証明書の作成
 
-「*認証局からみたら、HTTPサーバもクライアントも扱いが大して変わらない*」
+「_認証局からみたら、HTTPサーバもクライアントも扱いが大して変わらない_」
 ってのを忘れると、主体がよくわからなくなり、頭の中が
 ゴチャゴチャになりそうになります。
 
-
-
-前準備
-----------------------------------------------------------------------------
+## 前準備
 
 デフォルト値のセットアップをして、証明証の各フィールドの入力を楽に
 しておくとよいかも。
@@ -64,8 +61,7 @@ cd ssl
 echo "see http://k-ui.jp/blog/2013/03/13/setup-client-certificate/" > README
 ```
 
-認証局のセットアップ
-----------------------------------------------------------------------------
+## 認証局のセットアップ
 
 証明書の発行時の各項目は、それらしく埋める。
 
@@ -80,13 +76,10 @@ openssl req -new -x509 -days 4000 -key ca.key -out ca.crt
 
 これで出来上がるファイルは:
 
-* `ca.key`: 認証局の秘密鍵
-* `ca.crt`: 認証局の証明書
+- `ca.key`: 認証局の秘密鍵
+- `ca.crt`: 認証局の証明書
 
-
-
-HTTP サーバのセットアップ
-----------------------------------------------------------------------------
+## HTTP サーバのセットアップ
 
 署名要求の発行時の各項目は、それらしく埋める。ただし、`commonName` は、
 運営するドメイン名じゃないとまずいかも。
@@ -111,18 +104,15 @@ openssl rsa -in server.key -out server_nopass.key
 
 これで生成されるファイルは:
 
-* `server.key`: サーバの秘密鍵
-* `server.csr`: サーバの証明書署名要求
-* `server.crt`: サーバの証明書
-* （`server_nopass.key`: サーバのパスフレーズ無し秘密鍵）
+- `server.key`: サーバの秘密鍵
+- `server.csr`: サーバの証明書署名要求
+- `server.crt`: サーバの証明書
+- （`server_nopass.key`: サーバのパスフレーズ無し秘密鍵）
 
 あとは HTTP サーバに今回生成した秘密鍵と証明書を読み込ませるようにする。
 このへんはサーバによって違うので割愛。
 
-
-
-クライアントのセットアップ
-----------------------------------------------------------------------------
+## クライアントのセットアップ
 
 署名要求の発行時の各項目は（ｒｙ
 
@@ -139,16 +129,16 @@ cat client.key client.crt ca.crt | openssl pkcs12 -export -clcerts -out client.p
 
 `-days` の引数は、証明書の有効期限なので **要調整**。
 
-`-set_serial` は、サーバの時と別の番号にしないと、*SSL 通信に失敗するので注意*。
+`-set_serial` は、サーバの時と別の番号にしないと、_SSL 通信に失敗するので注意_。
 
 `-name` は、分かりやすい名前にすると、忘れた頃に幸せになるかも。
 
 これで生成されるファイルは:
 
-* `client.key`: クライアントの秘密鍵
-* `client.csr`: クライアントの署名要求
-* `client.crt`: クライアントの証明書
-* `client.p12`: ブラウザに組み込むためのパッケージ
+- `client.key`: クライアントの秘密鍵
+- `client.csr`: クライアントの署名要求
+- `client.crt`: クライアントの証明書
+- `client.p12`: ブラウザに組み込むためのパッケージ
 
 `client.p12` をブラウザにインポートさせて終了。
 対象の HTTP サーバに SSL でアクセスしてみる。
@@ -161,7 +151,6 @@ iPhone Safari にインポートさせるときは少し複雑なので、
 
 [iphone-setup]: /blog/2012/10/15/installing-a-private-certificate-in-your-iphone
 
-
 ### 参考
 
-* [Client Side Certificate Auth in Nginx - The Good Word](http://blog.nategood.com/client-side-certificate-authentication-in-ngi)
+- [Client Side Certificate Auth in Nginx - The Good Word](http://blog.nategood.com/client-side-certificate-authentication-in-ngi)

@@ -30,7 +30,7 @@ categories: [octopress, markdown, sass]
 編集対象は `rake install["kui"]` 前なら `.theme/kui/source` 以下の HTML ファイル、
 `rake install["kui"]` 後なら `source` ディレクトリ以下の HTML ファイルになる。
 
-注意点としては、`source/_layout/{category_index.html,post.html,page.html}`, 
+注意点としては、`source/_layout/{category_index.html,post.html,page.html}`,
 `_includes/asides*` は、削除すると rake サブコマンドがうまく動かなくなる。
 各種 rake サブコマンドが直接読みに行っているファイルの様子。
 

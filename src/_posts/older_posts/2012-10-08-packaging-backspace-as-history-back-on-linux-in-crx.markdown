@@ -10,7 +10,7 @@ categories: [coffescript, javascript, node]
 
 [以前作ったユーザスクリプト](/blog/2012/06/14/backspace-as-browser-hhistory-back-on-linux-google-chrome/ "Linux 版 Google Chrome で、バックスペースをブラウザの「戻る」として使う - 電卓片手に") を拡張機能にしました。
 
-* Backspace-as-History-Back-on-Linux.crx
+- Backspace-as-History-Back-on-Linux.crx
 
 ### インストール方法
 
@@ -26,4 +26,3 @@ categories: [coffescript, javascript, node]
 [Knavi を CoffeeScript に書き換えてる](https://github.com/kui/KNavi) 最中にできた [Cakefile](https://github.com/kui/KNavi/blob/master/Cakefile) の出来を調べたくて拡張機能化してみた。すんなりできたので問題なさそう。
 
 加えて、Octopress の使い方忘れそうだったので更新した。忘れてしまいそうってことは合ってないってことかもしれない・・・
-

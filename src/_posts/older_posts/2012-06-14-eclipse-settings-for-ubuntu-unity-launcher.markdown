@@ -14,7 +14,6 @@ Ubuntu の左端のランチャーで、Eclipse がちゃんと表示されな�
 
 そこでこれをどうにかする。
 
-
 ### 手順
 
 端末でこんな感じのコマンドうつ。
@@ -34,7 +33,6 @@ xdg-open .
 下の画像のようになる。
 
 ![Eclipse アイコンがきちんと表示された Unity Launcher のスクリーンショット](/assets/2012/06/known_icon_eclipse.png)
-
 
 ### 終わり
 
