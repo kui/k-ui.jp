@@ -8,7 +8,7 @@ categories: ["java", "json"]
 
 例えば、こんな POJO を、Jackson 使ってシリアライズ/デシリアライズしようとする。
 
-```java Foo.java
+```java
 package jp.k_ui.sample.json_sample.model;
 
 import java.net.MalformedURLException;
@@ -41,7 +41,7 @@ public class Foo {
 
 シリアライズとデシリアライズするコードがこれ。
 
-```java SandBox.java
+```java
 package jp.k_ui.sample.json_sample;
 
 import java.io.IOException;
@@ -76,7 +76,7 @@ public class SandBox {
 アノテーション `@JsonIgnore` を使って POJO (Foo) に片方の setter
 を無視するよう指示します。
 
-```java Foo.java
+```java
 package jp.k_ui.sample.json_sample.model;
 
 import java.net.MalformedURLException;

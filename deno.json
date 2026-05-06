@@ -12,6 +12,7 @@
     "esbuild": "npm:esbuild@^0.25",
     "temporal-polyfill": "npm:temporal-polyfill@^0.3.2",
     "marked": "npm:marked@^15",
+    "shiki": "npm:shiki@^1",
     "mustache": "npm:mustache@^4"
   }
 }

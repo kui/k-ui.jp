@@ -94,7 +94,7 @@ async function loadPosts(): Promise<Post[]> {
     const zdt = inTokyo(date);
     const url = `/blog/${zdt.year}/${String(zdt.month).padStart(2, "0")}/${String(zdt.day).padStart(2, "0")}/${slug}/`;
     const isMarkdown = /\.(md|markdown)$/.test(entry.path);
-    const html = isMarkdown ? renderMarkdown(content) : content;
+    const html = isMarkdown ? await renderMarkdown(content) : content;
 
     posts.push({
       title,

@@ -1,19 +1,53 @@
-import { marked } from "marked";
+import { createHighlighter, bundledLanguages, type Highlighter, type BundledLanguage } from "shiki";
+import { marked, type Tokens } from "marked";
+
+let highlighter: Highlighter | undefined;
+
+async function getHighlighter(): Promise<Highlighter> {
+  if (!highlighter) {
+    highlighter = await createHighlighter({ themes: ["catppuccin-latte"], langs: [] });
+  }
+  return highlighter;
+}
+
+type CodeTokenWithHighlighted = Tokens.Code & { highlighted?: string };
 
 marked.use({
   gfm: true,
   breaks: false,
+  async: true,
+  async walkTokens(token) {
+    if (token.type !== "code") return;
+    const t = token as CodeTokenWithHighlighted;
+    const hl = await getHighlighter();
+    const lang = t.lang;
+    if (lang) {
+      if (!(lang in bundledLanguages)) {
+        throw new Error(`Unsupported language in code block: "${lang}"`);
+      }
+      if (!hl.getLoadedLanguages().includes(lang as BundledLanguage)) {
+        await hl.loadLanguage(lang as BundledLanguage);
+      }
+      t.highlighted = hl.codeToHtml(t.text, { lang: lang as BundledLanguage, theme: "catppuccin-latte" });
+    } else {
+      t.highlighted = hl.codeToHtml(t.text, { lang: "text", theme: "catppuccin-latte" });
+    }
+  },
   renderer: {
     heading({ text, depth }) {
       const plain = text.replace(/<[^>]+>/g, "").trim();
       const id = escAttr(plain.replace(/\s+/g, "-"));
       return `<h${depth} id="${id}"><a class="heading-anchor" href="#${id}"></a>${text}</h${depth}>\n`;
     },
+    code(token) {
+      return (token as CodeTokenWithHighlighted).highlighted ??
+        `<pre><code>${token.text}</code></pre>`;
+    },
   },
 });
 
-export function renderMarkdown(src: string): string {
-  return marked.parse(src, { async: false });
+export async function renderMarkdown(src: string): Promise<string> {
+  return await marked.parse(src, { async: true });
 }
 
 function escAttr(s: string): string {
