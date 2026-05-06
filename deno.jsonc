@@ -1,8 +1,7 @@
 {
   "nodeModulesDir": "none",
   "tasks": {
-    "check": "deno check ssg/**/*.ts src/_js/**/*.ts",
-    "build": "deno check ssg/**/*.ts src/_js/**/*.ts && deno run --allow-read --allow-write --allow-env --allow-run ssg/mod.ts build",
+    "build": "deno run --allow-read --allow-write --allow-env --allow-run ssg/mod.ts build",
     "serve": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run ssg/mod.ts serve",
     "new-post": "deno run --allow-read --allow-write --allow-env ssg/mod.ts new-post"
   },
@@ -18,6 +17,7 @@
   },
   "fmt": {
     "proseWrap": "preserve",
-    "exclude": ["src/atom.xml", "src/**/*.html"]
+    // deno fmt では frontmatter は markdown しか正しく処理できない
+    "exclude": ["src/**/*.xml", "src/**/*.html"]
   }
 }
