@@ -3,10 +3,10 @@ layout: default
 ---
 <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
   <header>
-    <h1 itemprop="name headline">[[page.title]]</h1>
-    <p>投稿日: <time datetime="[[page.dateIso]]" itemprop="datePublished">[[page.dateDisplay]]</time></p>
+    <h1 itemprop="name headline">{{page.title}}</h1>
+    <p>投稿日: <time datetime="{{page.dateIso}}" itemprop="datePublished">{{page.dateDisplay}}</time></p>
   </header>
   <div itemprop="articleBody">
-    [[& content]]
+    {{& content}}
   </div>
 </article>

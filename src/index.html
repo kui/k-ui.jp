@@ -2,33 +2,33 @@
 layout: page
 use_post_list: true
 ---
-<script src="[[site.baseurl]]/index.js" async></script>
+<script src="{{site.baseurl}}/index.js" async></script>
 
 <section id="about">
-  <h1>[[site.author]]</h1>
+  <h1>{{site.author}}</h1>
   <ul>
     <li>GitHub: <a href="https://github.com/kui">kui</a></li>
     <li>Twitter: <a href="https://twitter.com/k_ui">k_ui</a></li>
     <li>Qiita: <a href="https://qiita.com/k_ui">k_ui</a></li>
-    [[#site.email]]
-    <li>Mail: [[site.email]]</li>
-    [[/site.email]]
+    {{#site.email}}
+    <li>Mail: {{site.email}}</li>
+    {{/site.email}}
   </ul>
 </section>
 
 <section id="recent-posts">
   <h1>最近のブログ投稿</h1>
   <ul>
-    [[#recentPosts]]
+    {{#recentPosts}}
     <li>
       <article>
-        <a rel="full-article" href="[[url]]">[[title]]</a>
-        (<time datetime="[[dateIso]]" pubdate>[[dateDisplay]]</time>)
+        <a rel="full-article" href="{{url}}">{{title}}</a>
+        (<time datetime="{{dateIso}}" pubdate>{{dateDisplay}}</time>)
       </article>
     </li>
-    [[/recentPosts]]
+    {{/recentPosts}}
   </ul>
-  <p><a href="[[site.baseurl]]/blog">&laquo; 過去の記事</a></p>
+  <p><a href="{{site.baseurl}}/blog">&laquo; 過去の記事</a></p>
 </section>
 
 <section id="github">

@@ -4,16 +4,16 @@ title: "過去の記事"
 use_post_list: true
 ---
 <div>
-[[#postsByYear]]
-  <h3>[[year]] 年</h3>
+{{#postsByYear}}
+  <h3>{{year}} 年</h3>
   <ul>
-    [[#posts]]
+    {{#posts}}
     <li>
-      <time datetime="[[dateIso]]" pubdate>[[dateMonthDay]]</time>
+      <time datetime="{{dateIso}}" pubdate>{{dateMonthDay}}</time>
       &mdash;
-      <a href="[[url]]">[[title]]</a>
+      <a href="{{url}}">{{title}}</a>
     </li>
-    [[/posts]]
+    {{/posts}}
   </ul>
-[[/postsByYear]]
+{{/postsByYear}}
 </div>
