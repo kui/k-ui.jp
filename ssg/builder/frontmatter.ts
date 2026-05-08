@@ -10,18 +10,22 @@ export function hasFrontMatter(bytes: Uint8Array): boolean {
     bytes[0] === 0x2D && bytes[1] === 0x2D && bytes[2] === 0x2D;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
 export function parseFrontMatter(raw: string): FrontMatterResult {
   const match = raw.match(/^---[ \t]*\n([\s\S]*?)^---[ \t]*(?:\n|$)/m);
   if (!match) return { data: {}, content: raw };
 
   const parsed = parseYaml(match[1], { schema: "core" });
-  if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
+  if (!isRecord(parsed)) {
     throw new TypeError(
       `Front matter must be a YAML mapping, got: ${JSON.stringify(parsed)}`,
     );
   }
   return {
-    data: parsed as Record<string, unknown>,
+    data: parsed,
     content: raw.slice(match[0].length),
   };
 }

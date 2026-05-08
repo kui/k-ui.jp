@@ -16,6 +16,10 @@ function getHighlighter(): Promise<Highlighter> {
   return highlighterPromise;
 }
 
+function isBundledLanguage(lang: string): lang is BundledLanguage {
+  return lang in bundledLanguages;
+}
+
 type CodeTokenWithHighlighted = Tokens.Code & { highlighted?: string };
 
 marked.use({
@@ -28,14 +32,14 @@ marked.use({
     const hl = await getHighlighter();
     const lang = t.lang;
     if (lang) {
-      if (!(lang in bundledLanguages)) {
+      if (!isBundledLanguage(lang)) {
         throw new Error(`Unsupported language in code block: "${lang}"`);
       }
-      if (!hl.getLoadedLanguages().includes(lang as BundledLanguage)) {
-        await hl.loadLanguage(lang as BundledLanguage);
+      if (!hl.getLoadedLanguages().includes(lang)) {
+        await hl.loadLanguage(lang);
       }
       t.highlighted = hl.codeToHtml(t.text, {
-        lang: lang as BundledLanguage,
+        lang,
         theme: "catppuccin-latte",
       });
     } else {
