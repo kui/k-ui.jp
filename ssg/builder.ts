@@ -1,9 +1,9 @@
-import { basename, dirname, join, relative } from "@std/path";
+import { dirname, join, relative } from "@std/path";
 import { ensureDir, walk } from "@std/fs";
 import { Temporal } from "temporal-polyfill";
 import { hasFrontMatter, parseFrontMatter } from "./frontmatter.ts";
-import { render } from "./template.ts";
-import { renderMarkdown } from "./markdown.ts";
+import { render as renderTemplate } from "./template.ts";
+import { render as renderMarkdown } from "./markdown.ts";
 import { buildJs } from "./js.ts";
 import type { Post, SiteConfig, SiteData } from "./types.ts";
 
@@ -55,17 +55,19 @@ function expandUrls(html: string, baseUrl: string): string {
   );
 }
 
-// ─── Post loading ─────────────────────────────────────────────────────────────
+// ─── ブログ記事メタデータ解析 ────────────────────────────────────────────────────
 
-function parsePostFilename(
+function parsePostPath(
   filePath: string,
-): { date: Temporal.Instant; slug: string } | null {
-  const name = basename(filePath).replace(/\.(md|markdown|html)$/, "");
-  const m = name.match(/^(\d{4})-(\d{2})-(\d{2})-(.+)$/);
+): { date: Temporal.Instant; slug: string; url: string } | null {
+  const m = filePath.match(
+    /\/blog\/(\d{4})\/(\d{2})\/(\d{2})\/([^/]+)\/index\.(md|markdown|html)$/,
+  );
   if (!m) return null;
   return {
     date: Temporal.Instant.from(`${m[1]}-${m[2]}-${m[3]}T00:00:00+09:00`),
     slug: m[4],
+    url: `/blog/${m[1]}/${m[2]}/${m[3]}/${m[4]}/`,
   };
 }
 
@@ -91,46 +93,6 @@ function parseDateValue(val: unknown): Temporal.Instant {
     }).toInstant();
   } catch { /* fall through */ }
   throw new RangeError(`unparseable date: "${val}"`);
-}
-
-async function loadPosts(): Promise<Post[]> {
-  const posts: Post[] = [];
-
-  for await (
-    const entry of walk(join(SRC, "_posts"), {
-      exts: [".md", ".markdown", ".html"],
-    })
-  ) {
-    const raw = await Deno.readTextFile(entry.path);
-    const { data, content } = parseFrontMatter(raw);
-    const meta = parsePostFilename(entry.path);
-    if (!meta) continue;
-
-    const { slug } = meta;
-    const date = data.date !== undefined
-      ? parseDateValue(data.date)
-      : meta.date;
-    const title = String(data.title ?? slug.replace(/-/g, " "));
-    const zdt = inTokyo(date);
-    const url = `/blog/${zdt.year}/${String(zdt.month).padStart(2, "0")}/${
-      String(zdt.day).padStart(2, "0")
-    }/${slug}/`;
-    const isMarkdown = /\.(md|markdown)$/.test(entry.path);
-    const html = isMarkdown ? await renderMarkdown(content) : content;
-
-    posts.push({
-      title,
-      date,
-      slug,
-      url,
-      content: html,
-      excerpt: extractExcerpt(html),
-      layout: String(data.layout ?? "post"),
-      filePath: entry.path,
-    });
-  }
-
-  return posts.sort((a, b) => Temporal.Instant.compare(b.date, a.date));
 }
 
 function extractExcerpt(html: string): string {
@@ -186,7 +148,7 @@ function makeAtomPosts(posts: Post[], siteUrl: string) {
     full_url: siteUrl + p.url,
     date_xmlschema: toISOString(p.date),
     id: siteUrl + p.url,
-    content: expandUrls(p.excerpt || p.content, siteUrl),
+    content: expandUrls(p.excerpt, siteUrl),
   }));
 }
 
@@ -216,84 +178,175 @@ async function applyLayouts(
   ctx: Record<string, unknown>,
 ): Promise<string> {
   const layout = await loadLayout(layoutName);
-  const rendered = render(layout.src, { ...ctx, content: body });
+  const rendered = renderTemplate(layout.src, { ...ctx, content: body });
   if (layout.parentLayout) {
     return applyLayouts(rendered, layout.parentLayout, ctx);
   }
   return rendered;
 }
 
-// ─── 記事ビルド ───────────────────────────────────────────────────────────────
+// ─── 出力共通処理 ─────────────────────────────────────────────────────────────
 
-async function buildPost(post: Post, site: SiteData): Promise<void> {
-  const ctx = {
-    site: makeSiteCtx(site),
-    page: {
-      title: post.title,
-      url: post.url,
-      date_xmlschema: toISOString(post.date),
-      date_display: fmtDateDisplay(post.date),
-      excerpt: stripHtml(post.excerpt),
-    },
-  };
-  const html = await applyLayouts(post.content, post.layout, ctx);
-  const outPath = join(OUT, post.url, "index.html");
+async function writeHtml(
+  outPath: string,
+  body: string,
+  ctx: Record<string, unknown>,
+  layout: string | null,
+): Promise<void> {
+  const html = layout && layout !== "null" && layout !== "nil"
+    ? await applyLayouts(body, layout, ctx)
+    : body;
   await ensureDir(dirname(outPath));
   await Deno.writeTextFile(outPath, html);
 }
 
 // ─── src/ ビルド ──────────────────────────────────────────────────────────────
 
-async function buildEntry(filePath: string, site: SiteData): Promise<void> {
+interface DeferredEntry {
+  filePath: string;
+  data: Record<string, unknown>;
+  content: string;
+}
+
+// frontmatter パース済みの data/content を受け取りファイルを出力する。
+// src/blog/ 配下のブログ記事であれば Post を返し、buildPhase1 で収集される。
+async function buildContent(
+  filePath: string,
+  data: Record<string, unknown>,
+  content: string,
+  site: SiteData,
+): Promise<Post | null> {
   const rel = relative(SRC, filePath);
-  const outPath = join(OUT, rel);
-  await ensureDir(dirname(outPath));
+  const isMarkdown = /\.(md|markdown)$/.test(filePath);
+  const outRel = isMarkdown ? rel.replace(/\.(md|markdown)$/, ".html") : rel;
+  const outPath = join(OUT, outRel);
 
-  const bytes = await Deno.readFile(filePath);
-
-  if (!hasFrontMatter(bytes)) {
-    await Deno.writeFile(outPath, bytes);
-    return;
-  }
-
-  const raw = new TextDecoder().decode(bytes);
-  const { data, content } = parseFrontMatter(raw);
-
-  let url = "/" + rel;
+  let url = "/" + outRel;
   if (url.endsWith("index.html")) url = url.slice(0, -10) || "/";
+
+  const pageCtx: Record<string, unknown> = {
+    title: (data.title as string | undefined) ?? "",
+    url,
+  };
+
+  const postMeta = parsePostPath(filePath);
+  const date = data.date !== undefined
+    ? parseDateValue(data.date)
+    : postMeta?.date;
+
+  if (date !== undefined) {
+    pageCtx.date_xmlschema = toISOString(date);
+    pageCtx.date_display = fmtDateDisplay(date);
+  }
 
   const ctx = {
     site: makeSiteCtx(site),
-    page: {
-      title: (data.title as string | undefined) ?? "",
-      url,
-    },
+    page: pageCtx,
     recentPosts: makeRecentPosts(site.posts, site.config.baseurl),
     postsByYear: groupByYear(site.posts),
     atomPosts: makeAtomPosts(site.posts, site.config.url),
   };
 
-  const rendered = render(content, ctx);
-  const layout = data.layout as string | undefined;
-  const html = !layout || layout === "null" || layout === "nil"
-    ? rendered
-    : await applyLayouts(rendered, layout, ctx);
+  const body = isMarkdown
+    ? await renderMarkdown(content)
+    : renderTemplate(content, ctx);
 
-  await Deno.writeTextFile(outPath, html);
-}
+  if (isMarkdown) {
+    pageCtx.excerpt = stripHtml(extractExcerpt(body));
+  }
 
-async function buildSrc(site: SiteData): Promise<void> {
-  for await (
-    const entry of walk(SRC, {
-      includeDirs: false,
-      skip: [/\/_/],
-    })
-  ) {
-    await buildEntry(entry.path, site);
+  if (postMeta) {
+    if ("layout" in data) {
+      throw new Error(`layout is not supported in a post entry: ${filePath}`);
+    }
+    if (!date) throw new Error(`date is required in a post entry: ${filePath}`);
+    await writeHtml(outPath, body, ctx, "post");
+    return {
+      title: String(data.title ?? postMeta.slug.replace(/-/g, " ")),
+      date,
+      slug: postMeta.slug,
+      url: postMeta.url,
+      excerpt: extractExcerpt(body),
+      filePath,
+    };
+  } else {
+    if (!("layout" in data)) throw new Error(`layout is required: ${filePath}`);
+    if (typeof data.layout !== "string" && data.layout !== null) {
+      throw new Error(`layout must be a string or null: ${filePath}`);
+    }
+    await writeHtml(outPath, body, ctx, data.layout);
+    return null;
   }
 }
 
+// use_post_list: true のファイルは DeferredEntry として保留し buildPhase2 に委ねる。
+// それ以外は buildContent で処理し、ブログ記事なら Post を返す。
+async function buildEntry(
+  filePath: string,
+  site: SiteData,
+): Promise<Post | DeferredEntry | null> {
+  const rel = relative(SRC, filePath);
+  const isMarkdown = /\.(md|markdown)$/.test(filePath);
+  const outRel = isMarkdown ? rel.replace(/\.(md|markdown)$/, ".html") : rel;
+  const outPath = join(OUT, outRel);
+  const bytes = await Deno.readFile(filePath);
+
+  if (!hasFrontMatter(bytes)) {
+    await ensureDir(dirname(outPath));
+    await Deno.writeFile(outPath, bytes);
+    return null;
+  }
+
+  const raw = new TextDecoder().decode(bytes);
+  const { data, content } = parseFrontMatter(raw);
+
+  if (data.use_post_list === true) {
+    if (parsePostPath(filePath) !== null) {
+      throw new Error(`use_post_list cannot be set on a post: ${filePath}`);
+    }
+    return { filePath, data, content };
+  }
+
+  return buildContent(filePath, data, content, site);
+}
+
 // ─── エントリポイント ─────────────────────────────────────────────────────────
+
+async function buildPhase1(): Promise<
+  { posts: Post[]; deferred: DeferredEntry[] }
+> {
+  const site: SiteData = { config: siteConfig, posts: [] };
+  const results = await Promise.all(
+    (await Array.fromAsync(walk(SRC, { includeDirs: false, skip: [/\/_/] })))
+      .map((entry) => buildEntry(entry.path, site)),
+  );
+
+  const deferred: DeferredEntry[] = [];
+  const posts: Post[] = [];
+  for (const result of results) {
+    if (result === null) continue;
+    if ("data" in result) deferred.push(result);
+    else posts.push(result);
+  }
+  posts.sort((a, b) => Temporal.Instant.compare(b.date, a.date));
+  console.log(`  ${posts.length} posts`);
+  return { posts, deferred };
+}
+
+async function buildPhase2(
+  posts: Post[],
+  deferred: DeferredEntry[],
+): Promise<void> {
+  const site: SiteData = { config: siteConfig, posts };
+  await Promise.all(
+    deferred.map((e) => buildContent(e.filePath, e.data, e.content, site)),
+  );
+}
+
+async function buildSrc(): Promise<void> {
+  const { posts, deferred } = await buildPhase1();
+  await buildPhase2(posts, deferred);
+}
 
 export async function build(): Promise<void> {
   console.log("Building...");
@@ -303,15 +356,7 @@ export async function build(): Promise<void> {
   } catch { /* ok */ }
   await ensureDir(OUT);
 
-  const posts = await loadPosts();
-  const site: SiteData = { config: siteConfig, posts };
-  console.log(`  ${posts.length} posts`);
-
-  await Promise.all([
-    ...posts.map((p) => buildPost(p, site)),
-    buildSrc(site),
-    buildJs(),
-  ]);
+  await Promise.all([buildSrc(), buildJs()]);
 
   console.log("Done →", OUT);
 }

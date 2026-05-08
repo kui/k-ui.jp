@@ -15,9 +15,7 @@ export interface Post {
   date: Temporal.Instant;
   slug: string;
   url: string;
-  content: string;
   excerpt: string;
-  layout: string;
   filePath: string;
 }
 

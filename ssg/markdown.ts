@@ -6,16 +6,14 @@ import {
 } from "shiki";
 import { marked, type Tokens } from "marked";
 
-let highlighter: Highlighter | undefined;
+let highlighterPromise: Promise<Highlighter> | undefined;
 
-async function getHighlighter(): Promise<Highlighter> {
-  if (!highlighter) {
-    highlighter = await createHighlighter({
-      themes: ["catppuccin-latte"],
-      langs: [],
-    });
-  }
-  return highlighter;
+function getHighlighter(): Promise<Highlighter> {
+  highlighterPromise ??= createHighlighter({
+    themes: ["catppuccin-latte"],
+    langs: [],
+  });
+  return highlighterPromise;
 }
 
 type CodeTokenWithHighlighted = Tokens.Code & { highlighted?: string };
@@ -60,7 +58,7 @@ marked.use({
   },
 });
 
-export async function renderMarkdown(src: string): Promise<string> {
+export async function render(src: string): Promise<string> {
   return await marked.parse(src, { async: true });
 }
 
