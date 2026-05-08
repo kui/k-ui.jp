@@ -53,7 +53,7 @@ marked.use({
     heading({ text, depth }) {
       const plain = text.replace(/<[^>]+>/g, "").trim();
       const id = escAttr(plain.replace(/\s+/g, "-"));
-      return `<h${depth} id="${id}"><a class="heading-anchor" href="#${id}"></a>${text}</h${depth}>\n`;
+      return `<h${depth} id="${id}"><a class="heading-anchor" href="#${id}">${text}</a></h${depth}>\n`;
     },
     code(token) {
       return (token as CodeTokenWithHighlighted).highlighted ??

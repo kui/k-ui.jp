@@ -7,40 +7,23 @@ body {
     "IPA PGothic", sans-serif;
   color: #333;
 
-  > header > h1 {
-    text-align: center;
-    font-weight: 500;
-    font-size: 150%;
-
+  h1, h2, h3, h4, h5, h6 {
     > a {
-      color: #333;
       text-decoration: none;
-
+      color: #333;
       &:hover {
         text-decoration: underline;
       }
     }
   }
 
+  > header > h1 {
+    text-align: center;
+    font-weight: 500;
+    font-size: 150%;
+  }
+
   > article {
-    h1, h2, h3, h4, h5, h6 {
-      > .heading-anchor {
-        text-decoration: none;
-
-        &::after {
-          content: " \00A7";
-          color: #333;
-          font-weight: 300;
-          opacity: 0;
-          transition: opacity 0.1s ease-out;
-        }
-      }
-
-      &:hover > .heading-anchor::after {
-        opacity: 1;
-      }
-    }
-
     blockquote {
       border-left: solid 3px #ccc;
       margin: 0 24px;
