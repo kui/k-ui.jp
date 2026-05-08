@@ -30,6 +30,43 @@ interface SiteData {
   posts: Post[];
 }
 
+interface YearPost {
+  title: string;
+  url: string;
+  dateIso: string;
+  dateMonthDay: string;
+}
+
+interface PageContext {
+  title: string;
+  url: string;
+  dateIso?: string;
+  dateDisplay?: string;
+  excerpt?: string;
+}
+
+interface TsEntry {
+  type: "ts";
+  filePath: string;
+}
+
+interface DeferredEntry {
+  type: "deferred";
+  filePath: string;
+  data: Record<string, unknown>;
+  content: string;
+}
+
+interface PageResult {
+  type: "page";
+  filePath: string;
+}
+
+interface AssetResult {
+  type: "asset";
+  filePath: string;
+}
+
 const SRC = "src";
 export const OUT = "public";
 
@@ -42,8 +79,6 @@ export const siteConfig: SiteConfig = {
   description: "ねこほしい",
   time: Temporal.Now.instant(),
 };
-
-// ─── 日付ユーティリティ (Asia/Tokyo 基準) ────────────────────────────────────
 
 function inTokyo(instant: Temporal.Instant): Temporal.ZonedDateTime {
   return instant.toZonedDateTimeISO("Asia/Tokyo");
@@ -65,8 +100,6 @@ function toISOString(instant: Temporal.Instant): string {
   return inTokyo(instant).toString({ timeZoneName: "never" });
 }
 
-// ─── HTML ユーティリティ ──────────────────────────────────────────────────────
-
 function stripHtml(html: string): string {
   return html.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
 }
@@ -77,8 +110,6 @@ function expandUrls(html: string, baseUrl: string): string {
     (_, attr, path) => `${attr}="${baseUrl}${path}"`,
   );
 }
-
-// ─── ブログ記事メタデータ解析 ────────────────────────────────────────────────────
 
 function parsePostPath(
   filePath: string,
@@ -121,8 +152,6 @@ function extractExcerpt(html: string): string {
   return html.match(/<p>([\s\S]*?)<\/p>/)?.[0] ?? "";
 }
 
-// ─── コンテキスト構築 ─────────────────────────────────────────────────────────
-
 function makeSiteCtx(site: SiteData) {
   return {
     ...site.config,
@@ -138,13 +167,6 @@ function makeRecentPosts(posts: Post[], baseurl: string) {
     dateIso: toISOString(p.date),
     dateDisplay: fmtDateDisplay(p.date),
   }));
-}
-
-interface YearPost {
-  title: string;
-  url: string;
-  dateIso: string;
-  dateMonthDay: string;
 }
 
 function groupByYear(posts: Post[]): { year: string; posts: YearPost[] }[] {
@@ -173,8 +195,6 @@ function makeAtomPosts(posts: Post[], siteUrl: string) {
     content: expandUrls(p.excerpt, siteUrl),
   }));
 }
-
-// ─── レイアウト適用 ───────────────────────────────────────────────────────────
 
 const layoutCache = new Map<string, { src: string; parentLayout?: string }>();
 
@@ -207,8 +227,6 @@ async function applyLayouts(
   return rendered;
 }
 
-// ─── 出力共通処理 ─────────────────────────────────────────────────────────────
-
 async function writeHtml(
   outPath: string,
   body: string,
@@ -220,38 +238,6 @@ async function writeHtml(
     : body;
   await ensureDir(dirname(outPath));
   await Deno.writeTextFile(outPath, html);
-}
-
-// ─── src/ ビルド ──────────────────────────────────────────────────────────────
-
-interface PageContext {
-  title: string;
-  url: string;
-  dateIso?: string;
-  dateDisplay?: string;
-  excerpt?: string;
-}
-
-interface TsEntry {
-  type: "ts";
-  filePath: string;
-}
-
-interface DeferredEntry {
-  type: "deferred";
-  filePath: string;
-  data: Record<string, unknown>;
-  content: string;
-}
-
-interface PageResult {
-  type: "page";
-  filePath: string;
-}
-
-interface AssetResult {
-  type: "asset";
-  filePath: string;
 }
 
 // frontmatter パース済みの data/content を受け取りファイルを出力する。
@@ -361,8 +347,6 @@ async function buildEntry(
 
   return buildContent(filePath, data, content, site);
 }
-
-// ─── エントリポイント ─────────────────────────────────────────────────────────
 
 async function buildPhase1(): Promise<
   { posts: Post[]; deferred: DeferredEntry[]; tsEntries: TsEntry[] }
