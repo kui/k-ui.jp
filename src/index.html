@@ -2,12 +2,6 @@
 layout: page
 use_post_list: true
 ---
-<script>
-var topJs = {
-  qiitaId:  'k_ui',
-  githubId: 'kui',
-};
-</script>
 <script src="[[site.baseurl]]/index.js" async></script>
 
 <section id="about">
@@ -42,7 +36,7 @@ var topJs = {
   <div id="js-github-profile">
     <p>ロード中...</p>
   </div>
-  <template id="js-github-profile-template">
+  <template data-github-id="kui" data-mount-point="#js-github-profile" data-items-num="5" data-repo-type="all" data-repo-sort="pushed" data-repo-direction="desc">
     <li>
       <article>
         <a class="js-repo-link" href=""></a>: <span class="js-repo-desc"></span>
@@ -57,7 +51,7 @@ var topJs = {
   <div id="js-qiita-profile">
     <p>ロード中...</p>
   </div>
-  <template id="js-qiita-profile-template">
+  <template data-qiita-id="k_ui" data-mount-point="#js-qiita-profile" data-items-num="5">
     <li>
       <article>
         <a class="js-item-link" rel="full-article" href=""></a>

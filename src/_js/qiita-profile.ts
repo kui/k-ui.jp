@@ -10,29 +10,21 @@ interface QiitaItem {
 }
 
 export default class QiitaProfile {
-  private userName: string;
-  private perPage: number;
-
-  constructor(userName: string, itemsNum = 5) {
-    this.userName = userName;
-    this.perPage = itemsNum;
-
-    console.log("QiitaProfile: Constructor %o", this);
-  }
-
-  async render(
-    templateSelector: string,
-    containerSelector: string,
-  ): Promise<void> {
-    const tmpl = document.querySelector<HTMLTemplateElement>(templateSelector);
-    const container = document.querySelector(containerSelector);
-    if (!container) {
-      console.log("Ignore render: not found container");
+  async render(): Promise<void> {
+    const tmpl = document.querySelector<HTMLTemplateElement>("[data-qiita-id]");
+    const userName = tmpl?.dataset.qiitaId;
+    const mountpoint = tmpl?.dataset.mountPoint;
+    const perPage = Number(tmpl?.dataset.itemsNum ?? 5);
+    const container = mountpoint
+      ? document.querySelector(mountpoint)
+      : null;
+    if (!userName || !container) {
+      console.log("Ignore render: not found userName or container");
       return;
     }
 
     try {
-      const items = await this.fetchItems();
+      const items = await this.fetchItems(userName, perPage);
       container.replaceChildren();
       const ul = document.createElement("ul");
       for (const item of items) {
@@ -52,9 +44,12 @@ export default class QiitaProfile {
     }
   }
 
-  private async fetchItems(): Promise<QiitaItem[]> {
+  private async fetchItems(
+    userName: string,
+    perPage: number,
+  ): Promise<QiitaItem[]> {
     const items = await fetchAsJson(
-      `${BASE_URL}/users/${this.userName}/items?per_page=${this.perPage}`,
+      `${BASE_URL}/users/${userName}/items?per_page=${perPage}`,
     );
     console.log("QiitaProfile: items %o", items);
     return items as QiitaItem[];

@@ -13,31 +13,23 @@ interface GithubRepo {
 type RepoQueryOptions = Record<string, string>;
 
 export default class GithubProfile {
-  private uid: string;
-  private perPage: number;
-  private opts: RepoQueryOptions;
-
-  constructor(uid: string, reposNum = 5, options: RepoQueryOptions = {}) {
-    this.uid = uid;
-    this.perPage = reposNum;
-    this.opts = options;
-
-    console.log("GithubProfile: Constructor %o", this);
-  }
-
-  async render(
-    templateSelector: string,
-    containerSelector: string,
-  ): Promise<void> {
-    const tmpl = document.querySelector<HTMLTemplateElement>(templateSelector);
-    const container = document.querySelector(containerSelector);
-    if (!container) {
-      console.log("Ignore render: not found container");
+  async render(): Promise<void> {
+    const tmpl = document.querySelector<HTMLTemplateElement>("[data-github-id]");
+    const uid = tmpl?.dataset.githubId;
+    const mountpoint = tmpl?.dataset.mountPoint;
+    const perPage = Number(tmpl?.dataset.itemsNum ?? 5);
+    const opts: RepoQueryOptions = {};
+    if (tmpl?.dataset.repoType) opts.type = tmpl.dataset.repoType;
+    if (tmpl?.dataset.repoSort) opts.sort = tmpl.dataset.repoSort;
+    if (tmpl?.dataset.repoDirection) opts.direction = tmpl.dataset.repoDirection;
+    const container = mountpoint ? document.querySelector(mountpoint) : null;
+    if (!uid || !container) {
+      console.log("Ignore render: not found uid or container");
       return;
     }
 
     try {
-      const repos = await this.fetchRepos();
+      const repos = await this.fetchRepos(uid, perPage, opts);
       container.replaceChildren();
       const ul = document.createElement("ul");
       for (const repo of repos) {
@@ -59,12 +51,16 @@ export default class GithubProfile {
     }
   }
 
-  private async fetchRepos(): Promise<GithubRepo[]> {
-    const query = Object.entries(this.opts)
+  private async fetchRepos(
+    uid: string,
+    perPage: number,
+    opts: RepoQueryOptions,
+  ): Promise<GithubRepo[]> {
+    const query = Object.entries(opts)
       .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
       .join("&");
     const repos = await fetchAsJson(
-      `${BASE_URL}/users/${this.uid}/repos?per_page=${this.perPage}&${query}`,
+      `${BASE_URL}/users/${uid}/repos?per_page=${perPage}&${query}`,
     );
     console.log("GithubProfile: repos %o", repos);
     return repos as GithubRepo[];
