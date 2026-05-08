@@ -4,11 +4,32 @@ import { Temporal } from "temporal-polyfill";
 import { hasFrontMatter, parseFrontMatter } from "./frontmatter.ts";
 import { render as renderTemplate } from "./template.ts";
 import { render as renderMarkdown } from "./markdown.ts";
-import { buildJs } from "./js.ts";
-import type { Post, SiteConfig, SiteData } from "./types.ts";
+
+interface SiteConfig {
+  title: string;
+  url: string;
+  baseurl: string;
+  author: string;
+  email: string;
+  description: string;
+  time: Temporal.Instant;
+}
+
+interface Post {
+  title: string;
+  date: Temporal.Instant;
+  url: string;
+  excerpt: string;
+  filePath: string;
+}
+
+interface SiteData {
+  config: SiteConfig;
+  posts: Post[];
+}
 
 const SRC = "src";
-const OUT = "public";
+export const OUT = "public";
 
 export const siteConfig: SiteConfig = {
   title: "電卓片手に",
@@ -59,14 +80,13 @@ function expandUrls(html: string, baseUrl: string): string {
 
 function parsePostPath(
   filePath: string,
-): { date: Temporal.Instant; slug: string; url: string } | null {
+): { date: Temporal.Instant; url: string } | null {
   const m = filePath.match(
     /\/blog\/(\d{4})\/(\d{2})\/(\d{2})\/([^/]+)\/index\.(md|markdown|html)$/,
   );
   if (!m) return null;
   return {
     date: Temporal.Instant.from(`${m[1]}-${m[2]}-${m[3]}T00:00:00+09:00`),
-    slug: m[4],
     url: `/blog/${m[1]}/${m[2]}/${m[3]}/${m[4]}/`,
   };
 }
@@ -260,11 +280,11 @@ async function buildContent(
       throw new Error(`layout is not supported in a post entry: ${filePath}`);
     }
     if (!date) throw new Error(`date is required in a post entry: ${filePath}`);
+    if (!data.title) throw new Error(`title is required in a post entry: ${filePath}`);
     await writeHtml(outPath, body, ctx, "post");
     return {
-      title: String(data.title ?? postMeta.slug.replace(/-/g, " ")),
+      title: String(data.title),
       date,
-      slug: postMeta.slug,
       url: postMeta.url,
       excerpt: extractExcerpt(body),
       filePath,
@@ -343,20 +363,8 @@ async function buildPhase2(
   );
 }
 
-async function buildSrc(): Promise<void> {
+export async function buildEntries(): Promise<void> {
+  layoutCache.clear();
   const { posts, deferred } = await buildPhase1();
   await buildPhase2(posts, deferred);
-}
-
-export async function build(): Promise<void> {
-  console.log("Building...");
-  layoutCache.clear();
-  try {
-    await Deno.remove(OUT, { recursive: true });
-  } catch { /* ok */ }
-  await ensureDir(OUT);
-
-  await Promise.all([buildSrc(), buildJs()]);
-
-  console.log("Done →", OUT);
 }

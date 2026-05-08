@@ -1,5 +1,5 @@
 import { Temporal } from "temporal-polyfill";
-import { build } from "./builder.ts";
+import { build } from "./builder/mod.ts";
 import { serve } from "./server.ts";
 
 const cmd = Deno.args[0];
