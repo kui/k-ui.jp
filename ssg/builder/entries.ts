@@ -224,6 +224,14 @@ async function writeHtml(
 
 // ─── src/ ビルド ──────────────────────────────────────────────────────────────
 
+interface PageContext {
+  title: string;
+  url: string;
+  dateIso?: string;
+  dateDisplay?: string;
+  excerpt?: string;
+}
+
 interface TsEntry {
   type: "ts";
   filePath: string;
@@ -262,7 +270,7 @@ async function buildContent(
   let url = "/" + outRel;
   if (url.endsWith("index.html")) url = url.slice(0, -10) || "/";
 
-  const pageCtx: Record<string, unknown> = {
+  const pageCtx: PageContext = {
     title: (data.title as string | undefined) ?? "",
     url,
   };
