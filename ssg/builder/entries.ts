@@ -127,7 +127,7 @@ function makeSiteCtx(site: SiteData) {
   return {
     ...site.config,
     year: inTokyo(site.config.time).year,
-    time_xmlschema: toISOString(site.config.time),
+    timeIso: toISOString(site.config.time),
   };
 }
 
@@ -135,16 +135,16 @@ function makeRecentPosts(posts: Post[], baseurl: string) {
   return posts.slice(0, 5).map((p) => ({
     title: p.title,
     url: baseurl + p.url,
-    date_iso: toISOString(p.date),
-    date_display: fmtDateDisplay(p.date),
+    dateIso: toISOString(p.date),
+    dateDisplay: fmtDateDisplay(p.date),
   }));
 }
 
 interface YearPost {
   title: string;
   url: string;
-  date_xmlschema: string;
-  date_month_day: string;
+  dateIso: string;
+  dateMonthDay: string;
 }
 
 function groupByYear(posts: Post[]): { year: string; posts: YearPost[] }[] {
@@ -155,8 +155,8 @@ function groupByYear(posts: Post[]): { year: string; posts: YearPost[] }[] {
     map.get(y)!.push({
       title: p.title,
       url: p.url,
-      date_xmlschema: toISOString(p.date),
-      date_month_day: fmtDateMonthDay(p.date),
+      dateIso: toISOString(p.date),
+      dateMonthDay: fmtDateMonthDay(p.date),
     });
   }
   return Array.from(map.entries())
@@ -167,8 +167,8 @@ function groupByYear(posts: Post[]): { year: string; posts: YearPost[] }[] {
 function makeAtomPosts(posts: Post[], siteUrl: string) {
   return posts.slice(0, 10).map((p) => ({
     title: p.title,
-    full_url: siteUrl + p.url,
-    date_xmlschema: toISOString(p.date),
+    fullUrl: siteUrl + p.url,
+    dateIso: toISOString(p.date),
     id: siteUrl + p.url,
     content: expandUrls(p.excerpt, siteUrl),
   }));
@@ -273,8 +273,8 @@ async function buildContent(
     : postMeta?.date;
 
   if (date !== undefined) {
-    pageCtx.date_xmlschema = toISOString(date);
-    pageCtx.date_display = fmtDateDisplay(date);
+    pageCtx.dateIso = toISOString(date);
+    pageCtx.dateDisplay = fmtDateDisplay(date);
   }
 
   const ctx = {

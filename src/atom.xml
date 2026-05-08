@@ -7,7 +7,7 @@ use_post_list: true
   <title>[[site.title]]</title>
   <link href="[[site.url]]/atom.xml" rel="self" type="application/atom+xml" />
   <link href="[[site.url]]/" />
-  <updated>[[site.time_xmlschema]]</updated>
+  <updated>[[site.timeIso]]</updated>
   <id>[[site.url]]/</id>
   <author>
     <name>[[site.author]]</name>
@@ -18,8 +18,8 @@ use_post_list: true
   [[#atomPosts]]
   <entry>
     <title type="html">[[title]]</title>
-    <link href="[[full_url]]"/>
-    <updated>[[date_xmlschema]]</updated>
+    <link href="[[fullUrl]]"/>
+    <updated>[[dateIso]]</updated>
     <id>[[id]]</id>
     <content type="html">[[content]]</content>
   </entry>
