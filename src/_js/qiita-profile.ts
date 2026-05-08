@@ -11,24 +11,38 @@ interface QiitaItem {
 
 export default class QiitaProfile {
   async render(): Promise<void> {
-    const tmpl = document.querySelector<HTMLTemplateElement>("[data-qiita-id]");
-    const userName = tmpl?.dataset.qiitaId;
-    const mountpoint = tmpl?.dataset.mountPoint;
-    const perPage = Number(tmpl?.dataset.itemsNum ?? 5);
-    const container = mountpoint
-      ? document.querySelector(mountpoint)
-      : null;
-    if (!userName || !container) {
+    const tmpls = document.querySelectorAll<HTMLTemplateElement>(
+      "[data-qiita-id]",
+    );
+    await Promise.all(Array.from(tmpls).map((tmpl) => this.renderOne(tmpl)));
+  }
+
+  private async renderOne(tmpl: HTMLTemplateElement): Promise<void> {
+    const userName = tmpl.dataset.qiitaId;
+    const mountpoint = tmpl.dataset.mountPoint;
+    const perPage = Number(tmpl.dataset.itemsNum ?? 5);
+    const containers = mountpoint
+      ? Array.from(document.querySelectorAll(mountpoint))
+      : [];
+    if (!userName || containers.length === 0) {
       console.log("Ignore render: not found userName or container");
       return;
     }
 
+    let items: QiitaItem[];
     try {
-      const items = await this.fetchItems(userName, perPage);
+      items = await this.fetchItems(userName, perPage);
+    } catch (e) {
+      for (const container of containers) {
+        container.textContent = (e as Error).message;
+      }
+      throw e;
+    }
+    for (const container of containers) {
       container.replaceChildren();
       const ul = document.createElement("ul");
       for (const item of items) {
-        const clone = tmpl!.content.cloneNode(true) as DocumentFragment;
+        const clone = tmpl.content.cloneNode(true) as DocumentFragment;
         const a = clone.querySelector<HTMLAnchorElement>(".js-item-link")!;
         a.href = item.url;
         a.textContent = item.title;
@@ -38,9 +52,6 @@ export default class QiitaProfile {
         ul.appendChild(clone);
       }
       container.appendChild(ul);
-    } catch (e) {
-      container.textContent = (e as Error).message;
-      throw e;
     }
   }
 

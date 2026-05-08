@@ -14,26 +14,42 @@ type RepoQueryOptions = Record<string, string>;
 
 export default class GithubProfile {
   async render(): Promise<void> {
-    const tmpl = document.querySelector<HTMLTemplateElement>("[data-github-id]");
-    const uid = tmpl?.dataset.githubId;
-    const mountpoint = tmpl?.dataset.mountPoint;
-    const perPage = Number(tmpl?.dataset.itemsNum ?? 5);
+    const tmpls = document.querySelectorAll<HTMLTemplateElement>(
+      "[data-github-id]",
+    );
+    await Promise.all(Array.from(tmpls).map((tmpl) => this.renderOne(tmpl)));
+  }
+
+  private async renderOne(tmpl: HTMLTemplateElement): Promise<void> {
+    const uid = tmpl.dataset.githubId;
+    const mountpoint = tmpl.dataset.mountPoint;
+    const perPage = Number(tmpl.dataset.itemsNum ?? 5);
     const opts: RepoQueryOptions = {};
-    if (tmpl?.dataset.repoType) opts.type = tmpl.dataset.repoType;
-    if (tmpl?.dataset.repoSort) opts.sort = tmpl.dataset.repoSort;
-    if (tmpl?.dataset.repoDirection) opts.direction = tmpl.dataset.repoDirection;
-    const container = mountpoint ? document.querySelector(mountpoint) : null;
-    if (!uid || !container) {
+    if (tmpl.dataset.repoType) opts.type = tmpl.dataset.repoType;
+    if (tmpl.dataset.repoSort) opts.sort = tmpl.dataset.repoSort;
+    if (tmpl.dataset.repoDirection) opts.direction = tmpl.dataset.repoDirection;
+    const containers = mountpoint
+      ? Array.from(document.querySelectorAll(mountpoint))
+      : [];
+    if (!uid || containers.length === 0) {
       console.log("Ignore render: not found uid or container");
       return;
     }
 
+    let repos: GithubRepo[];
     try {
-      const repos = await this.fetchRepos(uid, perPage, opts);
+      repos = await this.fetchRepos(uid, perPage, opts);
+    } catch (e) {
+      for (const container of containers) {
+        container.textContent = (e as Error).message;
+      }
+      throw e;
+    }
+    for (const container of containers) {
       container.replaceChildren();
       const ul = document.createElement("ul");
       for (const repo of repos) {
-        const clone = tmpl!.content.cloneNode(true) as DocumentFragment;
+        const clone = tmpl.content.cloneNode(true) as DocumentFragment;
         const a = clone.querySelector<HTMLAnchorElement>(".js-repo-link")!;
         a.href = repo.html_url;
         a.textContent = repo.name;
@@ -45,9 +61,6 @@ export default class GithubProfile {
         ul.appendChild(clone);
       }
       container.appendChild(ul);
-    } catch (e) {
-      container.textContent = (e as Error).message;
-      throw e;
     }
   }
 
