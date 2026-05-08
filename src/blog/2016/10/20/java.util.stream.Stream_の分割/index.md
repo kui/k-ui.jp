@@ -29,5 +29,4 @@ date: 2016-10-20 12:48:40+0900
 
 [1]: https://google.github.io/guava/releases/19.0/api/docs/com/google/common/collect/FluentIterable.html
 [2]: https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html
-
-[3]: https://google.github.io/guava/releases/19.0/api/docs/com/google/common/collect/Iterables.html#partition(java.lang.Iterable, int)
+[3]: <https://google.github.io/guava/releases/19.0/api/docs/com/google/common/collect/Iterables.html#partition(java.lang.Iterable, int)>
