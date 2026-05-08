@@ -1,15 +1,15 @@
 /// <reference lib="dom" />
-import QiitaProfile from "./_js/qiita-profile.ts";
-import GithubProfile from "./_js/github-profile.ts";
+import { render as renderQiitaProfile } from "./_js/qiita-profile.ts";
+import { render as renderGithubProfile } from "./_js/github-profile.ts";
 
 async function main(): Promise<void> {
   printBanner();
-  console.log("main: Wait DOM content loaded");
+  console.log("main: Waiting for DOMContentLoaded");
   await waitContentLoaded();
   console.log("main: Start");
   await Promise.all([
-    new QiitaProfile().render(),
-    new GithubProfile().render(),
+    renderQiitaProfile(),
+    renderGithubProfile(),
   ]);
   console.log("main: Done");
 }
