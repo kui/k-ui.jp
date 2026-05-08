@@ -1,6 +1,6 @@
 /// <reference lib="dom" />
-import QiitaProfile from "./lib/qiita-profile.ts";
-import GithubProfile from "./lib/github-profile.ts";
+import QiitaProfile from "./_js/qiita-profile.ts";
+import GithubProfile from "./_js/github-profile.ts";
 
 declare global {
   var topJs: { qiitaId: string; githubId: string } | undefined;

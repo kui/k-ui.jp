@@ -1,6 +1,7 @@
 import { dirname, join, relative } from "@std/path";
 import { ensureDir, walk } from "@std/fs";
 import { Temporal } from "temporal-polyfill";
+import * as esbuild from "esbuild";
 import { hasFrontMatter, parseFrontMatter } from "./frontmatter.ts";
 import { render as renderTemplate } from "./template.ts";
 import { render as renderMarkdown } from "./markdown.ts";
@@ -16,6 +17,7 @@ interface SiteConfig {
 }
 
 interface Post {
+  type: "post";
   title: string;
   date: Temporal.Instant;
   url: string;
@@ -222,10 +224,26 @@ async function writeHtml(
 
 // ─── src/ ビルド ──────────────────────────────────────────────────────────────
 
+interface TsEntry {
+  type: "ts";
+  filePath: string;
+}
+
 interface DeferredEntry {
+  type: "deferred";
   filePath: string;
   data: Record<string, unknown>;
   content: string;
+}
+
+interface PageResult {
+  type: "page";
+  filePath: string;
+}
+
+interface AssetResult {
+  type: "asset";
+  filePath: string;
 }
 
 // frontmatter パース済みの data/content を受け取りファイルを出力する。
@@ -235,7 +253,7 @@ async function buildContent(
   data: Record<string, unknown>,
   content: string,
   site: SiteData,
-): Promise<Post | null> {
+): Promise<Post | PageResult> {
   const rel = relative(SRC, filePath);
   const isMarkdown = /\.(md|markdown)$/.test(filePath);
   const outRel = isMarkdown ? rel.replace(/\.(md|markdown)$/, ".html") : rel;
@@ -280,9 +298,12 @@ async function buildContent(
       throw new Error(`layout is not supported in a post entry: ${filePath}`);
     }
     if (!date) throw new Error(`date is required in a post entry: ${filePath}`);
-    if (!data.title) throw new Error(`title is required in a post entry: ${filePath}`);
+    if (!data.title) {
+      throw new Error(`title is required in a post entry: ${filePath}`);
+    }
     await writeHtml(outPath, body, ctx, "post");
     return {
+      type: "post",
       title: String(data.title),
       date,
       url: postMeta.url,
@@ -295,16 +316,19 @@ async function buildContent(
       throw new Error(`layout must be a string or null: ${filePath}`);
     }
     await writeHtml(outPath, body, ctx, data.layout);
-    return null;
+    return { type: "page", filePath };
   }
 }
 
 // use_post_list: true のファイルは DeferredEntry として保留し buildPhase2 に委ねる。
-// それ以外は buildContent で処理し、ブログ記事なら Post を返す。
+// .ts ファイルは TsEntry として保留し buildTsEntries に委ねる。
+// それ以外は buildContent で処理する。
 async function buildEntry(
   filePath: string,
   site: SiteData,
-): Promise<Post | DeferredEntry | null> {
+): Promise<TsEntry | DeferredEntry | Post | PageResult | AssetResult> {
+  if (filePath.endsWith(".ts")) return { type: "ts", filePath };
+
   const rel = relative(SRC, filePath);
   const isMarkdown = /\.(md|markdown)$/.test(filePath);
   const outRel = isMarkdown ? rel.replace(/\.(md|markdown)$/, ".html") : rel;
@@ -314,7 +338,7 @@ async function buildEntry(
   if (!hasFrontMatter(bytes)) {
     await ensureDir(dirname(outPath));
     await Deno.writeFile(outPath, bytes);
-    return null;
+    return { type: "asset", filePath };
   }
 
   const raw = new TextDecoder().decode(bytes);
@@ -324,7 +348,7 @@ async function buildEntry(
     if (parsePostPath(filePath) !== null) {
       throw new Error(`use_post_list cannot be set on a post: ${filePath}`);
     }
-    return { filePath, data, content };
+    return { type: "deferred", filePath, data, content };
   }
 
   return buildContent(filePath, data, content, site);
@@ -333,24 +357,46 @@ async function buildEntry(
 // ─── エントリポイント ─────────────────────────────────────────────────────────
 
 async function buildPhase1(): Promise<
-  { posts: Post[]; deferred: DeferredEntry[] }
+  { posts: Post[]; deferred: DeferredEntry[]; tsEntries: TsEntry[] }
 > {
   const site: SiteData = { config: siteConfig, posts: [] };
-  const results = await Promise.all(
-    (await Array.fromAsync(walk(SRC, { includeDirs: false, skip: [/\/_/] })))
-      .map((entry) => buildEntry(entry.path, site)),
-  );
-
+  const tsEntries: TsEntry[] = [];
   const deferred: DeferredEntry[] = [];
   const posts: Post[] = [];
-  for (const result of results) {
-    if (result === null) continue;
-    if ("data" in result) deferred.push(result);
-    else posts.push(result);
+  for await (const entry of walk(SRC, { includeDirs: false, skip: [/\/_/] })) {
+    const result = await buildEntry(entry.path, site);
+    switch (result.type) {
+      case "post":
+        posts.push(result);
+        break;
+      case "deferred":
+        deferred.push(result);
+        break;
+      case "ts":
+        tsEntries.push(result);
+        break;
+      case "page":
+      case "asset":
+        break;
+    }
   }
   posts.sort((a, b) => Temporal.Instant.compare(b.date, a.date));
   console.log(`  ${posts.length} posts`);
-  return { posts, deferred };
+  return { posts, deferred, tsEntries };
+}
+
+async function buildTsEntries(entries: TsEntry[]): Promise<void> {
+  if (entries.length === 0) return;
+  await esbuild.build({
+    entryPoints: entries.map((e) => e.filePath),
+    bundle: true,
+    outdir: OUT,
+    outbase: SRC,
+    format: "iife",
+    target: ["es2017"],
+    minify: true,
+  });
+  esbuild.stop();
 }
 
 async function buildPhase2(
@@ -365,6 +411,6 @@ async function buildPhase2(
 
 export async function buildEntries(): Promise<void> {
   layoutCache.clear();
-  const { posts, deferred } = await buildPhase1();
-  await buildPhase2(posts, deferred);
+  const { posts, deferred, tsEntries } = await buildPhase1();
+  await Promise.all([buildPhase2(posts, deferred), buildTsEntries(tsEntries)]);
 }
