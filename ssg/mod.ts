@@ -3,10 +3,11 @@ import { build } from "./builder/mod.ts";
 import { serve } from "./server.ts";
 
 const cmd = Deno.args[0];
+const dryRun = Deno.args.includes("--dry-run");
 
 switch (cmd) {
   case "build":
-    await build();
+    await build(dryRun);
     break;
 
   case "serve": {

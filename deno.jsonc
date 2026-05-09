@@ -2,6 +2,7 @@
   "nodeModulesDir": "none",
   "tasks": {
     "build": "deno run --allow-read --allow-write --allow-env --allow-run ssg/mod.ts build",
+    "build:dry-run": "deno run --allow-read --allow-env --allow-run ssg/mod.ts build --dry-run",
     "serve": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run ssg/mod.ts serve",
     "new-post": "deno run --allow-read --allow-write --allow-env ssg/mod.ts new-post"
   },

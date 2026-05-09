@@ -232,10 +232,15 @@ async function writeHtml(
   body: string,
   ctx: Record<string, unknown>,
   layout: string | null,
+  dryRun: boolean,
 ): Promise<void> {
   const html = layout && layout !== "null" && layout !== "nil"
     ? await applyLayouts(body, layout, ctx)
     : body;
+  if (dryRun) {
+    console.log("  [dry-run]", outPath);
+    return;
+  }
   await ensureDir(dirname(outPath));
   await Deno.writeTextFile(outPath, html);
 }
@@ -247,6 +252,7 @@ async function buildContent(
   data: Record<string, unknown>,
   content: string,
   site: SiteData,
+  dryRun: boolean,
 ): Promise<Post | PageResult> {
   const rel = relative(SRC, filePath);
   const isMarkdown = /\.(md|markdown)$/.test(filePath);
@@ -295,7 +301,7 @@ async function buildContent(
     if (!data.title) {
       throw new Error(`title is required in a post entry: ${filePath}`);
     }
-    await writeHtml(outPath, body, ctx, "post");
+    await writeHtml(outPath, body, ctx, "post", dryRun);
     return {
       type: "post",
       title: String(data.title),
@@ -309,7 +315,7 @@ async function buildContent(
     if (typeof data.layout !== "string" && data.layout !== null) {
       throw new Error(`layout must be a string or null: ${filePath}`);
     }
-    await writeHtml(outPath, body, ctx, data.layout);
+    await writeHtml(outPath, body, ctx, data.layout, dryRun);
     return { type: "page", filePath };
   }
 }
@@ -320,6 +326,7 @@ async function buildContent(
 async function buildEntry(
   filePath: string,
   site: SiteData,
+  dryRun: boolean,
 ): Promise<TsEntry | DeferredEntry | Post | PageResult | AssetResult> {
   if (filePath.endsWith(".ts")) return { type: "ts", filePath };
 
@@ -330,8 +337,12 @@ async function buildEntry(
   const bytes = await Deno.readFile(filePath);
 
   if (!hasFrontMatter(bytes)) {
-    await ensureDir(dirname(outPath));
-    await Deno.writeFile(outPath, bytes);
+    if (dryRun) {
+      console.log("  [dry-run]", outPath);
+    } else {
+      await ensureDir(dirname(outPath));
+      await Deno.writeFile(outPath, bytes);
+    }
     return { type: "asset", filePath };
   }
 
@@ -345,10 +356,10 @@ async function buildEntry(
     return { type: "deferred", filePath, data, content };
   }
 
-  return buildContent(filePath, data, content, site);
+  return buildContent(filePath, data, content, site, dryRun);
 }
 
-async function buildPhase1(): Promise<
+async function buildPhase1(dryRun: boolean): Promise<
   { posts: Post[]; deferred: DeferredEntry[]; tsEntries: TsEntry[] }
 > {
   const site: SiteData = { config: siteConfig, posts: [] };
@@ -356,7 +367,7 @@ async function buildPhase1(): Promise<
   const deferred: DeferredEntry[] = [];
   const posts: Post[] = [];
   for await (const entry of walk(SRC, { includeDirs: false, skip: [/\/_/] })) {
-    const result = await buildEntry(entry.path, site);
+    const result = await buildEntry(entry.path, site, dryRun);
     switch (result.type) {
       case "post":
         posts.push(result);
@@ -377,9 +388,12 @@ async function buildPhase1(): Promise<
   return { posts, deferred, tsEntries };
 }
 
-async function buildTsEntries(entries: TsEntry[]): Promise<void> {
+async function buildTsEntries(
+  entries: TsEntry[],
+  dryRun: boolean,
+): Promise<void> {
   if (entries.length === 0) return;
-  await esbuild.build({
+  const result = await esbuild.build({
     entryPoints: entries.map((e) => e.filePath),
     bundle: true,
     outdir: OUT,
@@ -387,22 +401,34 @@ async function buildTsEntries(entries: TsEntry[]): Promise<void> {
     format: "iife",
     target: ["es2017"],
     minify: true,
+    write: !dryRun,
   });
   esbuild.stop();
+  if (dryRun) {
+    for (const f of result.outputFiles ?? []) {
+      console.log("  [dry-run]", relative(Deno.cwd(), f.path));
+    }
+  }
 }
 
 async function buildPhase2(
   posts: Post[],
   deferred: DeferredEntry[],
+  dryRun: boolean,
 ): Promise<void> {
   const site: SiteData = { config: siteConfig, posts };
   await Promise.all(
-    deferred.map((e) => buildContent(e.filePath, e.data, e.content, site)),
+    deferred.map((e) =>
+      buildContent(e.filePath, e.data, e.content, site, dryRun)
+    ),
   );
 }
 
-export async function buildEntries(): Promise<void> {
+export async function buildEntries(dryRun: boolean): Promise<void> {
   layoutCache.clear();
-  const { posts, deferred, tsEntries } = await buildPhase1();
-  await Promise.all([buildPhase2(posts, deferred), buildTsEntries(tsEntries)]);
+  const { posts, deferred, tsEntries } = await buildPhase1(dryRun);
+  await Promise.all([
+    buildPhase2(posts, deferred, dryRun),
+    buildTsEntries(tsEntries, dryRun),
+  ]);
 }
