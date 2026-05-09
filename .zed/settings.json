@@ -1,0 +1,53 @@
+{
+  "languages": {
+    "TypeScript": {
+      "language_servers": ["deno", "!typescript-language-server"],
+      "formatter": {
+        "external": {
+          "command": "deno",
+          "arguments": ["fmt", "--ext", "ts", "-"]
+        }
+      }
+    },
+    "JavaScript": {
+      "formatter": {
+        "external": {
+          "command": "deno",
+          "arguments": ["fmt", "--ext", "js", "-"]
+        }
+      }
+    },
+    "JSON": {
+      "formatter": {
+        "external": {
+          "command": "deno",
+          "arguments": ["fmt", "--ext", "json", "-"]
+        }
+      }
+    },
+    "Markdown": {
+      "formatter": {
+        "external": {
+          "command": "deno",
+          "arguments": ["fmt", "--ext", "md", "-"]
+        }
+      }
+    },
+    "CSS": {
+      "formatter": {
+        "external": {
+          "command": "deno",
+          "arguments": ["fmt", "--ext", "css", "-"]
+        }
+      }
+    },
+    "HTML": {
+      "formatter": {
+        "external": {
+          "command": "deno",
+          "arguments": ["fmt", "--ext", "html", "-"]
+        }
+      }
+    }
+  }
+}

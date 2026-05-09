@@ -1,0 +1,53 @@
+@charset "utf-8";
+
+body {
+  font-family:
+    "Helvetica Neue", Helvetica, "ヒラギノ角ゴ ProN W3",
+    "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "IPA Pゴシック",
+    "IPA PGothic", sans-serif;
+  color: #333;
+
+  h1, h2, h3, h4, h5, h6 {
+    > a {
+      text-decoration: none;
+      color: #333;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  > header > h1 {
+    text-align: center;
+    font-weight: 500;
+    font-size: 150%;
+  }
+
+  > article {
+    blockquote {
+      border-left: solid 3px #ccc;
+      margin: 0 24px;
+      padding: 12px 12px;
+      font-style: oblique;
+    }
+
+    code {
+      font-family:
+        Consolas, "Liberation Mono", Menlo, Courier, "IPAゴシック", "IPAGothic",
+        monospace;
+    }
+
+    pre {
+      margin: 12px;
+    }
+    pre > code {
+      display: block;
+      padding: 12px;
+    }
+  }
+
+  > footer {
+    text-align: center;
+    font-size: small;
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "nodeModulesDir": "none",
+  "tasks": {
+    "build": "deno run --allow-read --allow-write --allow-env --allow-run ssg/mod.ts build",
+    "build:dry-run": "deno run --allow-read --allow-env --allow-run ssg/mod.ts build --dry-run",
+    "serve": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run ssg/mod.ts serve",
+    "new-post": "deno run --allow-read --allow-write --allow-env ssg/mod.ts new-post"
+  },
+  "imports": {
+    "@std/fs": "jsr:@std/fs@^1.0.23",
+    "@std/path": "jsr:@std/path@^1.1.4",
+    "@std/yaml": "jsr:@std/yaml@^1.1.0",
+    "esbuild": "npm:esbuild@^0.28",
+    "temporal-polyfill": "npm:temporal-polyfill@^0.3.2",
+    "marked": "npm:marked@^18",
+    "shiki": "npm:shiki@^4",
+    "mustache": "npm:mustache@^4"
+  },
+  "exclude": [
+    "public"
+  ],
+  "fmt": {
+    "proseWrap": "preserve",
+    // deno fmt では frontmatter は markdown しか正しく処理できない
+    "exclude": ["src/**/*.xml", "src/**/*.html"]
+  }
+}

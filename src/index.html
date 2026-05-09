@@ -1,91 +1,63 @@
 ---
 layout: page
+use_post_list: true
 ---
-<script>
-var topJs = {
-  qiitaId:  '{{ site.qiita_id }}',
-  githubId: '{{ site.github_id }}',
-};
-</script>
-<script src="{{ "/js/top.js" | prepend: site.baseurl }}" async></script>
+<script src="{{site.baseurl}}/index.js" async></script>
 
 <section id="about">
-  <h1>{{ site.author }}</h1>
+  <h1>{{site.author}}</h1>
   <ul>
-    <li>GitHub: <a href="https://github.com/{{ site.github_id }}">{{ site.github_id }}</a></li>
-    <li>Twitter: <a href="https://twitter.com/{{ site.twitter_id }}">{{ site.twitter_id }}</a></li>
-    <li>Tumblr: <a href="http://{{ site.tumblr_id }}.tumblr.com/">{{ site.tumblr_id }}</a></li>
-    {% if site.qiita_id %}
-    <li>Qiita: <a href="https://qiita.com/{{ site.qiita_id }}">{{ site.qiita_id }}</a></li>
-    {% endif %}
-    {% if site.email %}
-    <li>Mail: {{ site.email }}</li>
-    {% endif %}
+    <li>GitHub: <a href="https://github.com/kui">kui</a></li>
+    <li>Twitter: <a href="https://twitter.com/k_ui">k_ui</a></li>
+    <li>Qiita: <a href="https://qiita.com/k_ui">k_ui</a></li>
+    {{#site.email}}
+    <li>Mail: {{site.email}}</li>
+    {{/site.email}}
   </ul>
 </section>
 
 <section id="recent-posts">
   <h1>最近のブログ投稿</h1>
   <ul>
-    {% for post in site.posts limit:5 %}
+    {{#recentPosts}}
     <li>
       <article>
-        <a rel="full-article" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-        (<time datetime="{{post.date}}" pubdate>{{ post.date | date: "%-Y/%-m/%-d" }}</time>)
+        <a rel="full-article" href="{{url}}">{{title}}</a>
+        (<time datetime="{{dateIso}}" pubdate>{{dateDisplay}}</time>)
       </article>
     </li>
-    {% endfor %}
+    {{/recentPosts}}
   </ul>
-  <p><a href="{{ site.baseurl }}blog">&laquo; 過去の記事</a></p>
+  <p><a href="{{site.baseurl}}/blog">&laquo; 過去の記事</a></p>
 </section>
 
 <section id="github">
-  <h1>Github: <a href="https://github.com/{{ site.github_id }}">{{ site.github_id }}</a></h1>
+  <h1>Github: <a href="https://github.com/kui">kui</a></h1>
   <div id="js-github-profile">
     <p>ロード中...</p>
   </div>
-  <div id="js-github-profile-source" hidden>{% raw %}
-    <ul>
-      {{#repos}}
-      <li>
-        <article>
-          <a href="{{html_url}}">{{name}}</a>: {{description}}
-          (pushed at {{#dateformatJp}}{{pushed_at}}{{/dateformatJp}})
-        </article>
-      </li>
-      {{/repos}}
-    </ul>
-  </div>{% endraw %}
+  <template data-github-id="kui" data-mount-point="#js-github-profile" data-items-num="5" data-repo-type="all" data-repo-sort="pushed" data-repo-direction="desc">
+    <li>
+      <article>
+        <a class="js-repo-link" href=""></a>: <span class="js-repo-desc"></span>
+        (pushed at <time class="js-repo-pushed"></time>)
+      </article>
+    </li>
+  </template>
 </section>
 
 <section id="qiita">
-  <h1>Qiita: <a href="https://qiita.com/{{ site.qiita_id }}">{{ site.qiita_id }}</a></h1>
+  <h1>Qiita: <a href="https://qiita.com/k_ui">k_ui</a></h1>
   <div id="js-qiita-profile">
     <p>ロード中...</p>
   </div>
-  <div id="js-qiita-profile-source" hidden>{% raw %}
-    <ul>
-      {{#items}}
-      <li>
-        <article>
-          <a rel="full-article" href="{{url}}">{{title}}</a>
-          (<time datetime="{{post.date}}" pubdate>{{#dateformatJp}}{{created_at}}{{/dateformatJp}}</time>)
-        </article>
-      </li>
-      {{/items}}
-    </ul>
-  </div>{% endraw %}
-  <p><a href="http://qiita.com/{{ site.qiita_id }}/items">&laquo; Qiita 投稿の一覧</a></p>
-</section>
-
-<section id="twitter">
-  <h1>Twitter: <a href="https://twitter.com/{{ site.twitter_id }}">{{ site.twitter_id }}</a></h1>
-  <a class="twitter-timeline" href="https://twitter.com/{{ site.twitter_id }}"
-     data-chrome="noheader nofooter transparent"
-     data-tweet-limit="5"
-     data-show-replies="false"
-     data-widget-id="686766057340571649">@{{ site.twitter_id }}</a>
-  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':
-    'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+
-    "://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  <template data-qiita-id="k_ui" data-mount-point="#js-qiita-profile" data-items-num="5">
+    <li>
+      <article>
+        <a class="js-item-link" rel="full-article" href=""></a>
+        (<time class="js-item-date" pubdate></time>)
+      </article>
+    </li>
+  </template>
+  <p><a href="http://qiita.com/k_ui/items">&laquo; Qiita 投稿の一覧</a></p>
 </section>
