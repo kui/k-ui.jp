@@ -16,6 +16,9 @@
     "shiki": "npm:shiki@^4",
     "mustache": "npm:mustache@^4"
   },
+  "exclude": [
+    "public"
+  ],
   "fmt": {
     "proseWrap": "preserve",
     // deno fmt では frontmatter は markdown しか正しく処理できない
