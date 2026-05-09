@@ -24,12 +24,13 @@ switch (cmd) {
       /[^\w-]/g,
       "",
     );
-    const path = `src/_posts/${y}/${m}/${y}-${m}-${d}-${slug}.md`;
+    const dir = `src/blog/${y}/${m}/${d}/${slug}`;
+    const path = `${dir}/index.md`;
 
     const dateStr = now.toString({ timeZoneName: "never" });
     const fm = `---\ntitle: ${title}\ndate: ${dateStr}\n---\n\n`;
 
-    await Deno.mkdir(`src/_posts/${y}/${m}`, { recursive: true });
+    await Deno.mkdir(dir, { recursive: true });
     await Deno.writeTextFile(path, fm);
     console.log("Created:", path);
     break;
