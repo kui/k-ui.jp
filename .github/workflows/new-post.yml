@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
       deployments: write
     steps:
       - uses: actions/checkout@v6
@@ -54,3 +55,13 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy public --project-name=k-ui-jp
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create pull request
+        run: |
+          gh pr create \
+            --title "投稿: ${{ github.event.inputs.title || github.event.inputs.slug }}" \
+            --body "" \
+            --base master \
+            --head "post/${{ github.event.inputs.slug }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

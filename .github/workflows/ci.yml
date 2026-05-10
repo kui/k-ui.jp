@@ -8,6 +8,8 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v6
 
@@ -17,7 +19,20 @@ jobs:
           cache: true
 
       - name: Format check
+        if: "!startsWith(github.ref, 'refs/heads/post/')"
         run: deno fmt --check
+
+      - name: Format and auto-commit
+        if: startsWith(github.ref, 'refs/heads/post/')
+        run: |
+          deno fmt
+          if ! git diff --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add -A
+            git commit -m "Apply deno fmt"
+            git push
+          fi
 
       - name: Lint
         run: deno lint
