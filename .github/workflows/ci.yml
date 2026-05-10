@@ -1,4 +1,4 @@
-name: CI
+name: CI and Deploy
 
 on:
   push:
@@ -24,5 +24,36 @@ jobs:
       - name: Type check
         run: deno check
 
-      - name: Build (dry-run)
-        run: deno task build:dry-run
+      - name: Build
+        run: deno task build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: public
+          path: public/
+          retention-days: 1
+
+  deploy:
+    needs: check
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/post/'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: public
+          path: public/
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy public --project-name=k-ui-jp
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
