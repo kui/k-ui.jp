@@ -58,6 +58,7 @@ jobs:
         run: deno task build
 
       - name: Deploy to Cloudflare Pages
+        id: deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -66,11 +67,28 @@ jobs:
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create pull request
-        run: |
-          gh pr create \
-            --title "投稿: ${{ github.event.inputs.title || github.event.inputs.slug }}" \
-            --body "" \
-            --base master \
-            --head "post/${{ github.event.inputs.slug }}"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          FILE=$(git diff-tree --no-commit-id -r --name-only HEAD | grep '\.md$')
+          BRANCH="post/${{ github.event.inputs.slug }}"
+          REPO="${{ github.repository }}"
+          PREVIEW_URL="${{ steps.deploy.outputs.deployment-url }}"
+          EDIT_URL="https://github.dev/${REPO}/blob/${BRANCH}/${FILE}"
+          cat > /tmp/pr-body.md << EOF
+          ## Preview
+          - [Branch preview](${PREVIEW_URL})
+
+          ## Edit
+          - [Edit on github.dev](${EDIT_URL})
+
+          ## Tools
+          - [Image resize tool](https://k-ui.jp/tools/resize/)
+          EOF
+          PR_URL=$(gh pr create \
+            --title "投稿: ${{ github.event.inputs.title || github.event.inputs.slug }}" \
+            --body-file /tmp/pr-body.md \
+            --base master \
+            --head "${BRANCH}")
+          echo "# Pull Request" >> $GITHUB_STEP_SUMMARY
+          echo "- <${PR_URL}>" >> $GITHUB_STEP_SUMMARY
