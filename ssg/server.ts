@@ -26,6 +26,9 @@ export function serve(root: string, port: number): void {
     let filePath = join(root, path);
 
     if (await isDir(filePath)) {
+      if (!path.endsWith("/")) {
+        return Response.redirect(req.url + "/", 301);
+      }
       filePath = join(filePath, "index.html");
     }
 

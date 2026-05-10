@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>画像リサイズ</title>
+    <style>
+      body {
+        font-family:
+          "Helvetica Neue",
+          Helvetica,
+          "ヒラギノ角ゴ ProN W3",
+          "Hiragino Kaku Gothic ProN",
+          "メイリオ",
+          Meiryo,
+          sans-serif;
+        color: #333;
+        max-width: 860px;
+        margin: 0 auto;
+      }
+
+      #result canvas {
+        border: 1px solid #e0e0e0;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>画像リサイズ</h1>
+
+    <div class="controls">
+      <input type="file" id="file-input" accept="image/*" />
+      <label>
+          横幅 (px)
+          <input type="number" id="width-input" value="800" min="1" max="99999" />
+      </label>
+      <button id="resize-btn" disabled>リサイズ</button>
+      <button id="download-btn" disabled>ダウンロード</button>
+    </div>
+
+    <div id="result">
+      <div id="info-source"></div>
+      <div id="info-output"></div>
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <script src="index.js" defer></script>
+  </body>
+</html>
