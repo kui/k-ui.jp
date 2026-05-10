@@ -9,7 +9,7 @@ github もこの間にいろいろなことが変わって、静的サイトジ�
 
 新しいブログ投稿をするまでのフローは以下になる:
 
-1. [new-post][] workflow で新しい投稿を作る
+1. [new-post][new-post] workflow で新しい投稿を作る
    ![new-post 入力例のスクリーンショット](image.png)
 2. 完了するとエディタURLやプレビューURLが出てくる
    ![new-post ワークフロー実行結果](image-1.png)
