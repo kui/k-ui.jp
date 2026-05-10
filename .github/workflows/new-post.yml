@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      deployments: write
     steps:
       - uses: actions/checkout@v6
 
@@ -27,6 +28,7 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: latest
+          cache: true
 
       - name: Create post
         run: |
@@ -41,3 +43,14 @@ jobs:
           git add src/blog/
           git commit -m "Add post: ${{ github.event.inputs.slug }}"
           git push -u origin "post/${{ github.event.inputs.slug }}"
+
+      - name: Build
+        run: deno task build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy public --project-name=k-ui-jp
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
