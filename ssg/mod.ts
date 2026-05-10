@@ -17,13 +17,23 @@ switch (cmd) {
   }
 
   case "new-post": {
-    const title = Deno.args[1] ?? "new-post";
+    const slug = Deno.args[1];
+    const title = Deno.args[2] ?? slug;
+
+    if (!slug) {
+      console.error("Usage: deno task new-post <slug> [title]");
+      Deno.exit(1);
+    }
+
+    if (!/^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/.test(slug)) {
+      console.error(
+        "Error: slug must contain only lowercase letters (a-z), digits (0-9), and hyphens (-), and must not start or end with a hyphen.",
+      );
+      Deno.exit(1);
+    }
+
     const now = Temporal.Now.zonedDateTimeISO("Asia/Tokyo");
     const [y, m, d] = now.toPlainDate().toString().split("-");
-    const slug = title.toLowerCase().replace(/\s+/g, "-").replace(
-      /[^\w-]/g,
-      "",
-    );
     const dir = `src/blog/${y}/${m}/${d}/${slug}`;
     const path = `${dir}/index.md`;
 
@@ -37,5 +47,5 @@ switch (cmd) {
   }
 
   default:
-    console.log("Usage: deno task build | serve | new-post [title]");
+    console.log("Usage: deno task build | serve | new-post <slug> [title]");
 }

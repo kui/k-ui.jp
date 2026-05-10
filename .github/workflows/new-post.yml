@@ -1,0 +1,43 @@
+name: New Post
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "URL slug (ASCII only, e.g. my-post-title)"
+        required: true
+      title:
+        description: "Post title (optional, defaults to slug)"
+        required: false
+
+jobs:
+  new-post:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Create branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "post/${{ github.event.inputs.slug }}"
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: latest
+
+      - name: Create post
+        run: |
+          if [ -n "${{ github.event.inputs.title }}" ]; then
+            deno task new-post "${{ github.event.inputs.slug }}" "${{ github.event.inputs.title }}"
+          else
+            deno task new-post "${{ github.event.inputs.slug }}"
+          fi
+
+      - name: Commit and push
+        run: |
+          git add src/blog/
+          git commit -m "Add post: ${{ github.event.inputs.slug }}"
+          git push -u origin "post/${{ github.event.inputs.slug }}"

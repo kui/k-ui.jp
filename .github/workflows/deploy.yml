@@ -2,7 +2,9 @@ name: Deploy
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
+      - "post/**"
 
 jobs:
   deploy:
@@ -25,3 +27,4 @@ jobs:
           projectName: k-ui-jp
           directory: public
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref_name }}
