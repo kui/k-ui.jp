@@ -9,10 +9,10 @@ github もこの間にいろいろなことが変わって、静的サイトジ�
 
 新しいブログ投稿をするまでのフローは以下になる:
 
-1. [new-post][new-post] workflow で新しい投稿を作る
-   ![new-post 入力例のスクリーンショット](image.png)
-2. 完了するとエディタURLやプレビューURLが出てくる
-   ![new-post ワークフロー実行結果](image-1.png)
+1. [new-post][new-post] workflow で新しい投稿を作る<br>
+   ![new-post 入力例のスクリーンショット](workflow-input.png)
+2. 完了するとエディタURLやプレビューURLが出てくる<br>
+   ![new-post ワークフロー実行結果](workflow-result.png)
 3. "Edit on github.dev" でブラウザ上で VS Code が立ち上がる
 4. 編集が終わったら commit & push
 5. プレビューURLで確認
