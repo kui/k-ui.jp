@@ -46,7 +46,7 @@ jobs:
 
       - name: Add summary links
         run: |
-          FILE=$(git show --name-only --format="" HEAD | grep '\.markdown$')
+          FILE=$(git diff-tree --no-commit-id -r --name-only HEAD | grep '\.markdown$')
           BRANCH="post/${{ github.event.inputs.slug }}"
           REPO="${{ github.repository }}"
           echo "### Post file" >> $GITHUB_STEP_SUMMARY
