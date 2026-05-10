@@ -44,6 +44,15 @@ jobs:
           git commit -m "Add post: ${{ github.event.inputs.slug }}"
           git push -u origin "post/${{ github.event.inputs.slug }}"
 
+      - name: Add summary links
+        run: |
+          FILE=$(git show --name-only --format="" HEAD | grep '\.markdown$')
+          BRANCH="post/${{ github.event.inputs.slug }}"
+          REPO="${{ github.repository }}"
+          echo "### Post file" >> $GITHUB_STEP_SUMMARY
+          echo "- [View on GitHub](https://github.com/${REPO}/blob/${BRANCH}/${FILE})" >> $GITHUB_STEP_SUMMARY
+          echo "- [Edit on github.dev](https://github.dev/${REPO}/blob/${BRANCH}/${FILE})" >> $GITHUB_STEP_SUMMARY
+
       - name: Build
         run: deno task build
 
