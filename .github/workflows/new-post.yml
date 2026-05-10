@@ -49,7 +49,7 @@ jobs:
           FILE=$(git diff-tree --no-commit-id -r --name-only HEAD | grep '\.md$')
           BRANCH="post/${{ github.event.inputs.slug }}"
           REPO="${{ github.repository }}"
-          echo "### Post file" >> $GITHUB_STEP_SUMMARY
+          echo "# Post file" >> $GITHUB_STEP_SUMMARY
           echo "- [View on GitHub](https://github.com/${REPO}/blob/${BRANCH}/${FILE})" >> $GITHUB_STEP_SUMMARY
           echo "- [Edit on github.dev](https://github.dev/${REPO}/blob/${BRANCH}/${FILE})" >> $GITHUB_STEP_SUMMARY
 
