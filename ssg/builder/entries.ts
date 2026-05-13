@@ -1,6 +1,5 @@
 import { dirname, join, relative } from "@std/path";
 import { ensureDir, walk } from "@std/fs";
-import { Temporal } from "temporal-polyfill";
 import * as esbuild from "esbuild";
 import { hasFrontMatter, parseFrontMatter } from "./frontmatter.ts";
 import { render as renderTemplate } from "./template.ts";

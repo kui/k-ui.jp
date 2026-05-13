@@ -1,4 +1,3 @@
-import { Temporal } from "temporal-polyfill";
 import { build } from "./builder/mod.ts";
 import { serve } from "./server.ts";
 

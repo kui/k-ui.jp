@@ -8,8 +8,7 @@
     "npm:esbuild@0.28": "0.28.0",
     "npm:marked@18": "18.0.3",
     "npm:mustache@4": "4.2.0",
-    "npm:shiki@4": "4.0.2",
-    "npm:temporal-polyfill@~0.3.2": "0.3.2"
+    "npm:shiki@4": "4.0.2"
   },
   "jsr": {
     "@std/fs@1.0.23": {
@@ -413,15 +412,6 @@
         "character-entities-legacy"
       ]
     },
-    "temporal-polyfill@0.3.2": {
-      "integrity": "sha512-TzHthD/heRK947GNiSu3Y5gSPpeUDH34+LESnfsq8bqpFhsB79HFBX8+Z834IVX68P3EUyRPZK5bL/1fh437Eg==",
-      "dependencies": [
-        "temporal-spec"
-      ]
-    },
-    "temporal-spec@0.3.1": {
-      "integrity": "sha512-B4TUhezh9knfSIMwt7RVggApDRJZo73uZdj8AacL2mZ8RP5KtLianh2MXxL06GN9ESYiIsiuoLQhgVfwe55Yhw=="
-    },
     "trim-lines@3.0.1": {
       "integrity": "sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg=="
     },
@@ -484,8 +474,7 @@
       "npm:esbuild@0.28",
       "npm:marked@18",
       "npm:mustache@4",
-      "npm:shiki@4",
-      "npm:temporal-polyfill@~0.3.2"
+      "npm:shiki@4"
     ]
   }
 }
