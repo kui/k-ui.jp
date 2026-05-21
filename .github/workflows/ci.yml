@@ -13,10 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: denoland/setup-deno@v2
-        with:
-          deno-version: latest
-          cache: true
+      - uses: jdx/mise-action@v4
 
       - name: Format check
         if: "!startsWith(github.ref, 'refs/heads/post/')"
