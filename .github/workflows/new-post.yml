@@ -70,7 +70,7 @@ jobs:
           FILE=$(git diff-tree --no-commit-id -r --name-only HEAD | grep '\.md$')
           BRANCH="post/${{ github.event.inputs.slug }}"
           REPO="${{ github.repository }}"
-          PREVIEW_URL="${{ steps.deploy.outputs.deployment-url }}"
+          PREVIEW_URL="${{ steps.deploy.outputs.pages-deployment-alias-url }}"
           EDIT_URL="https://github.dev/${REPO}/blob/${BRANCH}/${FILE}"
           cat > /tmp/pr-body.md << EOF
           ## Preview
