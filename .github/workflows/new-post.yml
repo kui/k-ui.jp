@@ -18,7 +18,15 @@ jobs:
       pull-requests: write
       deployments: write
     steps:
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          app-id: ${{ secrets.PR_BOT_APP_ID }}
+          private-key: ${{ secrets.PR_BOT_PRIVATE_KEY }}
+
       - uses: actions/checkout@v7
+        with:
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Create branch
         run: |
@@ -65,7 +73,7 @@ jobs:
 
       - name: Create pull request
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           FILE=$(git diff-tree --no-commit-id -r --name-only HEAD | grep '\.md$')
           BRANCH="post/${{ github.event.inputs.slug }}"
