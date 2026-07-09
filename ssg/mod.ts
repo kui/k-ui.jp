@@ -37,7 +37,7 @@ switch (cmd) {
     const path = `${dir}/index.md`;
 
     const dateStr = now.toString({ timeZoneName: "never" });
-    const fm = `---\ntitle: ${title}\ndate: ${dateStr}\n---\n\n`;
+    const fm = `---\ntitle: ${title}\ndate: ${dateStr}\n---\n`;
 
     await Deno.mkdir(dir, { recursive: true });
     await Deno.writeTextFile(path, fm);
