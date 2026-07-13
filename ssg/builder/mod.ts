@@ -6,7 +6,7 @@ export async function build(dryRun = false): Promise<void> {
   if (!dryRun) {
     try {
       await Deno.remove(OUT, { recursive: true });
-    } catch { /* ok */ }
+    } catch { /* WHY: OUT may not exist on first build */ }
     await ensureDir(OUT);
   }
 
