@@ -42,7 +42,9 @@ Claude Code のリポジトリには余計なコメントについてのイシ�
 
 - [MODEL] Claude verbose code comments by default — ignores instructions to stop. https://github.com/anthropics/claude-code/issues/65961
 
-OpenCode も使ってるとこれは特定の LLM モデルの問題というより、ハーネスソフトか LLM の性質そのものという感覚がある。
+OpenCode も使ってるとこれは特定の LLM モデルの問題というより、ハーネスソフトか LLM の性質そのものという感覚がある。このあたりはいずれ誰かが詳しく分析するだろう。
+
+また「実装と同じこと書いてるコメントは不要・削除」といった命令を入れても効かない。これも Claude モデルに限ったことではなさそうなんだけどなんでなんだろか。苦手な作業があるとは思うけど法則性がいまいちわからない。
 
 どのみち LLM が生成するコメントも玉石混交であることは事実で人間がレビューするのも不安定なので、仕組みで解決する。
 
