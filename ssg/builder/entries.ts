@@ -130,20 +130,20 @@ function parseDateValue(val: unknown): Temporal.Instant {
   const s = val.trim();
   try {
     return Temporal.Instant.from(s);
-  } catch { /* fall through */ }
+  } catch { /* WHY: try next date format */ }
   try {
     return Temporal.ZonedDateTime.from(s).toInstant();
-  } catch { /* fall through */ }
+  } catch { /* WHY: try next date format */ }
   try {
     return Temporal.PlainDateTime.from(s).toZonedDateTime("Asia/Tokyo")
       .toInstant();
-  } catch { /* fall through */ }
+  } catch { /* WHY: try next date format */ }
   try {
     return Temporal.PlainDate.from(s).toZonedDateTime({
       timeZone: "Asia/Tokyo",
       plainTime: "00:00",
     }).toInstant();
-  } catch { /* fall through */ }
+  } catch { /* WHY: try next date format */ }
   throw new RangeError(`unparseable date: "${val}"`);
 }
 
@@ -244,8 +244,10 @@ async function writeHtml(
   await Deno.writeTextFile(outPath, html);
 }
 
-// frontmatter パース済みの data/content を受け取りファイルを出力する。
-// src/blog/ 配下のブログ記事であれば Post を返し、buildPhase1 で収集される。
+/**
+ * frontmatter パース済みの data/content を受け取りファイルを出力する。
+ * src/blog/ 配下のブログ記事であれば Post を、それ以外は PageResult を返す。
+ */
 async function buildContent(
   filePath: string,
   data: Record<string, unknown>,
@@ -319,9 +321,13 @@ async function buildContent(
   }
 }
 
-// use_post_list: true のファイルは DeferredEntry として保留し buildPhase2 に委ねる。
-// .ts ファイルは TsEntry として保留し buildTsEntries に委ねる。
-// それ以外は buildContent で処理する。
+/**
+ * ファイル種別ごとにディスパッチする。
+ * - .ts → TsEntry として保留し buildTsEntries に委ねる
+ * - use_post_list: true → DeferredEntry として保留し buildPhase2 に委ねる
+ * - frontmatter なし → AssetResult としてそのままコピー
+ * - それ以外 → buildContent で処理する
+ */
 async function buildEntry(
   filePath: string,
   site: SiteData,

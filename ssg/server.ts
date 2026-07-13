@@ -22,7 +22,6 @@ export function serve(root: string, port: number): void {
     const url = new URL(req.url);
     const path = decodeURIComponent(url.pathname);
 
-    // Resolve to file
     let filePath = join(root, path);
 
     if (await isDir(filePath)) {

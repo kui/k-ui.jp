@@ -18,6 +18,9 @@
   "exclude": [
     "public"
   ],
+  "lint": {
+    "plugins": ["./lint-plugins/require-comment-rationale.ts"]
+  },
   "fmt": {
     "proseWrap": "preserve",
     // deno fmt では frontmatter は markdown しか正しく処理できない
