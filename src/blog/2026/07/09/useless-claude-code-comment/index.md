@@ -5,7 +5,6 @@ date: 2026-07-09T22:40:14.759718018+09:00
 
 Claude Code が作る無駄なコメントの問題点と対策
 
-
 ## 問題: ソースコードから新たに情報付与されていないコメント
 
 Claude Code に限らず LLM が生成するソースコードには、ソースコードが実現している事柄をそのままコメントでも出力しているケースがよくある。
@@ -30,11 +29,11 @@ copyAndEdit(src, src);
 https://github.com/kui/7dtd-map/pull/242/changes#diff-74c66c2b0e239deff33b7215bef1fca1dfab93b7eaa368309a4c7c4e53d76518L200-L204
 
 ```ts
-    // Batch fill and stroke rects by color into Path2D objects so each unique
-    // color requires only two GPU draw calls (fill + stroke) instead of one
-    // pair per prefab. A Chrome trace showed CrGpuMain tasks of 300–865 ms
-    // during footprint redraws (~10 k ops for 1000 prefabs), stalling the
-    // compositor and causing visible slider stutter.
+// Batch fill and stroke rects by color into Path2D objects so each unique
+// color requires only two GPU draw calls (fill + stroke) instead of one
+// pair per prefab. A Chrome trace showed CrGpuMain tasks of 300–865 ms
+// during footprint redraws (~10 k ops for 1000 prefabs), stalling the
+// compositor and causing visible slider stutter.
 ```
 
 これはパフォーマンス最適化という背景があってややこしい運用をしているため補足のためにコメントが生成された。これは残しておかないと人間が無駄な実装として削除したりAIが削除を提案してくる可能性がある。
@@ -63,7 +62,7 @@ LLM はその性質から必ずこれらのキーワードに紐づくコメン�
 
 https://github.com/Goldziher/uncomment
 
-おおむねよさそうなんだけど `--check` 相当 (`--dry-run` +  non-zero exit code) がない。ラッパースクリプトを書いてもいいがそれを管理するくらいなら試しに自作 lint スクリプトの管理をしてみる。
+おおむねよさそうなんだけど `--check` 相当 (`--dry-run` + non-zero exit code) がない。ラッパースクリプトを書いてもいいがそれを管理するくらいなら試しに自作 lint スクリプトの管理をしてみる。
 
 こっちは tree-sitter を利用しているので多言語に対応しているのが大変なアドバンテージなので、また後日再度参照して開発が続いていてまだ `--check` がないようだったらPRするかな？
 
@@ -76,4 +75,3 @@ https://github.com/wisniewski94/eslint-plugin-no-comments
 ## おわり
 
 暫くこれで運用してみる。運用してみた所感はまた後日。
-
