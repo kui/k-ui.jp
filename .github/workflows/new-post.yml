@@ -34,7 +34,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b "post/${{ github.event.inputs.slug }}"
 
-      - uses: jdx/mise-action@v4
+      - uses: jdx/mise-action@v4.2.3
 
       - name: Create post
         run: |
